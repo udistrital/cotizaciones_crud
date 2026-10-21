@@ -1,111 +1,110 @@
 # cotizaciones_crud
 
-Servicio CRUD para la gestion de cotizaciones del sistema Agora (etapa de solicitud y publicacion), construido con Beego v2 y PostgreSQL.
+El API provee la gestión de las solicitudes de cotización del sistema Ágora en su etapa de solicitud y publicación, con sus necesidades, ítems, cargues masivos, forma de pago, segmentación por actividad económica, documentos, requisitos documentales y proveedores convocados.
 
-## Requisitos
+## Especificaciones Técnicas
 
-- Go 1.27+
-- Bee v2 (`go install github.com/beego/bee/v2@latest`)
-- Docker y Docker Compose (opcional para ejecucion en contenedores)
-- Red Docker `back_end` creada si usa `docker-compose`
+### Tecnologías y Versiones
 
-## Variables de entorno
+- [Golang](https://github.com/udistrital/lineamientos_oas/blob/master/instalacion_de_herramientas/golang.md)
+- [Beego](https://github.com/udistrital/lineamientos_oas/blob/master/instalacion_de_herramientas/beego.md)
+- [PostgreSQL](https://github.com/udistrital/lineamientos_oas/blob/master/instalacion_de_herramientas/postgres.md)
+- [UtilsOAS](https://github.com/udistrital/lineamientos_oas/blob/master/generacion_de_apis/control_error_json_crud.md)
 
-El proyecto usa variables con prefijo `COTIZACIONES_CRUD_` que se consumen desde `conf/app.conf`.
+### Variables de Entorno
 
-### Aplicacion
+Configurar antes de ejecutar (ver también `.env.example` y `conf/app.conf`).
 
-- `COTIZACIONES_CRUD_APP_NAME`: nombre de la aplicacion.
-- `COTIZACIONES_CRUD_HTTP_PORT`: puerto HTTP del servicio.
-- `COTIZACIONES_CRUD_RUN_MODE`: modo de ejecucion (`dev`, `prod`, etc.).
-- `COTIZACIONES_CRUD_SERVICE_NAME`: nombre del contenedor del API (Docker).
-- `COTIZACIONES_CRUD_API_BASE_DIR`: ruta base dentro del contenedor.
-- `COTIZACIONES_CRUD_API_NAME`: nombre del directorio del proyecto.
+```shell
+COTIZACIONES_CRUD_API_NAME=[nombre de la API]
+COTIZACIONES_CRUD_SERVICE_NAME=[nombre del servicio]
+COTIZACIONES_CRUD_API_BASE_DIR=[directorio base de la API con respecto a $GOPATH/src]
+COTIZACIONES_CRUD_HTTP_PORT=[puerto de la API]
+COTIZACIONES_CRUD_RUN_MODE=[dev|prod]
+COTIZACIONES_CRUD_PGUSER=[usuario BD]
+COTIZACIONES_CRUD_PGPASS=[password BD]
+COTIZACIONES_CRUD_PGHOST=[host BD]
+COTIZACIONES_CRUD_PGPORT=[puerto BD]
+COTIZACIONES_CRUD_PGDB=[nombre BD]
+COTIZACIONES_CRUD_PGSCHEMA=[esquema BD]
+```
 
-### Base de datos
+### Ejecución del Proyecto
 
-- `COTIZACIONES_CRUD_PGUSER`: usuario PostgreSQL.
-- `COTIZACIONES_CRUD_PGPASS`: clave PostgreSQL.
-- `COTIZACIONES_CRUD_PGHOST`: host PostgreSQL.
-- `COTIZACIONES_CRUD_PGPORT`: puerto PostgreSQL.
-- `COTIZACIONES_CRUD_PGDB`: nombre de la base de datos.
-- `COTIZACIONES_CRUD_PGSCHEMA`: esquema PostgreSQL (`cotizaciones`).
+#### Clonar el repositorio
 
-## Ejecucion local
+```shell
+mkdir -p $GOPATH/src/github.com/udistrital
+cd $GOPATH/src/github.com/udistrital
+git clone https://github.com/udistrital/cotizaciones_crud.git
+cd cotizaciones_crud
+```
 
-1. Prepare la base de datos ejecutando `database/agora_cotizaciones.sql` (crea el esquema `cotizaciones`).
-2. Configure las variables de entorno:
+#### Ejecución para Desarrollo
 
-	```bash
-	cp .env.example .env # ajustar los valores
-	set -a && source .env && set +a
-	```
+Requiere una base de datos [PostgreSQL](https://github.com/udistrital/lineamientos_oas/blob/master/instalacion_de_herramientas/postgres.md) con el esquema y las tablas requeridas. Ejecute `database/agora_cotizaciones.sql` para prepararla y luego:
 
-3. Descargue dependencias:
+```shell
+cp .env.example .env # Configurar las variables de entorno
+set -a && source .env && set +a
 
-	```bash
-	go mod download
-	```
+go mod tidy
+bee run
+```
 
-4. Ejecute con generacion de documentacion:
+#### Ejecución con Docker
 
-	```bash
-	bee run -downdoc=true -gendoc=true
-	```
+Compile el proyecto y la imagen:
 
-5. Pruebe endpoints en:
-- API: `http://localhost:${COTIZACIONES_CRUD_HTTP_PORT}/v1/...`
-- Swagger UI: `http://localhost:${COTIZACIONES_CRUD_HTTP_PORT}/swagger/`
+```shell
+go mod tidy
+go build -o main
+docker build -t cotizaciones_crud .
+```
 
-## Ejecucion con Docker Compose
+Para ejecutar el servicio en un contenedor. Requiere una base de datos [PostgreSQL](https://github.com/udistrital/lineamientos_oas/blob/master/instalacion_de_herramientas/postgres.md) con el esquema y las tablas requeridas. Ejecute `database/agora_cotizaciones.sql` para prepararla y luego:
 
-1. Cree la red (si no existe):
+```shell
+cp .env.example .env # Configurar las variables de entorno
+set -a && source .env && set +a
+docker run --name cotizaciones_crud -p "$COTIZACIONES_CRUD_HTTP_PORT:$COTIZACIONES_CRUD_HTTP_PORT" --env-file .env cotizaciones_crud
+```
 
-	```bash
-	docker network create back_end
-	```
+### Ejecución con Docker Compose
 
-2. Levante servicios:
+Para consumo local durante el desarrollo de otros servicios, ejecute Docker Compose después de [compilar el proyecto y la imagen](#ejecución-con-docker). Incluye la base de datos y ejecuta `database/agora_cotizaciones.sql` al inicializarla:
 
-	```bash
-	docker-compose up --build
-	```
+```shell
+# Creando red bridge para consumo local
+docker network create \
+  --driver bridge \
+  --subnet 172.28.0.0/16 \
+  --gateway 172.28.0.1 \
+  back_end
 
-El contenedor de PostgreSQL carga automaticamente el script `database/agora_cotizaciones.sql` al iniciar por primera vez.
+cp .env.example .env # Configurar las variables de entorno
+docker compose --env-file .env up
+```
 
-## Modelo de datos
+El script se ejecuta únicamente cuando se crea el volumen de PostgreSQL. Para repetir la inicialización, elimine el volumen `postgres_data` y levante Compose nuevamente.
 
-El script de esquema se encuentra en `database/agora_cotizaciones.sql`. Corresponde al modelo del Sprint 5 propuesto en [udistrital/agora_documentacion#32](https://github.com/udistrital/agora_documentacion/issues/32) e incluye llaves foraneas, restricciones de unicidad y el diccionario de datos (`COMMENT ON`).
+### Ejecución Pruebas
 
-Los catalogos (Parametros), personas y proveedores (Terceros), dependencias (Oikos), unidad ejecutora (Kronos), ordenador del gasto y archivos (gestor documental) se guardan solo como referencia a su `id`; no tienen llave foranea en la base de datos.
+Pruebas unitarias
 
-Tablas principales:
-
-- `solicitud_cotizacion`
-- `cargue_masivo`
-- `cargue_masivo_error`
-- `documento_solicitud`
-- `solicitud_ciiu`
-- `solicitud_item`
-- `solicitud_necesidad`
-- `solicitud_pago_parcial`
-- `solicitud_proveedor`
-- `solicitud_requisito_documental`
-
-Relaciones principales:
-
-- `solicitud_cotizacion` es entidad raiz.
-- `cargue_masivo`, `documento_solicitud`, `solicitud_ciiu`, `solicitud_item`, `solicitud_necesidad`, `solicitud_pago_parcial`, `solicitud_proveedor`, `solicitud_requisito_documental` referencian `solicitud_cotizacion`.
-- `cargue_masivo_error` referencia `cargue_masivo`.
-- `solicitud_item` tambien referencia `cargue_masivo`.
-
-Todos los recursos manejan auditoria basica (`activo`, `fecha_creacion`, `fecha_modificacion`) y borrado logico (`activo = false`).
+```shell
+# En Proceso
+```
 
 ## Estado CI
 
 | Develop | Release 0.0.1 | Master |
 | -- | -- | -- |
 | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/cotizaciones_crud/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/cotizaciones_crud/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/cotizaciones_crud/status.svg?ref=refs/heads/release/0.0.1)](https://hubci.portaloas.udistrital.edu.co/udistrital/cotizaciones_crud/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/cotizaciones_crud/status.svg)](https://hubci.portaloas.udistrital.edu.co/udistrital/cotizaciones_crud/) |
+
+## Modelo de Datos
+
+[Modelo de Datos API CRUD Cotizaciones](https://github.com/udistrital/cotizaciones_crud/blob/develop/database/agora_cotizaciones.sql)
 
 ## Licencia
 
