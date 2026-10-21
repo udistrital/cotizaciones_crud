@@ -1,0 +1,192 @@
+package controllers
+
+import (
+	"encoding/json"
+	"strconv"
+	"strings"
+
+	"github.com/udistrital/cotizaciones_crud/models"
+
+	beego "github.com/beego/beego/v2/server/web"
+)
+
+// SolicitudNecesidadController operations for SolicitudNecesidad
+type SolicitudNecesidadController struct {
+	beego.Controller
+}
+
+// URLMapping ...
+func (c *SolicitudNecesidadController) URLMapping() {
+	c.Mapping("Post", c.Post)
+	c.Mapping("GetOne", c.GetOne)
+	c.Mapping("GetAll", c.GetAll)
+	c.Mapping("Put", c.Put)
+	c.Mapping("Delete", c.Delete)
+}
+
+// Post ...
+// @Title Post
+// @Description create SolicitudNecesidad
+// @Param	body		body 	models.SolicitudNecesidad	true		"body for SolicitudNecesidad content"
+// @Success 201 {object} controllers.APIResponse
+// @Failure 400 invalid body
+// @router / [post]
+func (c *SolicitudNecesidadController) Post() {
+	var v models.SolicitudNecesidad
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err != nil {
+		abortWithError(&c.Controller, 400, "cuerpo de la solicitud invalido", err)
+		return
+	}
+
+	if _, err := models.AddSolicitudNecesidad(&v); err != nil {
+		abortWithError(&c.Controller, 500, "error al crear el registro", err)
+		return
+	}
+
+	writeSuccess(&c.Controller, 201, "registro creado", v)
+}
+
+// GetOne ...
+// @Title Get One
+// @Description get SolicitudNecesidad by id
+// @Param	id		path 	string	true		"The id"
+// @Success 200 {object} controllers.APIResponse
+// @Failure 400 id invalido
+// @router /:id [get]
+func (c *SolicitudNecesidadController) GetOne() {
+	id, err := strconv.Atoi(c.Ctx.Input.Param(":id"))
+	if err != nil {
+		abortWithError(&c.Controller, 400, "el parametro id debe ser numerico", err)
+		return
+	}
+
+	v, err := models.GetSolicitudNecesidadById(id)
+	if err != nil {
+		abortWithError(&c.Controller, 404, "registro no encontrado", err)
+		return
+	}
+
+	writeSuccess(&c.Controller, 200, "consulta exitosa", v)
+}
+
+// GetAll ...
+// @Title Get All
+// @Description get SolicitudNecesidad
+// @Param	query	query	string	false	"Filter. e.g. col1:v1,col2:v2 ..."
+// @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
+// @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
+// @Param	order	query	string	false	"Order corresponding to each sortby field. e.g. desc,asc ..."
+// @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
+// @Param	offset	query	string	false	"Start position of result set. Must be an integer"
+// @Success 200 {object} controllers.APIResponse
+// @Failure 400 parametros invalidos
+// @router / [get]
+func (c *SolicitudNecesidadController) GetAll() {
+	var fields []string
+	var sortby []string
+	var order []string
+	query := make(map[string]string)
+	limit := int64(10)
+	offset := int64(0)
+
+	if v := c.GetString("fields"); v != "" {
+		fields = strings.Split(v, ",")
+	}
+
+	if v := c.GetString("limit"); v != "" {
+		parsedLimit, err := strconv.ParseInt(v, 10, 64)
+		if err != nil || parsedLimit < 0 {
+			abortWithError(&c.Controller, 400, "el parametro limit debe ser un entero mayor o igual a cero", err)
+			return
+		}
+		limit = parsedLimit
+	}
+
+	if v := c.GetString("offset"); v != "" {
+		parsedOffset, err := strconv.ParseInt(v, 10, 64)
+		if err != nil || parsedOffset < 0 {
+			abortWithError(&c.Controller, 400, "el parametro offset debe ser un entero mayor o igual a cero", err)
+			return
+		}
+		offset = parsedOffset
+	}
+
+	if v := c.GetString("sortby"); v != "" {
+		sortby = strings.Split(v, ",")
+	}
+
+	if v := c.GetString("order"); v != "" {
+		order = strings.Split(v, ",")
+	}
+
+	if v := c.GetString("query"); v != "" {
+		for _, cond := range strings.Split(v, ",") {
+			kv := strings.SplitN(cond, ":", 2)
+			if len(kv) != 2 {
+				abortWithError(&c.Controller, 400, "query invalida, use formato campo:valor", nil)
+				return
+			}
+			query[kv[0]] = kv[1]
+		}
+	}
+
+	l, err := models.GetAllSolicitudNecesidad(query, fields, sortby, order, offset, limit)
+	if err != nil {
+		abortWithError(&c.Controller, 400, "error al consultar los registros", err)
+		return
+	}
+
+	writeSuccess(&c.Controller, 200, "consulta exitosa", l)
+}
+
+// Put ...
+// @Title Put
+// @Description update the SolicitudNecesidad
+// @Param	id		path 	string	true		"The id you want to update"
+// @Param	body		body 	models.SolicitudNecesidad	true		"body for SolicitudNecesidad content"
+// @Success 200 {object} controllers.APIResponse
+// @Failure 400 id/body invalidos
+// @router /:id [put]
+func (c *SolicitudNecesidadController) Put() {
+	id, err := strconv.Atoi(c.Ctx.Input.Param(":id"))
+	if err != nil {
+		abortWithError(&c.Controller, 400, "el parametro id debe ser numerico", err)
+		return
+	}
+
+	var v models.SolicitudNecesidad
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err != nil {
+		abortWithError(&c.Controller, 400, "cuerpo de la solicitud invalido", err)
+		return
+	}
+	v.Id = id
+
+	if err := models.UpdateSolicitudNecesidadById(&v); err != nil {
+		abortWithError(&c.Controller, 500, "error al actualizar el registro", err)
+		return
+	}
+
+	writeSuccess(&c.Controller, 200, "registro actualizado", v)
+}
+
+// Delete ...
+// @Title Delete
+// @Description delete the SolicitudNecesidad
+// @Param	id		path 	string	true		"The id you want to delete"
+// @Success 200 {object} controllers.APIResponse
+// @Failure 400 id invalido
+// @router /:id [delete]
+func (c *SolicitudNecesidadController) Delete() {
+	id, err := strconv.Atoi(c.Ctx.Input.Param(":id"))
+	if err != nil {
+		abortWithError(&c.Controller, 400, "el parametro id debe ser numerico", err)
+		return
+	}
+
+	if err := models.DeleteSolicitudNecesidad(id); err != nil {
+		abortWithError(&c.Controller, 500, "error al eliminar el registro", err)
+		return
+	}
+
+	writeSuccess(&c.Controller, 200, "registro eliminado", nil)
+}
