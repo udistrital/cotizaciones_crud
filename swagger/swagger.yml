@@ -1,0 +1,1691 @@
+swagger: "2.0"
+info:
+  title: API CRUD Cotizaciones Agora
+  description: |
+    Servicio CRUD para la gestion de cotizaciones del modulo Agora en Arka II
+  version: 1.0.0
+  termsOfService: https://www.udistrital.edu.co/
+  contact:
+    email: soporte@udistrital.edu.co
+  license:
+    name: EUPL-1.2
+    url: https://interoperable-europe.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+basePath: /v1
+paths:
+  /cargue_masivo/:
+    get:
+      tags:
+      - cargue_masivo
+      description: |-
+        get CargueMasivo
+        <br>
+      operationId: CargueMasivoController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: parametros invalidos
+    post:
+      tags:
+      - cargue_masivo
+      description: |-
+        create CargueMasivo
+        <br>
+      operationId: CargueMasivoController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for CargueMasivo content
+        required: true
+        schema:
+          $ref: '#/definitions/models.CargueMasivo'
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: invalid body
+  /cargue_masivo/{id}:
+    get:
+      tags:
+      - cargue_masivo
+      description: |-
+        get CargueMasivo by id
+        <br>
+      operationId: CargueMasivoController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id invalido
+    put:
+      tags:
+      - cargue_masivo
+      description: |-
+        update the CargueMasivo
+        <br>
+      operationId: CargueMasivoController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for CargueMasivo content
+        required: true
+        schema:
+          $ref: '#/definitions/models.CargueMasivo'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id/body invalidos
+    delete:
+      tags:
+      - cargue_masivo
+      description: |-
+        delete the CargueMasivo
+        <br>
+      operationId: CargueMasivoController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id invalido
+  /cargue_masivo_error/:
+    get:
+      tags:
+      - cargue_masivo_error
+      description: |-
+        get CargueMasivoError
+        <br>
+      operationId: CargueMasivoErrorController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: parametros invalidos
+    post:
+      tags:
+      - cargue_masivo_error
+      description: |-
+        create CargueMasivoError
+        <br>
+      operationId: CargueMasivoErrorController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for CargueMasivoError content
+        required: true
+        schema:
+          $ref: '#/definitions/models.CargueMasivoError'
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: invalid body
+  /cargue_masivo_error/{id}:
+    get:
+      tags:
+      - cargue_masivo_error
+      description: |-
+        get CargueMasivoError by id
+        <br>
+      operationId: CargueMasivoErrorController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id invalido
+    put:
+      tags:
+      - cargue_masivo_error
+      description: |-
+        update the CargueMasivoError
+        <br>
+      operationId: CargueMasivoErrorController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for CargueMasivoError content
+        required: true
+        schema:
+          $ref: '#/definitions/models.CargueMasivoError'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id/body invalidos
+    delete:
+      tags:
+      - cargue_masivo_error
+      description: |-
+        delete the CargueMasivoError
+        <br>
+      operationId: CargueMasivoErrorController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id invalido
+  /documento_solicitud/:
+    get:
+      tags:
+      - documento_solicitud
+      description: |-
+        get DocumentoSolicitud
+        <br>
+      operationId: DocumentoSolicitudController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: parametros invalidos
+    post:
+      tags:
+      - documento_solicitud
+      description: |-
+        create DocumentoSolicitud
+        <br>
+      operationId: DocumentoSolicitudController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for DocumentoSolicitud content
+        required: true
+        schema:
+          $ref: '#/definitions/models.DocumentoSolicitud'
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: invalid body
+  /documento_solicitud/{id}:
+    get:
+      tags:
+      - documento_solicitud
+      description: |-
+        get DocumentoSolicitud by id
+        <br>
+      operationId: DocumentoSolicitudController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id invalido
+    put:
+      tags:
+      - documento_solicitud
+      description: |-
+        update the DocumentoSolicitud
+        <br>
+      operationId: DocumentoSolicitudController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for DocumentoSolicitud content
+        required: true
+        schema:
+          $ref: '#/definitions/models.DocumentoSolicitud'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id/body invalidos
+    delete:
+      tags:
+      - documento_solicitud
+      description: |-
+        delete the DocumentoSolicitud
+        <br>
+      operationId: DocumentoSolicitudController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id invalido
+  /solicitud_ciiu/:
+    get:
+      tags:
+      - solicitud_ciiu
+      description: |-
+        get SolicitudCiiu
+        <br>
+      operationId: SolicitudCiiuController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: parametros invalidos
+    post:
+      tags:
+      - solicitud_ciiu
+      description: |-
+        create SolicitudCiiu
+        <br>
+      operationId: SolicitudCiiuController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for SolicitudCiiu content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudCiiu'
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: invalid body
+  /solicitud_ciiu/{id}:
+    get:
+      tags:
+      - solicitud_ciiu
+      description: |-
+        get SolicitudCiiu by id
+        <br>
+      operationId: SolicitudCiiuController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id invalido
+    put:
+      tags:
+      - solicitud_ciiu
+      description: |-
+        update the SolicitudCiiu
+        <br>
+      operationId: SolicitudCiiuController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for SolicitudCiiu content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudCiiu'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id/body invalidos
+    delete:
+      tags:
+      - solicitud_ciiu
+      description: |-
+        delete the SolicitudCiiu
+        <br>
+      operationId: SolicitudCiiuController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id invalido
+  /solicitud_cotizacion/:
+    get:
+      tags:
+      - solicitud_cotizacion
+      description: |-
+        get SolicitudCotizacion
+        <br>
+      operationId: SolicitudCotizacionController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: parametros invalidos
+    post:
+      tags:
+      - solicitud_cotizacion
+      description: |-
+        create SolicitudCotizacion
+        <br>
+      operationId: SolicitudCotizacionController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for SolicitudCotizacion content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudCotizacion'
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: invalid body
+  /solicitud_cotizacion/{id}:
+    get:
+      tags:
+      - solicitud_cotizacion
+      description: |-
+        get SolicitudCotizacion by id
+        <br>
+      operationId: SolicitudCotizacionController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id invalido
+    put:
+      tags:
+      - solicitud_cotizacion
+      description: |-
+        update the SolicitudCotizacion
+        <br>
+      operationId: SolicitudCotizacionController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for SolicitudCotizacion content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudCotizacion'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id/body invalidos
+    delete:
+      tags:
+      - solicitud_cotizacion
+      description: |-
+        delete the SolicitudCotizacion
+        <br>
+      operationId: SolicitudCotizacionController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id invalido
+  /solicitud_item/:
+    get:
+      tags:
+      - solicitud_item
+      description: |-
+        get SolicitudItem
+        <br>
+      operationId: SolicitudItemController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: parametros invalidos
+    post:
+      tags:
+      - solicitud_item
+      description: |-
+        create SolicitudItem
+        <br>
+      operationId: SolicitudItemController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for SolicitudItem content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudItem'
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: invalid body
+  /solicitud_item/{id}:
+    get:
+      tags:
+      - solicitud_item
+      description: |-
+        get SolicitudItem by id
+        <br>
+      operationId: SolicitudItemController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id invalido
+    put:
+      tags:
+      - solicitud_item
+      description: |-
+        update the SolicitudItem
+        <br>
+      operationId: SolicitudItemController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for SolicitudItem content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudItem'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id/body invalidos
+    delete:
+      tags:
+      - solicitud_item
+      description: |-
+        delete the SolicitudItem
+        <br>
+      operationId: SolicitudItemController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id invalido
+  /solicitud_necesidad/:
+    get:
+      tags:
+      - solicitud_necesidad
+      description: |-
+        get SolicitudNecesidad
+        <br>
+      operationId: SolicitudNecesidadController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: parametros invalidos
+    post:
+      tags:
+      - solicitud_necesidad
+      description: |-
+        create SolicitudNecesidad
+        <br>
+      operationId: SolicitudNecesidadController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for SolicitudNecesidad content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudNecesidad'
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: invalid body
+  /solicitud_necesidad/{id}:
+    get:
+      tags:
+      - solicitud_necesidad
+      description: |-
+        get SolicitudNecesidad by id
+        <br>
+      operationId: SolicitudNecesidadController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id invalido
+    put:
+      tags:
+      - solicitud_necesidad
+      description: |-
+        update the SolicitudNecesidad
+        <br>
+      operationId: SolicitudNecesidadController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for SolicitudNecesidad content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudNecesidad'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id/body invalidos
+    delete:
+      tags:
+      - solicitud_necesidad
+      description: |-
+        delete the SolicitudNecesidad
+        <br>
+      operationId: SolicitudNecesidadController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id invalido
+  /solicitud_pago_parcial/:
+    get:
+      tags:
+      - solicitud_pago_parcial
+      description: |-
+        get SolicitudPagoParcial
+        <br>
+      operationId: SolicitudPagoParcialController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: parametros invalidos
+    post:
+      tags:
+      - solicitud_pago_parcial
+      description: |-
+        create SolicitudPagoParcial
+        <br>
+      operationId: SolicitudPagoParcialController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for SolicitudPagoParcial content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudPagoParcial'
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: invalid body
+  /solicitud_pago_parcial/{id}:
+    get:
+      tags:
+      - solicitud_pago_parcial
+      description: |-
+        get SolicitudPagoParcial by id
+        <br>
+      operationId: SolicitudPagoParcialController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id invalido
+    put:
+      tags:
+      - solicitud_pago_parcial
+      description: |-
+        update the SolicitudPagoParcial
+        <br>
+      operationId: SolicitudPagoParcialController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for SolicitudPagoParcial content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudPagoParcial'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id/body invalidos
+    delete:
+      tags:
+      - solicitud_pago_parcial
+      description: |-
+        delete the SolicitudPagoParcial
+        <br>
+      operationId: SolicitudPagoParcialController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id invalido
+  /solicitud_proveedor/:
+    get:
+      tags:
+      - solicitud_proveedor
+      description: |-
+        get SolicitudProveedor
+        <br>
+      operationId: SolicitudProveedorController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: parametros invalidos
+    post:
+      tags:
+      - solicitud_proveedor
+      description: |-
+        create SolicitudProveedor
+        <br>
+      operationId: SolicitudProveedorController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for SolicitudProveedor content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudProveedor'
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: invalid body
+  /solicitud_proveedor/{id}:
+    get:
+      tags:
+      - solicitud_proveedor
+      description: |-
+        get SolicitudProveedor by id
+        <br>
+      operationId: SolicitudProveedorController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id invalido
+    put:
+      tags:
+      - solicitud_proveedor
+      description: |-
+        update the SolicitudProveedor
+        <br>
+      operationId: SolicitudProveedorController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for SolicitudProveedor content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudProveedor'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id/body invalidos
+    delete:
+      tags:
+      - solicitud_proveedor
+      description: |-
+        delete the SolicitudProveedor
+        <br>
+      operationId: SolicitudProveedorController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id invalido
+  /solicitud_requisito_documental/:
+    get:
+      tags:
+      - solicitud_requisito_documental
+      description: |-
+        get SolicitudRequisitoDocumental
+        <br>
+      operationId: SolicitudRequisitoDocumentalController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: parametros invalidos
+    post:
+      tags:
+      - solicitud_requisito_documental
+      description: |-
+        create SolicitudRequisitoDocumental
+        <br>
+      operationId: SolicitudRequisitoDocumentalController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for SolicitudRequisitoDocumental content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudRequisitoDocumental'
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: invalid body
+  /solicitud_requisito_documental/{id}:
+    get:
+      tags:
+      - solicitud_requisito_documental
+      description: |-
+        get SolicitudRequisitoDocumental by id
+        <br>
+      operationId: SolicitudRequisitoDocumentalController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id invalido
+    put:
+      tags:
+      - solicitud_requisito_documental
+      description: |-
+        update the SolicitudRequisitoDocumental
+        <br>
+      operationId: SolicitudRequisitoDocumentalController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for SolicitudRequisitoDocumental content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudRequisitoDocumental'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id/body invalidos
+    delete:
+      tags:
+      - solicitud_requisito_documental
+      description: |-
+        delete the SolicitudRequisitoDocumental
+        <br>
+      operationId: SolicitudRequisitoDocumentalController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id invalido
+definitions:
+  controllers.APIResponse:
+    title: APIResponse
+    type: object
+    properties:
+      Data:
+        $ref: '#/definitions/controllers.interface'
+      Message:
+        type: string
+      Status:
+        type: integer
+        format: int64
+      Success:
+        type: boolean
+  controllers.interface:
+    title: interface
+    type: object
+  models.CargueMasivo:
+    title: CargueMasivo
+    type: object
+    properties:
+      Aceptados:
+        type: integer
+        format: int64
+      Activo:
+        type: boolean
+      CargadoPorTerceroId:
+        type: integer
+        format: int64
+      DocumentoId:
+        type: integer
+        format: int64
+      EstadoId:
+        type: integer
+        format: int64
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      NombreArchivo:
+        type: string
+      PlantillaId:
+        type: integer
+        format: int64
+      Rechazados:
+        type: integer
+        format: int64
+      SolicitudId:
+        $ref: '#/definitions/models.SolicitudCotizacion'
+      TotalRegistros:
+        type: integer
+        format: int64
+  models.CargueMasivoError:
+    title: CargueMasivoError
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      Campo:
+        type: string
+      CargueMasivoId:
+        $ref: '#/definitions/models.CargueMasivo'
+      Detalle:
+        type: string
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Fila:
+        type: integer
+        format: int64
+      Hoja:
+        type: string
+      Id:
+        type: integer
+        format: int64
+      MotivoId:
+        type: integer
+        format: int64
+      ValorDetectado:
+        type: string
+  models.DocumentoSolicitud:
+    title: DocumentoSolicitud
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      CargadoPorTerceroId:
+        type: integer
+        format: int64
+      DocumentoId:
+        type: integer
+        format: int64
+      Extension:
+        type: string
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      NombreArchivo:
+        type: string
+      SolicitudId:
+        $ref: '#/definitions/models.SolicitudCotizacion'
+      TamanoBytes:
+        type: integer
+        format: int64
+      TipoDocumentoId:
+        type: integer
+        format: int64
+  models.SolicitudCiiu:
+    title: SolicitudCiiu
+    type: object
+    properties:
+      ActividadEconomicaId:
+        type: integer
+        format: int64
+      Activo:
+        type: boolean
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      SolicitudId:
+        $ref: '#/definitions/models.SolicitudCotizacion'
+  models.SolicitudCotizacion:
+    title: SolicitudCotizacion
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      AreaConocimientoId:
+        type: integer
+        format: int64
+      Consecutivo:
+        type: integer
+        format: int64
+      CriterioSeleccion:
+        type: string
+      DependenciaDestinoId:
+        type: integer
+        format: int64
+      DependenciaSolicitanteId:
+        type: integer
+        format: int64
+      EstadoId:
+        type: integer
+        format: int64
+      FechaApertura:
+        type: string
+        format: datetime
+      FechaCierre:
+        type: string
+        format: datetime
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      FechaProcesamiento:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      MedioPagoId:
+        type: integer
+        format: int64
+      NucleoBasicoId:
+        type: integer
+        format: int64
+      NumeroSolicitud:
+        type: string
+      Objetivo:
+        type: string
+      Observaciones:
+        type: string
+      OrdenadorGastoId:
+        type: integer
+        format: int64
+      PlanAccionId:
+        type: integer
+        format: int64
+      PlazoEjecucion:
+        type: string
+      Requisitos:
+        type: string
+      ResponsableTerceroId:
+        type: integer
+        format: int64
+      TipoContratoId:
+        type: integer
+        format: int64
+      TipoFormaPagoId:
+        type: integer
+        format: int64
+      TipoNecesidadId:
+        type: integer
+        format: int64
+      TipoProcesoId:
+        type: integer
+        format: int64
+      Titulo:
+        type: string
+      UnidadEjecutoraId:
+        type: integer
+        format: int64
+      Vigencia:
+        type: integer
+        format: int32
+  models.SolicitudItem:
+    title: SolicitudItem
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      Cantidad:
+        type: number
+        format: double
+      CargueMasivoId:
+        $ref: '#/definitions/models.CargueMasivo'
+      CodigoUnspsc:
+        type: string
+      Descripcion:
+        type: string
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      Nombre:
+        type: string
+      SolicitudId:
+        $ref: '#/definitions/models.SolicitudCotizacion'
+      TipoBienServicioId:
+        type: integer
+        format: int64
+      UnidadMedidaId:
+        type: integer
+        format: int64
+  models.SolicitudNecesidad:
+    title: SolicitudNecesidad
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      DependenciaNecesidad:
+        type: string
+      EstadoNecesidad:
+        type: string
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      NumeroDisponibilidad:
+        type: string
+      NumeroNecesidad:
+        type: string
+      RubroCodigo:
+        type: string
+      RubroNombre:
+        type: string
+      SolicitudId:
+        $ref: '#/definitions/models.SolicitudCotizacion'
+      ValorCdp:
+        type: number
+        format: double
+      ValorDisponibilidad:
+        type: number
+        format: double
+  models.SolicitudPagoParcial:
+    title: SolicitudPagoParcial
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      Condicion:
+        type: string
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      Porcentaje:
+        type: number
+        format: double
+      SolicitudId:
+        $ref: '#/definitions/models.SolicitudCotizacion'
+  models.SolicitudProveedor:
+    title: SolicitudProveedor
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      FechaConvocatoria:
+        type: string
+        format: datetime
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      ProveedorId:
+        type: integer
+        format: int64
+      SolicitudId:
+        $ref: '#/definitions/models.SolicitudCotizacion'
+  models.SolicitudRequisitoDocumental:
+    title: SolicitudRequisitoDocumental
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      ClasificacionId:
+        type: integer
+        format: int64
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      Instruccion:
+        type: string
+      SolicitudId:
+        $ref: '#/definitions/models.SolicitudCotizacion'
+      TipoDocumentoId:
+        type: integer
+        format: int64
+tags:
+- name: cargue_masivo_error
+  description: |
+    CargueMasivoErrorController operations for CargueMasivoError
+- name: solicitud_item
+  description: |
+    SolicitudItemController operations for SolicitudItem
+- name: solicitud_proveedor
+  description: |
+    SolicitudProveedorController operations for SolicitudProveedor
+- name: cargue_masivo
+  description: |
+    CargueMasivoController operations for CargueMasivo
+- name: documento_solicitud
+  description: |
+    DocumentoSolicitudController operations for DocumentoSolicitud
+- name: solicitud_ciiu
+  description: |
+    SolicitudCiiuController operations for SolicitudCiiu
+- name: solicitud_cotizacion
+  description: |
+    SolicitudCotizacionController operations for SolicitudCotizacion
+- name: solicitud_necesidad
+  description: |
+    SolicitudNecesidadController operations for SolicitudNecesidad
+- name: solicitud_pago_parcial
+  description: |
+    SolicitudPagoParcialController operations for SolicitudPagoParcial
+- name: solicitud_requisito_documental
+  description: |
+    SolicitudRequisitoDocumentalController operations for SolicitudRequisitoDocumental
