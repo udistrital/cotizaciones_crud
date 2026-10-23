@@ -19,7 +19,7 @@ type SolicitudItem struct {
 	Descripcion        string               `orm:"column(descripcion)"`
 	UnidadMedidaId     int                  `orm:"column(unidad_medida_id);null"`
 	Cantidad           float64              `orm:"column(cantidad)"`
-	CargueMasivoId     *CargueMasivo        `orm:"column(cargue_masivo_id);rel(fk)"`
+	CargueMasivoId     *CargueMasivo        `orm:"column(cargue_masivo_id);rel(fk);null"`
 	CodigoUnspsc       string               `orm:"column(codigo_unspsc);null"`
 	FechaModificacion  time.Time            `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
 }
