@@ -1,0 +1,47 @@
+services: 
+  api:
+    build: ./bee_build
+    image: ${COTIZACIONES_CRUD_SERVICE_NAME}
+    container_name: ${COTIZACIONES_CRUD_SERVICE_NAME}
+    volumes:
+      - gosrc:/go
+      - .:/go/src/${COTIZACIONES_CRUD_API_BASE_DIR}/${COTIZACIONES_CRUD_API_NAME}
+    env_file: 
+      - .env
+    environment:
+      COTIZACIONES_CRUD_PGHOST: db
+    ports: 
+      - "${COTIZACIONES_CRUD_HTTP_PORT}:${COTIZACIONES_CRUD_HTTP_PORT}"
+    command: sh -c 'cd ${COTIZACIONES_CRUD_API_BASE_DIR}/${COTIZACIONES_CRUD_API_NAME}; go get -v ./...; bee run -downdoc=true -gendoc=true'
+    depends_on: 
+      db:
+        condition: service_healthy
+    networks: 
+      - back_end
+  db:
+    container_name: ${COTIZACIONES_CRUD_PGHOST}
+    image: postgres:10
+    ports:
+      - "${COTIZACIONES_CRUD_PGPORT}:5432"
+    volumes: 
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/agora_cotizaciones.sql:/docker-entrypoint-initdb.d/agora_cotizaciones.sql:ro
+    environment:
+      - POSTGRES_DB=${COTIZACIONES_CRUD_PGDB}
+      - POSTGRES_USER=${COTIZACIONES_CRUD_PGUSER}
+      - POSTGRES_PASSWORD=${COTIZACIONES_CRUD_PGPASS}
+    networks: 
+      - back_end
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  gosrc:
+  postgres_data:
+networks: 
+  back_end:
+    external: true
