@@ -45,6 +45,21 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
+      - in: query
+        name: vigencia
+        description: Vigencia de la solicitud. e.g. 2026
+        type: integer
+        format: int64
+      - in: query
+        name: estado
+        description: Id del estado de la solicitud (parametros)
+        type: integer
+        format: int64
+      - in: query
+        name: dependencia
+        description: Id de la dependencia solicitante (Oikos)
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -173,6 +188,21 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
+      - in: query
+        name: vigencia
+        description: Vigencia de la solicitud. e.g. 2026
+        type: integer
+        format: int64
+      - in: query
+        name: estado
+        description: Id del estado de la solicitud (parametros)
+        type: integer
+        format: int64
+      - in: query
+        name: dependencia
+        description: Id de la dependencia solicitante (Oikos)
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -301,6 +331,21 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
+      - in: query
+        name: vigencia
+        description: Vigencia de la solicitud. e.g. 2026
+        type: integer
+        format: int64
+      - in: query
+        name: estado
+        description: Id del estado de la solicitud (parametros)
+        type: integer
+        format: int64
+      - in: query
+        name: dependencia
+        description: Id de la dependencia solicitante (Oikos)
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -429,6 +474,21 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
+      - in: query
+        name: vigencia
+        description: Vigencia de la solicitud. e.g. 2026
+        type: integer
+        format: int64
+      - in: query
+        name: estado
+        description: Id del estado de la solicitud (parametros)
+        type: integer
+        format: int64
+      - in: query
+        name: dependencia
+        description: Id de la dependencia solicitante (Oikos)
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -557,6 +617,21 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
+      - in: query
+        name: vigencia
+        description: Vigencia de la solicitud. e.g. 2026
+        type: integer
+        format: int64
+      - in: query
+        name: estado
+        description: Id del estado de la solicitud (parametros)
+        type: integer
+        format: int64
+      - in: query
+        name: dependencia
+        description: Id de la dependencia solicitante (Oikos)
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -652,6 +727,29 @@ paths:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
           description: id invalido
+  /solicitud_cotizacion/{id}/detalle:
+    get:
+      tags:
+      - solicitud_cotizacion
+      description: |-
+        get SolicitudCotizacion by id con sus entidades asociadas activas: necesidades, items, pagos parciales, actividades economicas, documentos, requisitos documentales, proveedores y cargues masivos
+        <br>
+      operationId: SolicitudCotizacionController.Get Detalle
+      parameters:
+      - in: path
+        name: id
+        description: The id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.SolicitudCotizacionDetalle'
+        "400":
+          description: id invalido
+        "404":
+          description: not found resource
   /solicitud_item/:
     get:
       tags:
@@ -685,6 +783,21 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
+      - in: query
+        name: vigencia
+        description: Vigencia de la solicitud. e.g. 2026
+        type: integer
+        format: int64
+      - in: query
+        name: estado
+        description: Id del estado de la solicitud (parametros)
+        type: integer
+        format: int64
+      - in: query
+        name: dependencia
+        description: Id de la dependencia solicitante (Oikos)
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -813,6 +926,21 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
+      - in: query
+        name: vigencia
+        description: Vigencia de la solicitud. e.g. 2026
+        type: integer
+        format: int64
+      - in: query
+        name: estado
+        description: Id del estado de la solicitud (parametros)
+        type: integer
+        format: int64
+      - in: query
+        name: dependencia
+        description: Id de la dependencia solicitante (Oikos)
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -941,6 +1069,21 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
+      - in: query
+        name: vigencia
+        description: Vigencia de la solicitud. e.g. 2026
+        type: integer
+        format: int64
+      - in: query
+        name: estado
+        description: Id del estado de la solicitud (parametros)
+        type: integer
+        format: int64
+      - in: query
+        name: dependencia
+        description: Id de la dependencia solicitante (Oikos)
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -1069,6 +1212,21 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
+      - in: query
+        name: vigencia
+        description: Vigencia de la solicitud. e.g. 2026
+        type: integer
+        format: int64
+      - in: query
+        name: estado
+        description: Id del estado de la solicitud (parametros)
+        type: integer
+        format: int64
+      - in: query
+        name: dependencia
+        description: Id de la dependencia solicitante (Oikos)
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -1197,6 +1355,21 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
+      - in: query
+        name: vigencia
+        description: Vigencia de la solicitud. e.g. 2026
+        type: integer
+        format: int64
+      - in: query
+        name: estado
+        description: Id del estado de la solicitud (parametros)
+        type: integer
+        format: int64
+      - in: query
+        name: dependencia
+        description: Id de la dependencia solicitante (Oikos)
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -1302,8 +1475,7 @@ definitions:
       Message:
         type: string
       Status:
-        type: integer
-        format: int64
+        type: string
       Success:
         type: boolean
   controllers.interface:
@@ -1496,6 +1668,124 @@ definitions:
         type: string
       Requisitos:
         type: string
+      ResponsableTerceroId:
+        type: integer
+        format: int64
+      TipoContratoId:
+        type: integer
+        format: int64
+      TipoFormaPagoId:
+        type: integer
+        format: int64
+      TipoNecesidadId:
+        type: integer
+        format: int64
+      TipoProcesoId:
+        type: integer
+        format: int64
+      Titulo:
+        type: string
+      UnidadEjecutoraId:
+        type: integer
+        format: int64
+      Vigencia:
+        type: integer
+        format: int32
+  models.SolicitudCotizacionDetalle:
+    title: SolicitudCotizacionDetalle
+    type: object
+    properties:
+      ActividadesEconomicas:
+        type: array
+        items:
+          $ref: '#/definitions/models.SolicitudCiiu'
+      Activo:
+        type: boolean
+      AreaConocimientoId:
+        type: integer
+        format: int64
+      CarguesMasivos:
+        type: array
+        items:
+          $ref: '#/definitions/models.CargueMasivo'
+      Consecutivo:
+        type: integer
+        format: int64
+      CriterioSeleccion:
+        type: string
+      DependenciaDestinoId:
+        type: integer
+        format: int64
+      DependenciaSolicitanteId:
+        type: integer
+        format: int64
+      Documentos:
+        type: array
+        items:
+          $ref: '#/definitions/models.DocumentoSolicitud'
+      EstadoId:
+        type: integer
+        format: int64
+      FechaApertura:
+        type: string
+        format: datetime
+      FechaCierre:
+        type: string
+        format: datetime
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      FechaProcesamiento:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      Items:
+        type: array
+        items:
+          $ref: '#/definitions/models.SolicitudItem'
+      MedioPagoId:
+        type: integer
+        format: int64
+      Necesidades:
+        type: array
+        items:
+          $ref: '#/definitions/models.SolicitudNecesidad'
+      NucleoBasicoId:
+        type: integer
+        format: int64
+      NumeroSolicitud:
+        type: string
+      Objetivo:
+        type: string
+      Observaciones:
+        type: string
+      OrdenadorGastoId:
+        type: integer
+        format: int64
+      PagosParciales:
+        type: array
+        items:
+          $ref: '#/definitions/models.SolicitudPagoParcial'
+      PlanAccionId:
+        type: integer
+        format: int64
+      PlazoEjecucion:
+        type: string
+      Proveedores:
+        type: array
+        items:
+          $ref: '#/definitions/models.SolicitudProveedor'
+      Requisitos:
+        type: string
+      RequisitosDocumentales:
+        type: array
+        items:
+          $ref: '#/definitions/models.SolicitudRequisitoDocumental'
       ResponsableTerceroId:
         type: integer
         format: int64
