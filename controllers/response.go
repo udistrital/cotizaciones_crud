@@ -9,7 +9,7 @@ import (
 
 type APIResponse struct {
 	Success bool        `json:"Success"`
-	Status  int         `json:"Status"`
+	Status  string      `json:"Status"`
 	Message string      `json:"Message"`
 	Data    interface{} `json:"Data"`
 }
@@ -18,7 +18,7 @@ func writeSuccess(ctrl *beego.Controller, status int, message string, data inter
 	ctrl.Ctx.Output.SetStatus(status)
 	ctrl.Data["json"] = APIResponse{
 		Success: true,
-		Status:  status,
+		Status:  strconv.Itoa(status),
 		Message: message,
 		Data:    data,
 	}
@@ -32,13 +32,6 @@ func abortWithError(ctrl *beego.Controller, status int, message string, err erro
 		beeLogger.Log.Error(message)
 	}
 
-	ctrl.Ctx.Output.SetStatus(status)
-	ctrl.Data["json"] = APIResponse{
-		Success: false,
-		Status:  status,
-		Message: message,
-		Data:    nil,
-	}
-	ctrl.ServeJSON()
+	ctrl.Data["message"] = message
 	ctrl.Abort(strconv.Itoa(status))
 }
