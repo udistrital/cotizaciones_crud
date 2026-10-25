@@ -57,6 +57,7 @@ func GetDocumentoSolicitudById(id int) (v *DocumentoSolicitud, err error) {
 // no records exist
 func GetAllDocumentoSolicitud(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
+	defer recuperarConsulta(&err)
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(DocumentoSolicitud)).RelatedSel()
 	// query k=v

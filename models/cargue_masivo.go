@@ -59,6 +59,7 @@ func GetCargueMasivoById(id int) (v *CargueMasivo, err error) {
 // no records exist
 func GetAllCargueMasivo(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
+	defer recuperarConsulta(&err)
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(CargueMasivo)).RelatedSel()
 	// query k=v

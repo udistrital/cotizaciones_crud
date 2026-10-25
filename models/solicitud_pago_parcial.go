@@ -53,6 +53,7 @@ func GetSolicitudPagoParcialById(id int) (v *SolicitudPagoParcial, err error) {
 // no records exist
 func GetAllSolicitudPagoParcial(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
+	defer recuperarConsulta(&err)
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(SolicitudPagoParcial)).RelatedSel()
 	// query k=v

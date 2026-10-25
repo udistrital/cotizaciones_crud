@@ -31,7 +31,7 @@ func (c *SolicitudCotizacionController) URLMapping() {
 // @Description create SolicitudCotizacion
 // @Param	body		body 	models.SolicitudCotizacion	true		"body for SolicitudCotizacion content"
 // @Success 201 {object} controllers.APIResponse
-// @Failure 400 invalid body
+// @Failure 400 body o datos invalidos
 // @router / [post]
 func (c *SolicitudCotizacionController) Post() {
 	var v models.SolicitudCotizacion
@@ -41,7 +41,7 @@ func (c *SolicitudCotizacionController) Post() {
 	}
 
 	if _, err := models.AddSolicitudCotizacion(&v); err != nil {
-		abortWithError(&c.Controller, 500, "error al crear el registro", err)
+		abortWithDBError(&c.Controller, 400, "error al crear el registro", err)
 		return
 	}
 
@@ -113,6 +113,7 @@ func (c *SolicitudCotizacionController) GetDetalle() {
 // @Param	dependencia	query	int	false	"Id de la dependencia solicitante (Oikos)"
 // @Success 200 {object} controllers.APIResponse
 // @Failure 400 parametros invalidos
+// @Failure 404 error al consultar los registros
 // @router / [get]
 func (c *SolicitudCotizacionController) GetAll() {
 	var fields []string
@@ -170,8 +171,12 @@ func (c *SolicitudCotizacionController) GetAll() {
 
 	l, err := models.GetAllSolicitudCotizacion(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		abortWithError(&c.Controller, 400, "error al consultar los registros", err)
+		abortWithError(&c.Controller, 404, "error al consultar los registros", err)
 		return
+	}
+
+	if l == nil {
+		l = append(l, map[string]interface{}{})
 	}
 
 	writeSuccess(&c.Controller, 200, "consulta exitosa", l)
@@ -183,7 +188,7 @@ func (c *SolicitudCotizacionController) GetAll() {
 // @Param	id		path 	string	true		"The id you want to update"
 // @Param	body		body 	models.SolicitudCotizacion	true		"body for SolicitudCotizacion content"
 // @Success 200 {object} controllers.APIResponse
-// @Failure 400 id/body invalidos
+// @Failure 400 id, body o datos invalidos, o registro inexistente
 // @router /:id [put]
 func (c *SolicitudCotizacionController) Put() {
 	id, err := strconv.Atoi(c.Ctx.Input.Param(":id"))
@@ -200,7 +205,7 @@ func (c *SolicitudCotizacionController) Put() {
 	v.Id = id
 
 	if err := models.UpdateSolicitudCotizacionById(&v); err != nil {
-		abortWithError(&c.Controller, 500, "error al actualizar el registro", err)
+		abortWithDBError(&c.Controller, 400, "error al actualizar el registro", err)
 		return
 	}
 
@@ -212,19 +217,19 @@ func (c *SolicitudCotizacionController) Put() {
 // @Description delete the SolicitudCotizacion
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {object} controllers.APIResponse
-// @Failure 400 id invalido
+// @Failure 404 id invalido o registro inexistente
 // @router /:id [delete]
 func (c *SolicitudCotizacionController) Delete() {
 	id, err := strconv.Atoi(c.Ctx.Input.Param(":id"))
 	if err != nil {
-		abortWithError(&c.Controller, 400, "el parametro id debe ser numerico", err)
+		abortWithError(&c.Controller, 404, "el parametro id debe ser numerico", err)
 		return
 	}
 
 	if err := models.DeleteSolicitudCotizacion(id); err != nil {
-		abortWithError(&c.Controller, 500, "error al eliminar el registro", err)
+		abortWithDBError(&c.Controller, 404, "error al eliminar el registro", err)
 		return
 	}
 
-	writeSuccess(&c.Controller, 200, "registro eliminado", nil)
+	writeSuccess(&c.Controller, 200, "registro eliminado", map[string]interface{}{"Id": id})
 }

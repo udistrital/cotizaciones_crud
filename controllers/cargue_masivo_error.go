@@ -29,7 +29,7 @@ func (c *CargueMasivoErrorController) URLMapping() {
 // @Description create CargueMasivoError
 // @Param	body		body 	models.CargueMasivoError	true		"body for CargueMasivoError content"
 // @Success 201 {object} controllers.APIResponse
-// @Failure 400 invalid body
+// @Failure 400 body o datos invalidos
 // @router / [post]
 func (c *CargueMasivoErrorController) Post() {
 	var v models.CargueMasivoError
@@ -39,7 +39,7 @@ func (c *CargueMasivoErrorController) Post() {
 	}
 
 	if _, err := models.AddCargueMasivoError(&v); err != nil {
-		abortWithError(&c.Controller, 500, "error al crear el registro", err)
+		abortWithDBError(&c.Controller, 400, "error al crear el registro", err)
 		return
 	}
 
@@ -83,6 +83,7 @@ func (c *CargueMasivoErrorController) GetOne() {
 // @Param	dependencia	query	int	false	"Id de la dependencia solicitante (Oikos)"
 // @Success 200 {object} controllers.APIResponse
 // @Failure 400 parametros invalidos
+// @Failure 404 error al consultar los registros
 // @router / [get]
 func (c *CargueMasivoErrorController) GetAll() {
 	var fields []string
@@ -140,8 +141,12 @@ func (c *CargueMasivoErrorController) GetAll() {
 
 	l, err := models.GetAllCargueMasivoError(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		abortWithError(&c.Controller, 400, "error al consultar los registros", err)
+		abortWithError(&c.Controller, 404, "error al consultar los registros", err)
 		return
+	}
+
+	if l == nil {
+		l = append(l, map[string]interface{}{})
 	}
 
 	writeSuccess(&c.Controller, 200, "consulta exitosa", l)
@@ -153,7 +158,7 @@ func (c *CargueMasivoErrorController) GetAll() {
 // @Param	id		path 	string	true		"The id you want to update"
 // @Param	body		body 	models.CargueMasivoError	true		"body for CargueMasivoError content"
 // @Success 200 {object} controllers.APIResponse
-// @Failure 400 id/body invalidos
+// @Failure 400 id, body o datos invalidos, o registro inexistente
 // @router /:id [put]
 func (c *CargueMasivoErrorController) Put() {
 	id, err := strconv.Atoi(c.Ctx.Input.Param(":id"))
@@ -170,7 +175,7 @@ func (c *CargueMasivoErrorController) Put() {
 	v.Id = id
 
 	if err := models.UpdateCargueMasivoErrorById(&v); err != nil {
-		abortWithError(&c.Controller, 500, "error al actualizar el registro", err)
+		abortWithDBError(&c.Controller, 400, "error al actualizar el registro", err)
 		return
 	}
 
@@ -182,19 +187,19 @@ func (c *CargueMasivoErrorController) Put() {
 // @Description delete the CargueMasivoError
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {object} controllers.APIResponse
-// @Failure 400 id invalido
+// @Failure 404 id invalido o registro inexistente
 // @router /:id [delete]
 func (c *CargueMasivoErrorController) Delete() {
 	id, err := strconv.Atoi(c.Ctx.Input.Param(":id"))
 	if err != nil {
-		abortWithError(&c.Controller, 400, "el parametro id debe ser numerico", err)
+		abortWithError(&c.Controller, 404, "el parametro id debe ser numerico", err)
 		return
 	}
 
 	if err := models.DeleteCargueMasivoError(id); err != nil {
-		abortWithError(&c.Controller, 500, "error al eliminar el registro", err)
+		abortWithDBError(&c.Controller, 404, "error al eliminar el registro", err)
 		return
 	}
 
-	writeSuccess(&c.Controller, 200, "registro eliminado", nil)
+	writeSuccess(&c.Controller, 200, "registro eliminado", map[string]interface{}{"Id": id})
 }
