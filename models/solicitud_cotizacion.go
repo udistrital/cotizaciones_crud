@@ -13,7 +13,7 @@ type SolicitudCotizacion struct {
 	Id                       int       `orm:"column(id);pk;auto"`
 	Activo                   bool      `orm:"column(activo)"`
 	FechaCreacion            time.Time `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	NumeroSolicitud          string    `orm:"column(numero_solicitud);null"`
+	NumeroSolicitud          *string   `orm:"column(numero_solicitud);null"`
 	Consecutivo              int       `orm:"column(consecutivo);null"`
 	Vigencia                 int16     `orm:"column(vigencia)"`
 	UnidadEjecutoraId        int       `orm:"column(unidad_ejecutora_id)"`
@@ -56,6 +56,7 @@ func AddSolicitudCotizacion(m *SolicitudCotizacion) (id int64, err error) {
 	o := orm.NewOrm()
 	m.Activo = true
 	m.FechaCreacion = time.Now()
+	m.FechaModificacion = m.FechaCreacion
 	id, err = o.Insert(m)
 	return
 }

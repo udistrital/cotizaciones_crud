@@ -33,6 +33,7 @@ func AddSolicitudProveedor(m *SolicitudProveedor) (id int64, err error) {
 	o := orm.NewOrm()
 	m.Activo = true
 	m.FechaCreacion = time.Now()
+	m.FechaModificacion = m.FechaCreacion
 	id, err = o.Insert(m)
 	return
 }

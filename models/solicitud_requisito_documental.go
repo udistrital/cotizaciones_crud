@@ -34,6 +34,7 @@ func AddSolicitudRequisitoDocumental(m *SolicitudRequisitoDocumental) (id int64,
 	o := orm.NewOrm()
 	m.Activo = true
 	m.FechaCreacion = time.Now()
+	m.FechaModificacion = m.FechaCreacion
 	id, err = o.Insert(m)
 	return
 }
