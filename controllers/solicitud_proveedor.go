@@ -51,12 +51,12 @@ func (c *SolicitudProveedorController) Post() {
 // @Description get SolicitudProveedor by id
 // @Param	id		path 	string	true		"The id"
 // @Success 200 {object} controllers.APIResponse
-// @Failure 400 id invalido
+// @Failure 404 id invalido o registro inexistente
 // @router /:id [get]
 func (c *SolicitudProveedorController) GetOne() {
 	id, err := strconv.Atoi(c.Ctx.Input.Param(":id"))
 	if err != nil {
-		abortWithError(&c.Controller, 400, "el parametro id debe ser numerico", err)
+		abortWithError(&c.Controller, 404, "el parametro id debe ser numerico", err)
 		return
 	}
 

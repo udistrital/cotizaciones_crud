@@ -53,12 +53,12 @@ func (c *SolicitudCotizacionController) Post() {
 // @Description get SolicitudCotizacion by id
 // @Param	id		path 	string	true		"The id"
 // @Success 200 {object} controllers.APIResponse
-// @Failure 400 id invalido
+// @Failure 404 id invalido o registro inexistente
 // @router /:id [get]
 func (c *SolicitudCotizacionController) GetOne() {
 	id, err := strconv.Atoi(c.Ctx.Input.Param(":id"))
 	if err != nil {
-		abortWithError(&c.Controller, 400, "el parametro id debe ser numerico", err)
+		abortWithError(&c.Controller, 404, "el parametro id debe ser numerico", err)
 		return
 	}
 
@@ -76,13 +76,12 @@ func (c *SolicitudCotizacionController) GetOne() {
 // @Description get SolicitudCotizacion by id con sus entidades asociadas activas: necesidades, items, pagos parciales, actividades economicas, documentos, requisitos documentales, proveedores y cargues masivos
 // @Param	id		path 	string	true		"The id"
 // @Success 200 {object} models.SolicitudCotizacionDetalle
-// @Failure 400 id invalido
-// @Failure 404 not found resource
+// @Failure 404 id invalido o registro inexistente
 // @router /:id/detalle [get]
 func (c *SolicitudCotizacionController) GetDetalle() {
 	id, err := strconv.Atoi(c.Ctx.Input.Param(":id"))
 	if err != nil {
-		abortWithError(&c.Controller, 400, "el parametro id debe ser numerico", err)
+		abortWithError(&c.Controller, 404, "el parametro id debe ser numerico", err)
 		return
 	}
 
