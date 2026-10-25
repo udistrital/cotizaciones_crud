@@ -90,6 +90,9 @@
                     },
                     "400": {
                         "description": "parametros invalidos"
+                    },
+                    "404": {
+                        "description": "error al consultar los registros"
                     }
                 }
             },
@@ -118,7 +121,7 @@
                         }
                     },
                     "400": {
-                        "description": "invalid body"
+                        "description": "body o datos invalidos"
                     }
                 }
             }
@@ -183,7 +186,7 @@
                         }
                     },
                     "400": {
-                        "description": "id/body invalidos"
+                        "description": "id, body o datos invalidos, o registro inexistente"
                     }
                 }
             },
@@ -209,8 +212,8 @@
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
                     },
-                    "400": {
-                        "description": "id invalido"
+                    "404": {
+                        "description": "id invalido o registro inexistente"
                     }
                 }
             }
@@ -290,6 +293,9 @@
                     },
                     "400": {
                         "description": "parametros invalidos"
+                    },
+                    "404": {
+                        "description": "error al consultar los registros"
                     }
                 }
             },
@@ -318,7 +324,7 @@
                         }
                     },
                     "400": {
-                        "description": "invalid body"
+                        "description": "body o datos invalidos"
                     }
                 }
             }
@@ -383,7 +389,7 @@
                         }
                     },
                     "400": {
-                        "description": "id/body invalidos"
+                        "description": "id, body o datos invalidos, o registro inexistente"
                     }
                 }
             },
@@ -409,8 +415,8 @@
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
                     },
-                    "400": {
-                        "description": "id invalido"
+                    "404": {
+                        "description": "id invalido o registro inexistente"
                     }
                 }
             }
@@ -490,6 +496,9 @@
                     },
                     "400": {
                         "description": "parametros invalidos"
+                    },
+                    "404": {
+                        "description": "error al consultar los registros"
                     }
                 }
             },
@@ -518,7 +527,7 @@
                         }
                     },
                     "400": {
-                        "description": "invalid body"
+                        "description": "body o datos invalidos"
                     }
                 }
             }
@@ -583,7 +592,7 @@
                         }
                     },
                     "400": {
-                        "description": "id/body invalidos"
+                        "description": "id, body o datos invalidos, o registro inexistente"
                     }
                 }
             },
@@ -609,8 +618,8 @@
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
                     },
-                    "400": {
-                        "description": "id invalido"
+                    "404": {
+                        "description": "id invalido o registro inexistente"
                     }
                 }
             }
@@ -690,6 +699,9 @@
                     },
                     "400": {
                         "description": "parametros invalidos"
+                    },
+                    "404": {
+                        "description": "error al consultar los registros"
                     }
                 }
             },
@@ -718,7 +730,7 @@
                         }
                     },
                     "400": {
-                        "description": "invalid body"
+                        "description": "body o datos invalidos"
                     }
                 }
             }
@@ -783,7 +795,7 @@
                         }
                     },
                     "400": {
-                        "description": "id/body invalidos"
+                        "description": "id, body o datos invalidos, o registro inexistente"
                     }
                 }
             },
@@ -809,8 +821,8 @@
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
                     },
-                    "400": {
-                        "description": "id invalido"
+                    "404": {
+                        "description": "id invalido o registro inexistente"
                     }
                 }
             }
@@ -890,6 +902,9 @@
                     },
                     "400": {
                         "description": "parametros invalidos"
+                    },
+                    "404": {
+                        "description": "error al consultar los registros"
                     }
                 }
             },
@@ -918,7 +933,7 @@
                         }
                     },
                     "400": {
-                        "description": "invalid body"
+                        "description": "body o datos invalidos"
                     }
                 }
             }
@@ -983,7 +998,7 @@
                         }
                     },
                     "400": {
-                        "description": "id/body invalidos"
+                        "description": "id, body o datos invalidos, o registro inexistente"
                     }
                 }
             },
@@ -1009,8 +1024,8 @@
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
                     },
-                    "400": {
-                        "description": "id invalido"
+                    "404": {
+                        "description": "id invalido o registro inexistente"
                     }
                 }
             }
@@ -1122,6 +1137,9 @@
                     },
                     "400": {
                         "description": "parametros invalidos"
+                    },
+                    "404": {
+                        "description": "error al consultar los registros"
                     }
                 }
             },
@@ -1150,7 +1168,7 @@
                         }
                     },
                     "400": {
-                        "description": "invalid body"
+                        "description": "body o datos invalidos"
                     }
                 }
             }
@@ -1215,7 +1233,7 @@
                         }
                     },
                     "400": {
-                        "description": "id/body invalidos"
+                        "description": "id, body o datos invalidos, o registro inexistente"
                     }
                 }
             },
@@ -1241,8 +1259,8 @@
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
                     },
-                    "400": {
-                        "description": "id invalido"
+                    "404": {
+                        "description": "id invalido o registro inexistente"
                     }
                 }
             }
@@ -1322,6 +1340,9 @@
                     },
                     "400": {
                         "description": "parametros invalidos"
+                    },
+                    "404": {
+                        "description": "error al consultar los registros"
                     }
                 }
             },
@@ -1350,7 +1371,7 @@
                         }
                     },
                     "400": {
-                        "description": "invalid body"
+                        "description": "body o datos invalidos"
                     }
                 }
             }
@@ -1415,7 +1436,7 @@
                         }
                     },
                     "400": {
-                        "description": "id/body invalidos"
+                        "description": "id, body o datos invalidos, o registro inexistente"
                     }
                 }
             },
@@ -1441,8 +1462,8 @@
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
                     },
-                    "400": {
-                        "description": "id invalido"
+                    "404": {
+                        "description": "id invalido o registro inexistente"
                     }
                 }
             }
@@ -1522,6 +1543,9 @@
                     },
                     "400": {
                         "description": "parametros invalidos"
+                    },
+                    "404": {
+                        "description": "error al consultar los registros"
                     }
                 }
             },
@@ -1550,7 +1574,7 @@
                         }
                     },
                     "400": {
-                        "description": "invalid body"
+                        "description": "body o datos invalidos"
                     }
                 }
             }
@@ -1615,7 +1639,7 @@
                         }
                     },
                     "400": {
-                        "description": "id/body invalidos"
+                        "description": "id, body o datos invalidos, o registro inexistente"
                     }
                 }
             },
@@ -1641,8 +1665,8 @@
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
                     },
-                    "400": {
-                        "description": "id invalido"
+                    "404": {
+                        "description": "id invalido o registro inexistente"
                     }
                 }
             }
@@ -1722,6 +1746,9 @@
                     },
                     "400": {
                         "description": "parametros invalidos"
+                    },
+                    "404": {
+                        "description": "error al consultar los registros"
                     }
                 }
             },
@@ -1750,7 +1777,7 @@
                         }
                     },
                     "400": {
-                        "description": "invalid body"
+                        "description": "body o datos invalidos"
                     }
                 }
             }
@@ -1815,7 +1842,7 @@
                         }
                     },
                     "400": {
-                        "description": "id/body invalidos"
+                        "description": "id, body o datos invalidos, o registro inexistente"
                     }
                 }
             },
@@ -1841,8 +1868,8 @@
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
                     },
-                    "400": {
-                        "description": "id invalido"
+                    "404": {
+                        "description": "id invalido o registro inexistente"
                     }
                 }
             }
@@ -1922,6 +1949,9 @@
                     },
                     "400": {
                         "description": "parametros invalidos"
+                    },
+                    "404": {
+                        "description": "error al consultar los registros"
                     }
                 }
             },
@@ -1950,7 +1980,7 @@
                         }
                     },
                     "400": {
-                        "description": "invalid body"
+                        "description": "body o datos invalidos"
                     }
                 }
             }
@@ -2015,7 +2045,7 @@
                         }
                     },
                     "400": {
-                        "description": "id/body invalidos"
+                        "description": "id, body o datos invalidos, o registro inexistente"
                     }
                 }
             },
@@ -2041,8 +2071,8 @@
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
                     },
-                    "400": {
-                        "description": "id invalido"
+                    "404": {
+                        "description": "id invalido o registro inexistente"
                     }
                 }
             }

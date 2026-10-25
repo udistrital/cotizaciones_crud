@@ -67,6 +67,8 @@ paths:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
           description: parametros invalidos
+        "404":
+          description: error al consultar los registros
     post:
       tags:
       - cargue_masivo
@@ -87,7 +89,7 @@ paths:
           schema:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
-          description: invalid body
+          description: body o datos invalidos
   /cargue_masivo/{id}:
     get:
       tags:
@@ -134,7 +136,7 @@ paths:
           schema:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
-          description: id/body invalidos
+          description: id, body o datos invalidos, o registro inexistente
     delete:
       tags:
       - cargue_masivo
@@ -153,8 +155,8 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/controllers.APIResponse'
-        "400":
-          description: id invalido
+        "404":
+          description: id invalido o registro inexistente
   /cargue_masivo_error/:
     get:
       tags:
@@ -210,6 +212,8 @@ paths:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
           description: parametros invalidos
+        "404":
+          description: error al consultar los registros
     post:
       tags:
       - cargue_masivo_error
@@ -230,7 +234,7 @@ paths:
           schema:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
-          description: invalid body
+          description: body o datos invalidos
   /cargue_masivo_error/{id}:
     get:
       tags:
@@ -277,7 +281,7 @@ paths:
           schema:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
-          description: id/body invalidos
+          description: id, body o datos invalidos, o registro inexistente
     delete:
       tags:
       - cargue_masivo_error
@@ -296,8 +300,8 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/controllers.APIResponse'
-        "400":
-          description: id invalido
+        "404":
+          description: id invalido o registro inexistente
   /documento_solicitud/:
     get:
       tags:
@@ -353,6 +357,8 @@ paths:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
           description: parametros invalidos
+        "404":
+          description: error al consultar los registros
     post:
       tags:
       - documento_solicitud
@@ -373,7 +379,7 @@ paths:
           schema:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
-          description: invalid body
+          description: body o datos invalidos
   /documento_solicitud/{id}:
     get:
       tags:
@@ -420,7 +426,7 @@ paths:
           schema:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
-          description: id/body invalidos
+          description: id, body o datos invalidos, o registro inexistente
     delete:
       tags:
       - documento_solicitud
@@ -439,8 +445,8 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/controllers.APIResponse'
-        "400":
-          description: id invalido
+        "404":
+          description: id invalido o registro inexistente
   /solicitud_ciiu/:
     get:
       tags:
@@ -496,6 +502,8 @@ paths:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
           description: parametros invalidos
+        "404":
+          description: error al consultar los registros
     post:
       tags:
       - solicitud_ciiu
@@ -516,7 +524,7 @@ paths:
           schema:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
-          description: invalid body
+          description: body o datos invalidos
   /solicitud_ciiu/{id}:
     get:
       tags:
@@ -563,7 +571,7 @@ paths:
           schema:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
-          description: id/body invalidos
+          description: id, body o datos invalidos, o registro inexistente
     delete:
       tags:
       - solicitud_ciiu
@@ -582,8 +590,8 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/controllers.APIResponse'
-        "400":
-          description: id invalido
+        "404":
+          description: id invalido o registro inexistente
   /solicitud_cotizacion/:
     get:
       tags:
@@ -639,6 +647,8 @@ paths:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
           description: parametros invalidos
+        "404":
+          description: error al consultar los registros
     post:
       tags:
       - solicitud_cotizacion
@@ -659,7 +669,7 @@ paths:
           schema:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
-          description: invalid body
+          description: body o datos invalidos
   /solicitud_cotizacion/{id}:
     get:
       tags:
@@ -706,7 +716,7 @@ paths:
           schema:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
-          description: id/body invalidos
+          description: id, body o datos invalidos, o registro inexistente
     delete:
       tags:
       - solicitud_cotizacion
@@ -725,8 +735,8 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/controllers.APIResponse'
-        "400":
-          description: id invalido
+        "404":
+          description: id invalido o registro inexistente
   /solicitud_cotizacion/{id}/detalle:
     get:
       tags:
@@ -805,6 +815,8 @@ paths:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
           description: parametros invalidos
+        "404":
+          description: error al consultar los registros
     post:
       tags:
       - solicitud_item
@@ -825,7 +837,7 @@ paths:
           schema:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
-          description: invalid body
+          description: body o datos invalidos
   /solicitud_item/{id}:
     get:
       tags:
@@ -872,7 +884,7 @@ paths:
           schema:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
-          description: id/body invalidos
+          description: id, body o datos invalidos, o registro inexistente
     delete:
       tags:
       - solicitud_item
@@ -891,8 +903,8 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/controllers.APIResponse'
-        "400":
-          description: id invalido
+        "404":
+          description: id invalido o registro inexistente
   /solicitud_necesidad/:
     get:
       tags:
@@ -948,6 +960,8 @@ paths:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
           description: parametros invalidos
+        "404":
+          description: error al consultar los registros
     post:
       tags:
       - solicitud_necesidad
@@ -968,7 +982,7 @@ paths:
           schema:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
-          description: invalid body
+          description: body o datos invalidos
   /solicitud_necesidad/{id}:
     get:
       tags:
@@ -1015,7 +1029,7 @@ paths:
           schema:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
-          description: id/body invalidos
+          description: id, body o datos invalidos, o registro inexistente
     delete:
       tags:
       - solicitud_necesidad
@@ -1034,8 +1048,8 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/controllers.APIResponse'
-        "400":
-          description: id invalido
+        "404":
+          description: id invalido o registro inexistente
   /solicitud_pago_parcial/:
     get:
       tags:
@@ -1091,6 +1105,8 @@ paths:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
           description: parametros invalidos
+        "404":
+          description: error al consultar los registros
     post:
       tags:
       - solicitud_pago_parcial
@@ -1111,7 +1127,7 @@ paths:
           schema:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
-          description: invalid body
+          description: body o datos invalidos
   /solicitud_pago_parcial/{id}:
     get:
       tags:
@@ -1158,7 +1174,7 @@ paths:
           schema:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
-          description: id/body invalidos
+          description: id, body o datos invalidos, o registro inexistente
     delete:
       tags:
       - solicitud_pago_parcial
@@ -1177,8 +1193,8 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/controllers.APIResponse'
-        "400":
-          description: id invalido
+        "404":
+          description: id invalido o registro inexistente
   /solicitud_proveedor/:
     get:
       tags:
@@ -1234,6 +1250,8 @@ paths:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
           description: parametros invalidos
+        "404":
+          description: error al consultar los registros
     post:
       tags:
       - solicitud_proveedor
@@ -1254,7 +1272,7 @@ paths:
           schema:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
-          description: invalid body
+          description: body o datos invalidos
   /solicitud_proveedor/{id}:
     get:
       tags:
@@ -1301,7 +1319,7 @@ paths:
           schema:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
-          description: id/body invalidos
+          description: id, body o datos invalidos, o registro inexistente
     delete:
       tags:
       - solicitud_proveedor
@@ -1320,8 +1338,8 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/controllers.APIResponse'
-        "400":
-          description: id invalido
+        "404":
+          description: id invalido o registro inexistente
   /solicitud_requisito_documental/:
     get:
       tags:
@@ -1377,6 +1395,8 @@ paths:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
           description: parametros invalidos
+        "404":
+          description: error al consultar los registros
     post:
       tags:
       - solicitud_requisito_documental
@@ -1397,7 +1417,7 @@ paths:
           schema:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
-          description: invalid body
+          description: body o datos invalidos
   /solicitud_requisito_documental/{id}:
     get:
       tags:
@@ -1444,7 +1464,7 @@ paths:
           schema:
             $ref: '#/definitions/controllers.APIResponse'
         "400":
-          description: id/body invalidos
+          description: id, body o datos invalidos, o registro inexistente
     delete:
       tags:
       - solicitud_requisito_documental
@@ -1463,8 +1483,8 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/controllers.APIResponse'
-        "400":
-          description: id invalido
+        "404":
+          description: id invalido o registro inexistente
 definitions:
   controllers.APIResponse:
     title: APIResponse
