@@ -109,8 +109,8 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/controllers.APIResponse'
-        "400":
-          description: id invalido
+        "404":
+          description: id invalido o registro inexistente
     put:
       tags:
       - cargue_masivo
@@ -254,8 +254,8 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/controllers.APIResponse'
-        "400":
-          description: id invalido
+        "404":
+          description: id invalido o registro inexistente
     put:
       tags:
       - cargue_masivo_error
@@ -399,8 +399,8 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/controllers.APIResponse'
-        "400":
-          description: id invalido
+        "404":
+          description: id invalido o registro inexistente
     put:
       tags:
       - documento_solicitud
@@ -544,8 +544,8 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/controllers.APIResponse'
-        "400":
-          description: id invalido
+        "404":
+          description: id invalido o registro inexistente
     put:
       tags:
       - solicitud_ciiu
@@ -689,8 +689,8 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/controllers.APIResponse'
-        "400":
-          description: id invalido
+        "404":
+          description: id invalido o registro inexistente
     put:
       tags:
       - solicitud_cotizacion
@@ -756,10 +756,8 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/models.SolicitudCotizacionDetalle'
-        "400":
-          description: id invalido
         "404":
-          description: not found resource
+          description: id invalido o registro inexistente
   /solicitud_item/:
     get:
       tags:
@@ -857,8 +855,8 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/controllers.APIResponse'
-        "400":
-          description: id invalido
+        "404":
+          description: id invalido o registro inexistente
     put:
       tags:
       - solicitud_item
@@ -1002,8 +1000,8 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/controllers.APIResponse'
-        "400":
-          description: id invalido
+        "404":
+          description: id invalido o registro inexistente
     put:
       tags:
       - solicitud_necesidad
@@ -1147,8 +1145,8 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/controllers.APIResponse'
-        "400":
-          description: id invalido
+        "404":
+          description: id invalido o registro inexistente
     put:
       tags:
       - solicitud_pago_parcial
@@ -1292,8 +1290,8 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/controllers.APIResponse'
-        "400":
-          description: id invalido
+        "404":
+          description: id invalido o registro inexistente
     put:
       tags:
       - solicitud_proveedor
@@ -1437,8 +1435,8 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/controllers.APIResponse'
-        "400":
-          description: id invalido
+        "404":
+          description: id invalido o registro inexistente
     put:
       tags:
       - solicitud_requisito_documental
