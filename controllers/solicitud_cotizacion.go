@@ -7,6 +7,7 @@ import (
 
 	"github.com/udistrital/cotizaciones_crud/models"
 
+	"github.com/beego/beego/v2/client/orm"
 	beego "github.com/beego/beego/v2/server/web"
 )
 
@@ -19,6 +20,7 @@ type SolicitudCotizacionController struct {
 func (c *SolicitudCotizacionController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
+	c.Mapping("GetDetalle", c.GetDetalle)
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
@@ -69,6 +71,34 @@ func (c *SolicitudCotizacionController) GetOne() {
 	writeSuccess(&c.Controller, 200, "consulta exitosa", v)
 }
 
+// GetDetalle ...
+// @Title Get Detalle
+// @Description get SolicitudCotizacion by id con sus entidades asociadas activas: necesidades, items, pagos parciales, actividades economicas, documentos, requisitos documentales, proveedores y cargues masivos
+// @Param	id		path 	string	true		"The id"
+// @Success 200 {object} models.SolicitudCotizacionDetalle
+// @Failure 400 id invalido
+// @Failure 404 not found resource
+// @router /:id/detalle [get]
+func (c *SolicitudCotizacionController) GetDetalle() {
+	id, err := strconv.Atoi(c.Ctx.Input.Param(":id"))
+	if err != nil {
+		abortWithError(&c.Controller, 400, "el parametro id debe ser numerico", err)
+		return
+	}
+
+	v, err := models.GetSolicitudCotizacionDetalle(id)
+	if err == orm.ErrNoRows {
+		abortWithError(&c.Controller, 404, "registro no encontrado", err)
+		return
+	}
+	if err != nil {
+		abortWithError(&c.Controller, 500, "error al consultar el detalle de la solicitud", err)
+		return
+	}
+
+	writeSuccess(&c.Controller, 200, "consulta exitosa", v)
+}
+
 // GetAll ...
 // @Title Get All
 // @Description get SolicitudCotizacion
@@ -78,6 +108,9 @@ func (c *SolicitudCotizacionController) GetOne() {
 // @Param	order	query	string	false	"Order corresponding to each sortby field. e.g. desc,asc ..."
 // @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	string	false	"Start position of result set. Must be an integer"
+// @Param	vigencia	query	int	false	"Vigencia de la solicitud. e.g. 2026"
+// @Param	estado	query	int	false	"Id del estado de la solicitud (parametros)"
+// @Param	dependencia	query	int	false	"Id de la dependencia solicitante (Oikos)"
 // @Success 200 {object} controllers.APIResponse
 // @Failure 400 parametros invalidos
 // @router / [get]
@@ -128,6 +161,11 @@ func (c *SolicitudCotizacionController) GetAll() {
 			}
 			query[kv[0]] = kv[1]
 		}
+	}
+
+	if err := agregarFiltrosSolicitud(&c.Controller, query, ""); err != nil {
+		abortWithError(&c.Controller, 400, err.Error(), nil)
+		return
 	}
 
 	l, err := models.GetAllSolicitudCotizacion(query, fields, sortby, order, offset, limit)
