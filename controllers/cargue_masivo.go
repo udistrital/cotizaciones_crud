@@ -78,6 +78,9 @@ func (c *CargueMasivoController) GetOne() {
 // @Param	order	query	string	false	"Order corresponding to each sortby field. e.g. desc,asc ..."
 // @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	string	false	"Start position of result set. Must be an integer"
+// @Param	vigencia	query	int	false	"Vigencia de la solicitud. e.g. 2026"
+// @Param	estado	query	int	false	"Id del estado de la solicitud (parametros)"
+// @Param	dependencia	query	int	false	"Id de la dependencia solicitante (Oikos)"
 // @Success 200 {object} controllers.APIResponse
 // @Failure 400 parametros invalidos
 // @router / [get]
@@ -128,6 +131,11 @@ func (c *CargueMasivoController) GetAll() {
 			}
 			query[kv[0]] = kv[1]
 		}
+	}
+
+	if err := agregarFiltrosSolicitud(&c.Controller, query, "SolicitudId."); err != nil {
+		abortWithError(&c.Controller, 400, err.Error(), nil)
+		return
 	}
 
 	l, err := models.GetAllCargueMasivo(query, fields, sortby, order, offset, limit)
