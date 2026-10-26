@@ -92,8 +92,17 @@ El script se ejecuta únicamente cuando se crea el volumen de PostgreSQL. Para r
 
 Pruebas unitarias
 
+Las pruebas de `tests/models` y `tests/controllers` usan una base de datos SQLite temporal que se crea y elimina en cada ejecución, por lo que no requieren PostgreSQL ni variables de entorno.
+
 ```shell
-# En Proceso
+cd tests
+go test ./... -v
+
+# Cobertura de models y controllers
+go test ./... -coverpkg=github.com/udistrital/cotizaciones_crud/models,github.com/udistrital/cotizaciones_crud/controllers -cover
+
+# Limpiar la caché de las pruebas
+go clean -testcache
 ```
 
 ## Estado CI
