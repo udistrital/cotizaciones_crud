@@ -14,6 +14,54 @@ import (
 type FuncionGetAll func(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) ([]interface{}, error)
 
+// FuncionGetAllConTotal corresponde a las funciones GetAll<Modelo> que además
+// retornan el total de registros que cumplen los filtros.
+type FuncionGetAllConTotal func(query map[string]string, fields []string, sortby []string, order []string,
+	offset int64, limit int64) ([]interface{}, int64, error)
+
+// SinTotal adapta una FuncionGetAllConTotal a FuncionGetAll, para reutilizar
+// las pruebas que no verifican el total.
+func SinTotal(getAll FuncionGetAllConTotal) FuncionGetAll {
+	return func(query map[string]string, fields []string, sortby []string, order []string,
+		offset int64, limit int64) ([]interface{}, error) {
+		l, _, err := getAll(query, fields, sortby, order, offset, limit)
+		return l, err
+	}
+}
+
+// ProbarGetAllConTotal ejecuta las pruebas de ProbarGetAll y verifica que el
+// total cuente los registros que cumplen los filtros sin aplicar limit ni
+// offset. Requiere al menos dos registros en la tabla, uno de ellos idExistente.
+func ProbarGetAllConTotal(t *testing.T, getAll FuncionGetAllConTotal, idExistente int) {
+	t.Helper()
+	ProbarGetAll(t, SinTotal(getAll), idExistente)
+	id := strconv.Itoa(idExistente)
+
+	t.Run("TotalIgnoraLimit", func(t *testing.T) {
+		l, total, err := getAll(map[string]string{}, nil, nil, nil, 0, 1)
+		if err != nil || len(l) != 1 || total < 2 {
+			t.Error("Se esperaba 1 registro y un total mayor o igual a 2 y se obtuvo", len(l), total, err)
+		}
+	})
+
+	t.Run("TotalIgnoraOffset", func(t *testing.T) {
+		_, total, _ := getAll(map[string]string{}, nil, nil, nil, 0, 1)
+		l, totalConOffset, err := getAll(map[string]string{}, nil, nil, nil, total, 10)
+		if err != nil || l != nil || totalConOffset != total {
+			t.Error("Se esperaba una página vacía con el mismo total", total, "y se obtuvo", len(l), totalConOffset, err)
+		}
+	})
+
+	t.Run("TotalRespetaFiltros", func(t *testing.T) {
+		if _, total, err := getAll(map[string]string{"Id": id}, nil, nil, nil, 0, 10); err != nil || total != 1 {
+			t.Error("Se esperaba un total de 1 con el filtro por Id y se obtuvo", total, err)
+		}
+		if _, total, err := getAll(map[string]string{"Id": strconv.Itoa(IdInexistente)}, nil, nil, nil, 0, 10); err != nil || total != 0 {
+			t.Error("Se esperaba un total de 0 sin resultados y se obtuvo", total, err)
+		}
+	})
+}
+
 // ProbarGetAll verifica el comportamiento común de una función GetAll<Modelo>:
 // filtros, selección de campos, ordenamiento, paginación y validaciones.
 // Requiere que exista en la base de datos el registro con Id idExistente.
@@ -166,6 +214,42 @@ func ProbarGetAllController(t *testing.T, ruta string, idExistente int) {
 
 	t.Run("CampoInexistente", func(t *testing.T) {
 		VerificarError(t, Peticion("GET", ruta+"/?query=CampoInexistente:1", ""), http.StatusNotFound, "error al consultar")
+	})
+}
+
+// ProbarTotalCountController verifica el encabezado Total-Count del servicio
+// GetAll. Requiere al menos dos registros, uno de ellos idExistente.
+func ProbarTotalCountController(t *testing.T, ruta string, idExistente int) {
+	t.Helper()
+	// totalCount consulta la ruta y retorna la cantidad de registros de la
+	// página y el valor del encabezado Total-Count
+	totalCount := func(t *testing.T, params string) (registros, total int) {
+		t.Helper()
+		w := Peticion("GET", ruta+"/"+params, "")
+		l := VerificarRespuesta(t, w, http.StatusOK).Lista(t)
+		total, err := strconv.Atoi(w.Header().Get("Total-Count"))
+		if err != nil {
+			t.Fatal("Se esperaba el encabezado Total-Count numérico y se obtuvo", w.Header().Get("Total-Count"))
+		}
+		return len(l), total
+	}
+
+	t.Run("TotalIgnoraLimit", func(t *testing.T) {
+		if registros, total := totalCount(t, "?limit=1"); registros != 1 || total < 2 {
+			t.Error("Se esperaba 1 registro y un total mayor o igual a 2 y se obtuvo", registros, total)
+		}
+	})
+
+	t.Run("TotalRespetaFiltros", func(t *testing.T) {
+		if _, total := totalCount(t, "?query=Id:"+strconv.Itoa(idExistente)); total != 1 {
+			t.Error("Se esperaba un total de 1 con el filtro por Id y se obtuvo", total)
+		}
+	})
+
+	t.Run("TotalSinResultados", func(t *testing.T) {
+		if _, total := totalCount(t, "?query=Id:"+strconv.Itoa(IdInexistente)); total != 0 {
+			t.Error("Se esperaba un total de 0 sin resultados y se obtuvo", total)
+		}
 	})
 }
 

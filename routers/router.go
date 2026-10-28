@@ -75,6 +75,42 @@ func init() {
 				&controllers.SolicitudRequisitoDocumentalController{},
 			),
 		),
+
+		beego.NSNamespace("/solicitud_estado",
+			beego.NSInclude(
+				&controllers.SolicitudEstadoController{},
+			),
+		),
+
+		beego.NSNamespace("/solicitud_modificacion",
+			beego.NSInclude(
+				&controllers.SolicitudModificacionController{},
+			),
+		),
+
+		beego.NSNamespace("/solicitud_modificacion_estado",
+			beego.NSInclude(
+				&controllers.SolicitudModificacionEstadoController{},
+			),
+		),
+
+		beego.NSNamespace("/solicitud_modificacion_detalle",
+			beego.NSInclude(
+				&controllers.SolicitudModificacionDetalleController{},
+			),
+		),
+
+		beego.NSNamespace("/observacion",
+			beego.NSInclude(
+				&controllers.ObservacionController{},
+			),
+		),
+
+		beego.NSNamespace("/respuesta_observacion",
+			beego.NSInclude(
+				&controllers.RespuestaObservacionController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 }
