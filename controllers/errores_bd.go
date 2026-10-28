@@ -56,6 +56,8 @@ func causaErrorBD(err error) string {
 			return "un texto supera la longitud maxima permitida (" + strings.TrimPrefix(pqErr.Message, "value too long for type ") + ")"
 		case "22003": // numeric_value_out_of_range
 			return "un valor numerico esta fuera del rango permitido"
+		case "22P02": // invalid_text_representation, por ejemplo un JSON invalido en una columna jsonb
+			return "un valor no tiene el formato esperado, por ejemplo un JSON invalido"
 		}
 		return mensajeErrorGenerico
 	}

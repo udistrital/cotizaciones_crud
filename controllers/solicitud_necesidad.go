@@ -71,7 +71,7 @@ func (c *SolicitudNecesidadController) GetOne() {
 
 // GetAll ...
 // @Title Get All
-// @Description get SolicitudNecesidad
+// @Description get SolicitudNecesidad. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
 // @Param	query	query	string	false	"Filter. e.g. col1:v1,col2:v2 ..."
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
@@ -81,7 +81,7 @@ func (c *SolicitudNecesidadController) GetOne() {
 // @Param	vigencia	query	int	false	"Vigencia de la solicitud. e.g. 2026"
 // @Param	estado	query	int	false	"Id del estado de la solicitud (parametros)"
 // @Param	dependencia	query	int	false	"Id de la dependencia solicitante (Oikos)"
-// @Success 200 {object} controllers.APIResponse
+// @Success 200 {object} controllers.APIResponseLista
 // @Failure 400 parametros invalidos
 // @Failure 404 error al consultar los registros
 // @router / [get]
@@ -139,7 +139,7 @@ func (c *SolicitudNecesidadController) GetAll() {
 		return
 	}
 
-	l, err := models.GetAllSolicitudNecesidad(query, fields, sortby, order, offset, limit)
+	l, total, err := models.GetAllSolicitudNecesidad(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		abortWithError(&c.Controller, 404, "error al consultar los registros", err)
 		return
@@ -149,7 +149,7 @@ func (c *SolicitudNecesidadController) GetAll() {
 		l = append(l, map[string]interface{}{})
 	}
 
-	writeSuccess(&c.Controller, 200, "consulta exitosa", l)
+	writeSuccessLista(&c.Controller, "consulta exitosa", total, l)
 }
 
 // Put ...
