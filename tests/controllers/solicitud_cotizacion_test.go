@@ -87,6 +87,12 @@ func TestSolicitudCotizacionGetDetalle(t *testing.T) {
 
 	w := helpers.Peticion("GET", fmt.Sprintf("%s/%d/detalle", rutaSolicitudCotizacion, solicitud.Id), "")
 	d := helpers.VerificarRespuesta(t, w, http.StatusOK).Dato(t)
+	// Verificar la ruta sin /v1 utilizada por el MID.
+	w = helpers.Peticion("GET", fmt.Sprintf("/solicitud_cotizacion/%d/detalle", solicitud.Id), "")
+	dCompat := helpers.VerificarRespuesta(t, w, http.StatusOK).Dato(t)
+	if dCompat["Id"] != float64(solicitud.Id) {
+		t.Errorf("La ruta de compatibilidad debía devolver la solicitud %d y devolvió %v", solicitud.Id, dCompat["Id"])
+	}
 	if d["Id"] != float64(solicitud.Id) {
 		t.Error("Se esperaba la solicitud", solicitud.Id, "y se obtuvo", d["Id"])
 	}

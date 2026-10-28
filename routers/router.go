@@ -77,4 +77,5 @@ func init() {
 		),
 	)
 	beego.AddNamespace(ns)
+	beego.Router("/solicitud_cotizacion/:id/detalle", &controllers.SolicitudCotizacionController{}, "get:GetDetalle")
 }
