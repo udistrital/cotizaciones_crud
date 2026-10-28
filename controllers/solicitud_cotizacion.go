@@ -52,6 +52,7 @@ func (c *SolicitudCotizacionController) Post() {
 // @Title Get One
 // @Description get SolicitudCotizacion by id
 // @Param	id		path 	string	true		"The id"
+// @Param	activo	query	bool	false	"Registros activos (true, predeterminado) o inactivos (false)"
 // @Success 200 {object} controllers.APIResponse
 // @Failure 404 id invalido o registro inexistente
 // @router /:id [get]
@@ -62,8 +63,14 @@ func (c *SolicitudCotizacionController) GetOne() {
 		return
 	}
 
-	v, err := models.GetSolicitudCotizacionById(id)
+	activo, err := leerActivo(&c.Controller)
 	if err != nil {
+		abortWithError(&c.Controller, 404, err.Error(), nil)
+		return
+	}
+
+	v, err := models.GetSolicitudCotizacionById(id)
+	if err != nil || v.Activo != activo {
 		abortWithError(&c.Controller, 404, "registro no encontrado", err)
 		return
 	}
@@ -73,8 +80,9 @@ func (c *SolicitudCotizacionController) GetOne() {
 
 // GetDetalle ...
 // @Title Get Detalle
-// @Description get SolicitudCotizacion by id con sus entidades asociadas activas: necesidades, items, pagos parciales, actividades economicas, documentos, requisitos documentales, proveedores y cargues masivos
+// @Description get SolicitudCotizacion by id con sus entidades asociadas: necesidades, items, pagos parciales, actividades economicas, documentos, requisitos documentales, proveedores y cargues masivos. La solicitud se retorna este activa o no; el parametro activo filtra las asociadas
 // @Param	id		path 	string	true		"The id"
+// @Param	activo	query	bool	false	"Entidades asociadas activas (true, predeterminado) o inactivas (false)"
 // @Success 200 {object} models.SolicitudCotizacionDetalle
 // @Failure 404 id invalido o registro inexistente
 // @router /:id/detalle [get]
@@ -85,7 +93,13 @@ func (c *SolicitudCotizacionController) GetDetalle() {
 		return
 	}
 
-	v, err := models.GetSolicitudCotizacionDetalle(id)
+	activo, err := leerActivo(&c.Controller)
+	if err != nil {
+		abortWithError(&c.Controller, 404, err.Error(), nil)
+		return
+	}
+
+	v, err := models.GetSolicitudCotizacionDetalle(id, activo)
 	if err == orm.ErrNoRows {
 		abortWithError(&c.Controller, 404, "registro no encontrado", err)
 		return
@@ -110,6 +124,7 @@ func (c *SolicitudCotizacionController) GetDetalle() {
 // @Param	vigencia	query	int	false	"Vigencia de la solicitud. e.g. 2026"
 // @Param	estado	query	int	false	"Id del estado de la solicitud (parametros)"
 // @Param	dependencia	query	int	false	"Id de la dependencia solicitante (Oikos)"
+// @Param	activo	query	bool	false	"Registros activos (true, predeterminado) o inactivos (false)"
 // @Success 200 {object} controllers.APIResponseLista
 // @Failure 400 parametros invalidos
 // @Failure 404 error al consultar los registros
@@ -164,6 +179,10 @@ func (c *SolicitudCotizacionController) GetAll() {
 	}
 
 	if err := agregarFiltrosSolicitud(&c.Controller, query, ""); err != nil {
+		abortWithError(&c.Controller, 400, err.Error(), nil)
+		return
+	}
+	if err := agregarFiltroActivo(&c.Controller, query); err != nil {
 		abortWithError(&c.Controller, 400, err.Error(), nil)
 		return
 	}

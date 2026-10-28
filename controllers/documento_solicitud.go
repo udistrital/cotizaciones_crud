@@ -50,6 +50,7 @@ func (c *DocumentoSolicitudController) Post() {
 // @Title Get One
 // @Description get DocumentoSolicitud by id
 // @Param	id		path 	string	true		"The id"
+// @Param	activo	query	bool	false	"Registros activos (true, predeterminado) o inactivos (false)"
 // @Success 200 {object} controllers.APIResponse
 // @Failure 404 id invalido o registro inexistente
 // @router /:id [get]
@@ -60,8 +61,14 @@ func (c *DocumentoSolicitudController) GetOne() {
 		return
 	}
 
-	v, err := models.GetDocumentoSolicitudById(id)
+	activo, err := leerActivo(&c.Controller)
 	if err != nil {
+		abortWithError(&c.Controller, 404, err.Error(), nil)
+		return
+	}
+
+	v, err := models.GetDocumentoSolicitudById(id)
+	if err != nil || v.Activo != activo {
 		abortWithError(&c.Controller, 404, "registro no encontrado", err)
 		return
 	}
@@ -81,6 +88,7 @@ func (c *DocumentoSolicitudController) GetOne() {
 // @Param	vigencia	query	int	false	"Vigencia de la solicitud. e.g. 2026"
 // @Param	estado	query	int	false	"Id del estado de la solicitud (parametros)"
 // @Param	dependencia	query	int	false	"Id de la dependencia solicitante (Oikos)"
+// @Param	activo	query	bool	false	"Registros activos (true, predeterminado) o inactivos (false)"
 // @Success 200 {object} controllers.APIResponseLista
 // @Failure 400 parametros invalidos
 // @Failure 404 error al consultar los registros
@@ -135,6 +143,10 @@ func (c *DocumentoSolicitudController) GetAll() {
 	}
 
 	if err := agregarFiltrosSolicitud(&c.Controller, query, "SolicitudId."); err != nil {
+		abortWithError(&c.Controller, 400, err.Error(), nil)
+		return
+	}
+	if err := agregarFiltroActivo(&c.Controller, query); err != nil {
 		abortWithError(&c.Controller, 400, err.Error(), nil)
 		return
 	}
