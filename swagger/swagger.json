@@ -20,7 +20,7 @@
                 "tags": [
                     "cargue_masivo"
                 ],
-                "description": "get CargueMasivo\n\u003cbr\u003e",
+                "description": "get CargueMasivo. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina\n\u003cbr\u003e",
                 "operationId": "CargueMasivoController.Get All",
                 "parameters": [
                     {
@@ -79,13 +79,19 @@
                         "description": "Id de la dependencia solicitante (Oikos)",
                         "type": "integer",
                         "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponse"
+                            "$ref": "#/definitions/controllers.APIResponseLista"
                         }
                     },
                     "400": {
@@ -140,6 +146,12 @@
                         "description": "The id",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
                     }
                 ],
                 "responses": {
@@ -223,7 +235,7 @@
                 "tags": [
                     "cargue_masivo_error"
                 ],
-                "description": "get CargueMasivoError\n\u003cbr\u003e",
+                "description": "get CargueMasivoError. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina\n\u003cbr\u003e",
                 "operationId": "CargueMasivoErrorController.Get All",
                 "parameters": [
                     {
@@ -282,13 +294,19 @@
                         "description": "Id de la dependencia solicitante (Oikos)",
                         "type": "integer",
                         "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponse"
+                            "$ref": "#/definitions/controllers.APIResponseLista"
                         }
                     },
                     "400": {
@@ -343,6 +361,12 @@
                         "description": "The id",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
                     }
                 ],
                 "responses": {
@@ -426,7 +450,7 @@
                 "tags": [
                     "documento_solicitud"
                 ],
-                "description": "get DocumentoSolicitud\n\u003cbr\u003e",
+                "description": "get DocumentoSolicitud. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina\n\u003cbr\u003e",
                 "operationId": "DocumentoSolicitudController.Get All",
                 "parameters": [
                     {
@@ -485,13 +509,19 @@
                         "description": "Id de la dependencia solicitante (Oikos)",
                         "type": "integer",
                         "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponse"
+                            "$ref": "#/definitions/controllers.APIResponseLista"
                         }
                     },
                     "400": {
@@ -546,6 +576,12 @@
                         "description": "The id",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
                     }
                 ],
                 "responses": {
@@ -624,12 +660,442 @@
                 }
             }
         },
+        "/observacion/": {
+            "get": {
+                "tags": [
+                    "observacion"
+                ],
+                "description": "get Observacion. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina\n\u003cbr\u003e",
+                "operationId": "ObservacionController.Get All",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "query",
+                        "description": "Filter. e.g. col1:v1,col2:v2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "fields",
+                        "description": "Fields returned. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortby",
+                        "description": "Sorted-by fields. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "order",
+                        "description": "Order corresponding to each sortby field. e.g. desc,asc ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "Limit the size of result set. Must be an integer",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "description": "Start position of result set. Must be an integer",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "vigencia",
+                        "description": "Vigencia de la solicitud. e.g. 2026",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "estado",
+                        "description": "Id del estado de la solicitud (parametros)",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "dependencia",
+                        "description": "Id de la dependencia solicitante (Oikos)",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponseLista"
+                        }
+                    },
+                    "400": {
+                        "description": "parametros invalidos"
+                    },
+                    "404": {
+                        "description": "error al consultar los registros"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "observacion"
+                ],
+                "description": "create Observacion\n\u003cbr\u003e",
+                "operationId": "ObservacionController.Post",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Observacion content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Observacion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "body o datos invalidos"
+                    }
+                }
+            }
+        },
+        "/observacion/{id}": {
+            "get": {
+                "tags": [
+                    "observacion"
+                ],
+                "description": "get Observacion by id\n\u003cbr\u003e",
+                "operationId": "ObservacionController.Get One",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "id invalido o registro inexistente"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "observacion"
+                ],
+                "description": "update the Observacion\n\u003cbr\u003e",
+                "operationId": "ObservacionController.Put",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Observacion content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Observacion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "id, body o datos invalidos, o registro inexistente"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "observacion"
+                ],
+                "description": "delete the Observacion\n\u003cbr\u003e",
+                "operationId": "ObservacionController.Delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "id invalido o registro inexistente"
+                    }
+                }
+            }
+        },
+        "/respuesta_observacion/": {
+            "get": {
+                "tags": [
+                    "respuesta_observacion"
+                ],
+                "description": "get RespuestaObservacion. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina\n\u003cbr\u003e",
+                "operationId": "RespuestaObservacionController.Get All",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "query",
+                        "description": "Filter. e.g. col1:v1,col2:v2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "fields",
+                        "description": "Fields returned. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortby",
+                        "description": "Sorted-by fields. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "order",
+                        "description": "Order corresponding to each sortby field. e.g. desc,asc ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "Limit the size of result set. Must be an integer",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "description": "Start position of result set. Must be an integer",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "vigencia",
+                        "description": "Vigencia de la solicitud. e.g. 2026",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "estado",
+                        "description": "Id del estado de la solicitud (parametros)",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "dependencia",
+                        "description": "Id de la dependencia solicitante (Oikos)",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponseLista"
+                        }
+                    },
+                    "400": {
+                        "description": "parametros invalidos"
+                    },
+                    "404": {
+                        "description": "error al consultar los registros"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "respuesta_observacion"
+                ],
+                "description": "create RespuestaObservacion\n\u003cbr\u003e",
+                "operationId": "RespuestaObservacionController.Post",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for RespuestaObservacion content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RespuestaObservacion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "body o datos invalidos"
+                    }
+                }
+            }
+        },
+        "/respuesta_observacion/{id}": {
+            "get": {
+                "tags": [
+                    "respuesta_observacion"
+                ],
+                "description": "get RespuestaObservacion by id\n\u003cbr\u003e",
+                "operationId": "RespuestaObservacionController.Get One",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "id invalido o registro inexistente"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "respuesta_observacion"
+                ],
+                "description": "update the RespuestaObservacion\n\u003cbr\u003e",
+                "operationId": "RespuestaObservacionController.Put",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for RespuestaObservacion content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RespuestaObservacion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "id, body o datos invalidos, o registro inexistente"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "respuesta_observacion"
+                ],
+                "description": "delete the RespuestaObservacion\n\u003cbr\u003e",
+                "operationId": "RespuestaObservacionController.Delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "id invalido o registro inexistente"
+                    }
+                }
+            }
+        },
         "/solicitud_ciiu/": {
             "get": {
                 "tags": [
                     "solicitud_ciiu"
                 ],
-                "description": "get SolicitudCiiu\n\u003cbr\u003e",
+                "description": "get SolicitudCiiu. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina\n\u003cbr\u003e",
                 "operationId": "SolicitudCiiuController.Get All",
                 "parameters": [
                     {
@@ -688,13 +1154,19 @@
                         "description": "Id de la dependencia solicitante (Oikos)",
                         "type": "integer",
                         "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponse"
+                            "$ref": "#/definitions/controllers.APIResponseLista"
                         }
                     },
                     "400": {
@@ -749,6 +1221,12 @@
                         "description": "The id",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
                     }
                 ],
                 "responses": {
@@ -832,7 +1310,7 @@
                 "tags": [
                     "solicitud_cotizacion"
                 ],
-                "description": "get SolicitudCotizacion\n\u003cbr\u003e",
+                "description": "get SolicitudCotizacion. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina\n\u003cbr\u003e",
                 "operationId": "SolicitudCotizacionController.Get All",
                 "parameters": [
                     {
@@ -891,13 +1369,19 @@
                         "description": "Id de la dependencia solicitante (Oikos)",
                         "type": "integer",
                         "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponse"
+                            "$ref": "#/definitions/controllers.APIResponseLista"
                         }
                     },
                     "400": {
@@ -952,6 +1436,12 @@
                         "description": "The id",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
                     }
                 ],
                 "responses": {
@@ -1035,7 +1525,7 @@
                 "tags": [
                     "solicitud_cotizacion"
                 ],
-                "description": "get SolicitudCotizacion by id con sus entidades asociadas activas: necesidades, items, pagos parciales, actividades economicas, documentos, requisitos documentales, proveedores y cargues masivos\n\u003cbr\u003e",
+                "description": "get SolicitudCotizacion by id con sus entidades asociadas: necesidades, items, pagos parciales, actividades economicas, documentos, requisitos documentales, proveedores y cargues masivos. La solicitud se retorna este activa o no; el parametro activo filtra las asociadas\n\u003cbr\u003e",
                 "operationId": "SolicitudCotizacionController.Get Detalle",
                 "parameters": [
                     {
@@ -1044,6 +1534,12 @@
                         "description": "The id",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Entidades asociadas activas (true, predeterminado) o inactivas (false)",
+                        "type": "boolean"
                     }
                 ],
                 "responses": {
@@ -1059,12 +1555,227 @@
                 }
             }
         },
+        "/solicitud_estado/": {
+            "get": {
+                "tags": [
+                    "solicitud_estado"
+                ],
+                "description": "get SolicitudEstado. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina\n\u003cbr\u003e",
+                "operationId": "SolicitudEstadoController.Get All",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "query",
+                        "description": "Filter. e.g. col1:v1,col2:v2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "fields",
+                        "description": "Fields returned. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortby",
+                        "description": "Sorted-by fields. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "order",
+                        "description": "Order corresponding to each sortby field. e.g. desc,asc ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "Limit the size of result set. Must be an integer",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "description": "Start position of result set. Must be an integer",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "vigencia",
+                        "description": "Vigencia de la solicitud. e.g. 2026",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "estado",
+                        "description": "Id del estado de la solicitud (parametros)",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "dependencia",
+                        "description": "Id de la dependencia solicitante (Oikos)",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponseLista"
+                        }
+                    },
+                    "400": {
+                        "description": "parametros invalidos"
+                    },
+                    "404": {
+                        "description": "error al consultar los registros"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "solicitud_estado"
+                ],
+                "description": "create SolicitudEstado\n\u003cbr\u003e",
+                "operationId": "SolicitudEstadoController.Post",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for SolicitudEstado content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SolicitudEstado"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "body o datos invalidos"
+                    }
+                }
+            }
+        },
+        "/solicitud_estado/{id}": {
+            "get": {
+                "tags": [
+                    "solicitud_estado"
+                ],
+                "description": "get SolicitudEstado by id\n\u003cbr\u003e",
+                "operationId": "SolicitudEstadoController.Get One",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "id invalido o registro inexistente"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "solicitud_estado"
+                ],
+                "description": "update the SolicitudEstado\n\u003cbr\u003e",
+                "operationId": "SolicitudEstadoController.Put",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for SolicitudEstado content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SolicitudEstado"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "id, body o datos invalidos, o registro inexistente"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "solicitud_estado"
+                ],
+                "description": "delete the SolicitudEstado\n\u003cbr\u003e",
+                "operationId": "SolicitudEstadoController.Delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "id invalido o registro inexistente"
+                    }
+                }
+            }
+        },
         "/solicitud_item/": {
             "get": {
                 "tags": [
                     "solicitud_item"
                 ],
-                "description": "get SolicitudItem\n\u003cbr\u003e",
+                "description": "get SolicitudItem. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina\n\u003cbr\u003e",
                 "operationId": "SolicitudItemController.Get All",
                 "parameters": [
                     {
@@ -1123,13 +1834,19 @@
                         "description": "Id de la dependencia solicitante (Oikos)",
                         "type": "integer",
                         "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponse"
+                            "$ref": "#/definitions/controllers.APIResponseLista"
                         }
                     },
                     "400": {
@@ -1184,6 +1901,12 @@
                         "description": "The id",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
                     }
                 ],
                 "responses": {
@@ -1262,12 +1985,657 @@
                 }
             }
         },
+        "/solicitud_modificacion/": {
+            "get": {
+                "tags": [
+                    "solicitud_modificacion"
+                ],
+                "description": "get SolicitudModificacion. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina\n\u003cbr\u003e",
+                "operationId": "SolicitudModificacionController.Get All",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "query",
+                        "description": "Filter. e.g. col1:v1,col2:v2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "fields",
+                        "description": "Fields returned. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortby",
+                        "description": "Sorted-by fields. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "order",
+                        "description": "Order corresponding to each sortby field. e.g. desc,asc ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "Limit the size of result set. Must be an integer",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "description": "Start position of result set. Must be an integer",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "vigencia",
+                        "description": "Vigencia de la solicitud. e.g. 2026",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "estado",
+                        "description": "Id del estado de la solicitud (parametros)",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "dependencia",
+                        "description": "Id de la dependencia solicitante (Oikos)",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponseLista"
+                        }
+                    },
+                    "400": {
+                        "description": "parametros invalidos"
+                    },
+                    "404": {
+                        "description": "error al consultar los registros"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "solicitud_modificacion"
+                ],
+                "description": "create SolicitudModificacion\n\u003cbr\u003e",
+                "operationId": "SolicitudModificacionController.Post",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for SolicitudModificacion content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SolicitudModificacion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "body o datos invalidos"
+                    }
+                }
+            }
+        },
+        "/solicitud_modificacion/{id}": {
+            "get": {
+                "tags": [
+                    "solicitud_modificacion"
+                ],
+                "description": "get SolicitudModificacion by id\n\u003cbr\u003e",
+                "operationId": "SolicitudModificacionController.Get One",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "id invalido o registro inexistente"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "solicitud_modificacion"
+                ],
+                "description": "update the SolicitudModificacion\n\u003cbr\u003e",
+                "operationId": "SolicitudModificacionController.Put",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for SolicitudModificacion content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SolicitudModificacion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "id, body o datos invalidos, o registro inexistente"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "solicitud_modificacion"
+                ],
+                "description": "delete the SolicitudModificacion\n\u003cbr\u003e",
+                "operationId": "SolicitudModificacionController.Delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "id invalido o registro inexistente"
+                    }
+                }
+            }
+        },
+        "/solicitud_modificacion_detalle/": {
+            "get": {
+                "tags": [
+                    "solicitud_modificacion_detalle"
+                ],
+                "description": "get SolicitudModificacionDetalle. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina\n\u003cbr\u003e",
+                "operationId": "SolicitudModificacionDetalleController.Get All",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "query",
+                        "description": "Filter. e.g. col1:v1,col2:v2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "fields",
+                        "description": "Fields returned. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortby",
+                        "description": "Sorted-by fields. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "order",
+                        "description": "Order corresponding to each sortby field. e.g. desc,asc ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "Limit the size of result set. Must be an integer",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "description": "Start position of result set. Must be an integer",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "vigencia",
+                        "description": "Vigencia de la solicitud. e.g. 2026",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "estado",
+                        "description": "Id del estado de la solicitud (parametros)",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "dependencia",
+                        "description": "Id de la dependencia solicitante (Oikos)",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponseLista"
+                        }
+                    },
+                    "400": {
+                        "description": "parametros invalidos"
+                    },
+                    "404": {
+                        "description": "error al consultar los registros"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "solicitud_modificacion_detalle"
+                ],
+                "description": "create SolicitudModificacionDetalle\n\u003cbr\u003e",
+                "operationId": "SolicitudModificacionDetalleController.Post",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for SolicitudModificacionDetalle content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SolicitudModificacionDetalle"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "body o datos invalidos"
+                    }
+                }
+            }
+        },
+        "/solicitud_modificacion_detalle/{id}": {
+            "get": {
+                "tags": [
+                    "solicitud_modificacion_detalle"
+                ],
+                "description": "get SolicitudModificacionDetalle by id\n\u003cbr\u003e",
+                "operationId": "SolicitudModificacionDetalleController.Get One",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "id invalido o registro inexistente"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "solicitud_modificacion_detalle"
+                ],
+                "description": "update the SolicitudModificacionDetalle\n\u003cbr\u003e",
+                "operationId": "SolicitudModificacionDetalleController.Put",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for SolicitudModificacionDetalle content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SolicitudModificacionDetalle"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "id, body o datos invalidos, o registro inexistente"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "solicitud_modificacion_detalle"
+                ],
+                "description": "delete the SolicitudModificacionDetalle\n\u003cbr\u003e",
+                "operationId": "SolicitudModificacionDetalleController.Delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "id invalido o registro inexistente"
+                    }
+                }
+            }
+        },
+        "/solicitud_modificacion_estado/": {
+            "get": {
+                "tags": [
+                    "solicitud_modificacion_estado"
+                ],
+                "description": "get SolicitudModificacionEstado. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina\n\u003cbr\u003e",
+                "operationId": "SolicitudModificacionEstadoController.Get All",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "query",
+                        "description": "Filter. e.g. col1:v1,col2:v2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "fields",
+                        "description": "Fields returned. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortby",
+                        "description": "Sorted-by fields. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "order",
+                        "description": "Order corresponding to each sortby field. e.g. desc,asc ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "Limit the size of result set. Must be an integer",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "description": "Start position of result set. Must be an integer",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "vigencia",
+                        "description": "Vigencia de la solicitud. e.g. 2026",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "estado",
+                        "description": "Id del estado de la solicitud (parametros)",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "dependencia",
+                        "description": "Id de la dependencia solicitante (Oikos)",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponseLista"
+                        }
+                    },
+                    "400": {
+                        "description": "parametros invalidos"
+                    },
+                    "404": {
+                        "description": "error al consultar los registros"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "solicitud_modificacion_estado"
+                ],
+                "description": "create SolicitudModificacionEstado\n\u003cbr\u003e",
+                "operationId": "SolicitudModificacionEstadoController.Post",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for SolicitudModificacionEstado content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SolicitudModificacionEstado"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "body o datos invalidos"
+                    }
+                }
+            }
+        },
+        "/solicitud_modificacion_estado/{id}": {
+            "get": {
+                "tags": [
+                    "solicitud_modificacion_estado"
+                ],
+                "description": "get SolicitudModificacionEstado by id\n\u003cbr\u003e",
+                "operationId": "SolicitudModificacionEstadoController.Get One",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "id invalido o registro inexistente"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "solicitud_modificacion_estado"
+                ],
+                "description": "update the SolicitudModificacionEstado\n\u003cbr\u003e",
+                "operationId": "SolicitudModificacionEstadoController.Put",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for SolicitudModificacionEstado content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SolicitudModificacionEstado"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "id, body o datos invalidos, o registro inexistente"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "solicitud_modificacion_estado"
+                ],
+                "description": "delete the SolicitudModificacionEstado\n\u003cbr\u003e",
+                "operationId": "SolicitudModificacionEstadoController.Delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "id invalido o registro inexistente"
+                    }
+                }
+            }
+        },
         "/solicitud_necesidad/": {
             "get": {
                 "tags": [
                     "solicitud_necesidad"
                 ],
-                "description": "get SolicitudNecesidad\n\u003cbr\u003e",
+                "description": "get SolicitudNecesidad. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina\n\u003cbr\u003e",
                 "operationId": "SolicitudNecesidadController.Get All",
                 "parameters": [
                     {
@@ -1326,13 +2694,19 @@
                         "description": "Id de la dependencia solicitante (Oikos)",
                         "type": "integer",
                         "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponse"
+                            "$ref": "#/definitions/controllers.APIResponseLista"
                         }
                     },
                     "400": {
@@ -1387,6 +2761,12 @@
                         "description": "The id",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
                     }
                 ],
                 "responses": {
@@ -1470,7 +2850,7 @@
                 "tags": [
                     "solicitud_pago_parcial"
                 ],
-                "description": "get SolicitudPagoParcial\n\u003cbr\u003e",
+                "description": "get SolicitudPagoParcial. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina\n\u003cbr\u003e",
                 "operationId": "SolicitudPagoParcialController.Get All",
                 "parameters": [
                     {
@@ -1529,13 +2909,19 @@
                         "description": "Id de la dependencia solicitante (Oikos)",
                         "type": "integer",
                         "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponse"
+                            "$ref": "#/definitions/controllers.APIResponseLista"
                         }
                     },
                     "400": {
@@ -1590,6 +2976,12 @@
                         "description": "The id",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
                     }
                 ],
                 "responses": {
@@ -1673,7 +3065,7 @@
                 "tags": [
                     "solicitud_proveedor"
                 ],
-                "description": "get SolicitudProveedor\n\u003cbr\u003e",
+                "description": "get SolicitudProveedor. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina\n\u003cbr\u003e",
                 "operationId": "SolicitudProveedorController.Get All",
                 "parameters": [
                     {
@@ -1732,13 +3124,19 @@
                         "description": "Id de la dependencia solicitante (Oikos)",
                         "type": "integer",
                         "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponse"
+                            "$ref": "#/definitions/controllers.APIResponseLista"
                         }
                     },
                     "400": {
@@ -1793,6 +3191,12 @@
                         "description": "The id",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
                     }
                 ],
                 "responses": {
@@ -1876,7 +3280,7 @@
                 "tags": [
                     "solicitud_requisito_documental"
                 ],
-                "description": "get SolicitudRequisitoDocumental\n\u003cbr\u003e",
+                "description": "get SolicitudRequisitoDocumental. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina\n\u003cbr\u003e",
                 "operationId": "SolicitudRequisitoDocumentalController.Get All",
                 "parameters": [
                     {
@@ -1935,13 +3339,19 @@
                         "description": "Id de la dependencia solicitante (Oikos)",
                         "type": "integer",
                         "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponse"
+                            "$ref": "#/definitions/controllers.APIResponseLista"
                         }
                     },
                     "400": {
@@ -1996,6 +3406,12 @@
                         "description": "The id",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "activo",
+                        "description": "Registros activos (true, predeterminado) o inactivos (false)",
+                        "type": "boolean"
                     }
                 ],
                 "responses": {
@@ -2091,6 +3507,28 @@
                 },
                 "Success": {
                     "type": "boolean"
+                }
+            }
+        },
+        "controllers.APIResponseLista": {
+            "title": "APIResponseLista",
+            "type": "object",
+            "properties": {
+                "Data": {
+                    "$ref": "#/definitions/controllers.interface"
+                },
+                "Message": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "string"
+                },
+                "Success": {
+                    "type": "boolean"
+                },
+                "Total": {
+                    "type": "integer",
+                    "format": "int64"
                 }
             }
         },
@@ -2240,6 +3678,78 @@
                 "TipoDocumentoId": {
                     "type": "integer",
                     "format": "int64"
+                }
+            }
+        },
+        "models.Observacion": {
+            "title": "Observacion",
+            "type": "object",
+            "properties": {
+                "Activo": {
+                    "type": "boolean"
+                },
+                "EstadoId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "FechaCreacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "FechaModificacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "FechaVista": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "ProveedorConvocadoId": {
+                    "$ref": "#/definitions/models.SolicitudProveedor"
+                },
+                "SolicitudId": {
+                    "$ref": "#/definitions/models.SolicitudCotizacion"
+                },
+                "Texto": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RespuestaObservacion": {
+            "title": "RespuestaObservacion",
+            "type": "object",
+            "properties": {
+                "Activo": {
+                    "type": "boolean"
+                },
+                "AutorTerceroId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "FechaCreacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "FechaModificacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "ObservacionId": {
+                    "$ref": "#/definitions/models.Observacion"
+                },
+                "Publica": {
+                    "type": "boolean"
+                },
+                "Texto": {
+                    "type": "string"
                 }
             }
         },
@@ -2555,6 +4065,41 @@
                 }
             }
         },
+        "models.SolicitudEstado": {
+            "title": "SolicitudEstado",
+            "type": "object",
+            "properties": {
+                "Activo": {
+                    "type": "boolean"
+                },
+                "EstadoId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "FechaCreacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "FechaModificacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Justificacion": {
+                    "type": "string"
+                },
+                "ResponsableTerceroId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "SolicitudId": {
+                    "$ref": "#/definitions/models.SolicitudCotizacion"
+                }
+            }
+        },
         "models.SolicitudItem": {
             "title": "SolicitudItem",
             "type": "object",
@@ -2600,6 +4145,109 @@
                 "UnidadMedidaId": {
                     "type": "integer",
                     "format": "int64"
+                }
+            }
+        },
+        "models.SolicitudModificacion": {
+            "title": "SolicitudModificacion",
+            "type": "object",
+            "properties": {
+                "Activo": {
+                    "type": "boolean"
+                },
+                "FechaCreacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "FechaModificacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Numero": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "SolicitudId": {
+                    "$ref": "#/definitions/models.SolicitudCotizacion"
+                }
+            }
+        },
+        "models.SolicitudModificacionDetalle": {
+            "title": "SolicitudModificacionDetalle",
+            "type": "object",
+            "properties": {
+                "Activo": {
+                    "type": "boolean"
+                },
+                "FechaCreacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "FechaModificacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Justificacion": {
+                    "type": "string"
+                },
+                "SolicitudItemId": {
+                    "$ref": "#/definitions/models.SolicitudItem"
+                },
+                "SolicitudModificacionId": {
+                    "$ref": "#/definitions/models.SolicitudModificacion"
+                },
+                "TipoCambioId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "ValorAnterior": {
+                    "type": "string"
+                },
+                "ValorNuevo": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.SolicitudModificacionEstado": {
+            "title": "SolicitudModificacionEstado",
+            "type": "object",
+            "properties": {
+                "Activo": {
+                    "type": "boolean"
+                },
+                "EstadoId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "FechaCreacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "FechaModificacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Justificacion": {
+                    "type": "string"
+                },
+                "ResponsableTerceroId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "SolicitudModificacionId": {
+                    "$ref": "#/definitions/models.SolicitudModificacion"
                 }
             }
         },
@@ -2792,6 +4440,30 @@
         {
             "name": "solicitud_requisito_documental",
             "description": "SolicitudRequisitoDocumentalController operations for SolicitudRequisitoDocumental\n"
+        },
+        {
+            "name": "solicitud_estado",
+            "description": "SolicitudEstadoController operations for SolicitudEstado\n"
+        },
+        {
+            "name": "solicitud_modificacion",
+            "description": "SolicitudModificacionController operations for SolicitudModificacion\n"
+        },
+        {
+            "name": "solicitud_modificacion_estado",
+            "description": "SolicitudModificacionEstadoController operations for SolicitudModificacionEstado\n"
+        },
+        {
+            "name": "solicitud_modificacion_detalle",
+            "description": "SolicitudModificacionDetalleController operations for SolicitudModificacionDetalle\n"
+        },
+        {
+            "name": "observacion",
+            "description": "ObservacionController operations for Observacion\n"
+        },
+        {
+            "name": "respuesta_observacion",
+            "description": "RespuestaObservacionController operations for RespuestaObservacion\n"
         }
     ]
 }

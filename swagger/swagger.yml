@@ -17,7 +17,7 @@ paths:
       tags:
       - cargue_masivo
       description: |-
-        get CargueMasivo
+        get CargueMasivo. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
         <br>
       operationId: CargueMasivoController.Get All
       parameters:
@@ -60,11 +60,15 @@ paths:
         description: Id de la dependencia solicitante (Oikos)
         type: integer
         format: int64
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/controllers.APIResponseLista'
         "400":
           description: parametros invalidos
         "404":
@@ -104,6 +108,10 @@ paths:
         description: The id
         required: true
         type: string
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
       responses:
         "200":
           description: ""
@@ -162,7 +170,7 @@ paths:
       tags:
       - cargue_masivo_error
       description: |-
-        get CargueMasivoError
+        get CargueMasivoError. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
         <br>
       operationId: CargueMasivoErrorController.Get All
       parameters:
@@ -205,11 +213,15 @@ paths:
         description: Id de la dependencia solicitante (Oikos)
         type: integer
         format: int64
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/controllers.APIResponseLista'
         "400":
           description: parametros invalidos
         "404":
@@ -249,6 +261,10 @@ paths:
         description: The id
         required: true
         type: string
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
       responses:
         "200":
           description: ""
@@ -307,7 +323,7 @@ paths:
       tags:
       - documento_solicitud
       description: |-
-        get DocumentoSolicitud
+        get DocumentoSolicitud. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
         <br>
       operationId: DocumentoSolicitudController.Get All
       parameters:
@@ -350,11 +366,15 @@ paths:
         description: Id de la dependencia solicitante (Oikos)
         type: integer
         format: int64
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/controllers.APIResponseLista'
         "400":
           description: parametros invalidos
         "404":
@@ -394,6 +414,10 @@ paths:
         description: The id
         required: true
         type: string
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
       responses:
         "200":
           description: ""
@@ -447,12 +471,318 @@ paths:
             $ref: '#/definitions/controllers.APIResponse'
         "404":
           description: id invalido o registro inexistente
+  /observacion/:
+    get:
+      tags:
+      - observacion
+      description: |-
+        get Observacion. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+        <br>
+      operationId: ObservacionController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      - in: query
+        name: vigencia
+        description: Vigencia de la solicitud. e.g. 2026
+        type: integer
+        format: int64
+      - in: query
+        name: estado
+        description: Id del estado de la solicitud (parametros)
+        type: integer
+        format: int64
+      - in: query
+        name: dependencia
+        description: Id de la dependencia solicitante (Oikos)
+        type: integer
+        format: int64
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponseLista'
+        "400":
+          description: parametros invalidos
+        "404":
+          description: error al consultar los registros
+    post:
+      tags:
+      - observacion
+      description: |-
+        create Observacion
+        <br>
+      operationId: ObservacionController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for Observacion content
+        required: true
+        schema:
+          $ref: '#/definitions/models.Observacion'
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: body o datos invalidos
+  /observacion/{id}:
+    get:
+      tags:
+      - observacion
+      description: |-
+        get Observacion by id
+        <br>
+      operationId: ObservacionController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The id
+        required: true
+        type: string
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "404":
+          description: id invalido o registro inexistente
+    put:
+      tags:
+      - observacion
+      description: |-
+        update the Observacion
+        <br>
+      operationId: ObservacionController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for Observacion content
+        required: true
+        schema:
+          $ref: '#/definitions/models.Observacion'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id, body o datos invalidos, o registro inexistente
+    delete:
+      tags:
+      - observacion
+      description: |-
+        delete the Observacion
+        <br>
+      operationId: ObservacionController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "404":
+          description: id invalido o registro inexistente
+  /respuesta_observacion/:
+    get:
+      tags:
+      - respuesta_observacion
+      description: |-
+        get RespuestaObservacion. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+        <br>
+      operationId: RespuestaObservacionController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      - in: query
+        name: vigencia
+        description: Vigencia de la solicitud. e.g. 2026
+        type: integer
+        format: int64
+      - in: query
+        name: estado
+        description: Id del estado de la solicitud (parametros)
+        type: integer
+        format: int64
+      - in: query
+        name: dependencia
+        description: Id de la dependencia solicitante (Oikos)
+        type: integer
+        format: int64
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponseLista'
+        "400":
+          description: parametros invalidos
+        "404":
+          description: error al consultar los registros
+    post:
+      tags:
+      - respuesta_observacion
+      description: |-
+        create RespuestaObservacion
+        <br>
+      operationId: RespuestaObservacionController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for RespuestaObservacion content
+        required: true
+        schema:
+          $ref: '#/definitions/models.RespuestaObservacion'
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: body o datos invalidos
+  /respuesta_observacion/{id}:
+    get:
+      tags:
+      - respuesta_observacion
+      description: |-
+        get RespuestaObservacion by id
+        <br>
+      operationId: RespuestaObservacionController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The id
+        required: true
+        type: string
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "404":
+          description: id invalido o registro inexistente
+    put:
+      tags:
+      - respuesta_observacion
+      description: |-
+        update the RespuestaObservacion
+        <br>
+      operationId: RespuestaObservacionController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for RespuestaObservacion content
+        required: true
+        schema:
+          $ref: '#/definitions/models.RespuestaObservacion'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id, body o datos invalidos, o registro inexistente
+    delete:
+      tags:
+      - respuesta_observacion
+      description: |-
+        delete the RespuestaObservacion
+        <br>
+      operationId: RespuestaObservacionController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "404":
+          description: id invalido o registro inexistente
   /solicitud_ciiu/:
     get:
       tags:
       - solicitud_ciiu
       description: |-
-        get SolicitudCiiu
+        get SolicitudCiiu. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
         <br>
       operationId: SolicitudCiiuController.Get All
       parameters:
@@ -495,11 +825,15 @@ paths:
         description: Id de la dependencia solicitante (Oikos)
         type: integer
         format: int64
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/controllers.APIResponseLista'
         "400":
           description: parametros invalidos
         "404":
@@ -539,6 +873,10 @@ paths:
         description: The id
         required: true
         type: string
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
       responses:
         "200":
           description: ""
@@ -597,7 +935,7 @@ paths:
       tags:
       - solicitud_cotizacion
       description: |-
-        get SolicitudCotizacion
+        get SolicitudCotizacion. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
         <br>
       operationId: SolicitudCotizacionController.Get All
       parameters:
@@ -640,11 +978,15 @@ paths:
         description: Id de la dependencia solicitante (Oikos)
         type: integer
         format: int64
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/controllers.APIResponseLista'
         "400":
           description: parametros invalidos
         "404":
@@ -684,6 +1026,10 @@ paths:
         description: The id
         required: true
         type: string
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
       responses:
         "200":
           description: ""
@@ -742,7 +1088,7 @@ paths:
       tags:
       - solicitud_cotizacion
       description: |-
-        get SolicitudCotizacion by id con sus entidades asociadas activas: necesidades, items, pagos parciales, actividades economicas, documentos, requisitos documentales, proveedores y cargues masivos
+        get SolicitudCotizacion by id con sus entidades asociadas: necesidades, items, pagos parciales, actividades economicas, documentos, requisitos documentales, proveedores y cargues masivos. La solicitud se retorna este activa o no; el parametro activo filtra las asociadas
         <br>
       operationId: SolicitudCotizacionController.Get Detalle
       parameters:
@@ -751,6 +1097,11 @@ paths:
         description: The id
         required: true
         type: string
+      - in: query
+        name: activo
+        description: Entidades asociadas activas (true, predeterminado) o inactivas
+          (false)
+        type: boolean
       responses:
         "200":
           description: ""
@@ -758,12 +1109,165 @@ paths:
             $ref: '#/definitions/models.SolicitudCotizacionDetalle'
         "404":
           description: id invalido o registro inexistente
+  /solicitud_estado/:
+    get:
+      tags:
+      - solicitud_estado
+      description: |-
+        get SolicitudEstado. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+        <br>
+      operationId: SolicitudEstadoController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      - in: query
+        name: vigencia
+        description: Vigencia de la solicitud. e.g. 2026
+        type: integer
+        format: int64
+      - in: query
+        name: estado
+        description: Id del estado de la solicitud (parametros)
+        type: integer
+        format: int64
+      - in: query
+        name: dependencia
+        description: Id de la dependencia solicitante (Oikos)
+        type: integer
+        format: int64
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponseLista'
+        "400":
+          description: parametros invalidos
+        "404":
+          description: error al consultar los registros
+    post:
+      tags:
+      - solicitud_estado
+      description: |-
+        create SolicitudEstado
+        <br>
+      operationId: SolicitudEstadoController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for SolicitudEstado content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudEstado'
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: body o datos invalidos
+  /solicitud_estado/{id}:
+    get:
+      tags:
+      - solicitud_estado
+      description: |-
+        get SolicitudEstado by id
+        <br>
+      operationId: SolicitudEstadoController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The id
+        required: true
+        type: string
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "404":
+          description: id invalido o registro inexistente
+    put:
+      tags:
+      - solicitud_estado
+      description: |-
+        update the SolicitudEstado
+        <br>
+      operationId: SolicitudEstadoController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for SolicitudEstado content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudEstado'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id, body o datos invalidos, o registro inexistente
+    delete:
+      tags:
+      - solicitud_estado
+      description: |-
+        delete the SolicitudEstado
+        <br>
+      operationId: SolicitudEstadoController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "404":
+          description: id invalido o registro inexistente
   /solicitud_item/:
     get:
       tags:
       - solicitud_item
       description: |-
-        get SolicitudItem
+        get SolicitudItem. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
         <br>
       operationId: SolicitudItemController.Get All
       parameters:
@@ -806,11 +1310,15 @@ paths:
         description: Id de la dependencia solicitante (Oikos)
         type: integer
         format: int64
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/controllers.APIResponseLista'
         "400":
           description: parametros invalidos
         "404":
@@ -850,6 +1358,10 @@ paths:
         description: The id
         required: true
         type: string
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
       responses:
         "200":
           description: ""
@@ -903,12 +1415,471 @@ paths:
             $ref: '#/definitions/controllers.APIResponse'
         "404":
           description: id invalido o registro inexistente
+  /solicitud_modificacion/:
+    get:
+      tags:
+      - solicitud_modificacion
+      description: |-
+        get SolicitudModificacion. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+        <br>
+      operationId: SolicitudModificacionController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      - in: query
+        name: vigencia
+        description: Vigencia de la solicitud. e.g. 2026
+        type: integer
+        format: int64
+      - in: query
+        name: estado
+        description: Id del estado de la solicitud (parametros)
+        type: integer
+        format: int64
+      - in: query
+        name: dependencia
+        description: Id de la dependencia solicitante (Oikos)
+        type: integer
+        format: int64
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponseLista'
+        "400":
+          description: parametros invalidos
+        "404":
+          description: error al consultar los registros
+    post:
+      tags:
+      - solicitud_modificacion
+      description: |-
+        create SolicitudModificacion
+        <br>
+      operationId: SolicitudModificacionController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for SolicitudModificacion content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudModificacion'
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: body o datos invalidos
+  /solicitud_modificacion/{id}:
+    get:
+      tags:
+      - solicitud_modificacion
+      description: |-
+        get SolicitudModificacion by id
+        <br>
+      operationId: SolicitudModificacionController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The id
+        required: true
+        type: string
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "404":
+          description: id invalido o registro inexistente
+    put:
+      tags:
+      - solicitud_modificacion
+      description: |-
+        update the SolicitudModificacion
+        <br>
+      operationId: SolicitudModificacionController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for SolicitudModificacion content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudModificacion'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id, body o datos invalidos, o registro inexistente
+    delete:
+      tags:
+      - solicitud_modificacion
+      description: |-
+        delete the SolicitudModificacion
+        <br>
+      operationId: SolicitudModificacionController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "404":
+          description: id invalido o registro inexistente
+  /solicitud_modificacion_detalle/:
+    get:
+      tags:
+      - solicitud_modificacion_detalle
+      description: |-
+        get SolicitudModificacionDetalle. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+        <br>
+      operationId: SolicitudModificacionDetalleController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      - in: query
+        name: vigencia
+        description: Vigencia de la solicitud. e.g. 2026
+        type: integer
+        format: int64
+      - in: query
+        name: estado
+        description: Id del estado de la solicitud (parametros)
+        type: integer
+        format: int64
+      - in: query
+        name: dependencia
+        description: Id de la dependencia solicitante (Oikos)
+        type: integer
+        format: int64
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponseLista'
+        "400":
+          description: parametros invalidos
+        "404":
+          description: error al consultar los registros
+    post:
+      tags:
+      - solicitud_modificacion_detalle
+      description: |-
+        create SolicitudModificacionDetalle
+        <br>
+      operationId: SolicitudModificacionDetalleController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for SolicitudModificacionDetalle content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudModificacionDetalle'
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: body o datos invalidos
+  /solicitud_modificacion_detalle/{id}:
+    get:
+      tags:
+      - solicitud_modificacion_detalle
+      description: |-
+        get SolicitudModificacionDetalle by id
+        <br>
+      operationId: SolicitudModificacionDetalleController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The id
+        required: true
+        type: string
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "404":
+          description: id invalido o registro inexistente
+    put:
+      tags:
+      - solicitud_modificacion_detalle
+      description: |-
+        update the SolicitudModificacionDetalle
+        <br>
+      operationId: SolicitudModificacionDetalleController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for SolicitudModificacionDetalle content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudModificacionDetalle'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id, body o datos invalidos, o registro inexistente
+    delete:
+      tags:
+      - solicitud_modificacion_detalle
+      description: |-
+        delete the SolicitudModificacionDetalle
+        <br>
+      operationId: SolicitudModificacionDetalleController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "404":
+          description: id invalido o registro inexistente
+  /solicitud_modificacion_estado/:
+    get:
+      tags:
+      - solicitud_modificacion_estado
+      description: |-
+        get SolicitudModificacionEstado. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+        <br>
+      operationId: SolicitudModificacionEstadoController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      - in: query
+        name: vigencia
+        description: Vigencia de la solicitud. e.g. 2026
+        type: integer
+        format: int64
+      - in: query
+        name: estado
+        description: Id del estado de la solicitud (parametros)
+        type: integer
+        format: int64
+      - in: query
+        name: dependencia
+        description: Id de la dependencia solicitante (Oikos)
+        type: integer
+        format: int64
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponseLista'
+        "400":
+          description: parametros invalidos
+        "404":
+          description: error al consultar los registros
+    post:
+      tags:
+      - solicitud_modificacion_estado
+      description: |-
+        create SolicitudModificacionEstado
+        <br>
+      operationId: SolicitudModificacionEstadoController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for SolicitudModificacionEstado content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudModificacionEstado'
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: body o datos invalidos
+  /solicitud_modificacion_estado/{id}:
+    get:
+      tags:
+      - solicitud_modificacion_estado
+      description: |-
+        get SolicitudModificacionEstado by id
+        <br>
+      operationId: SolicitudModificacionEstadoController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The id
+        required: true
+        type: string
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "404":
+          description: id invalido o registro inexistente
+    put:
+      tags:
+      - solicitud_modificacion_estado
+      description: |-
+        update the SolicitudModificacionEstado
+        <br>
+      operationId: SolicitudModificacionEstadoController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for SolicitudModificacionEstado content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudModificacionEstado'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "400":
+          description: id, body o datos invalidos, o registro inexistente
+    delete:
+      tags:
+      - solicitud_modificacion_estado
+      description: |-
+        delete the SolicitudModificacionEstado
+        <br>
+      operationId: SolicitudModificacionEstadoController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.APIResponse'
+        "404":
+          description: id invalido o registro inexistente
   /solicitud_necesidad/:
     get:
       tags:
       - solicitud_necesidad
       description: |-
-        get SolicitudNecesidad
+        get SolicitudNecesidad. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
         <br>
       operationId: SolicitudNecesidadController.Get All
       parameters:
@@ -951,11 +1922,15 @@ paths:
         description: Id de la dependencia solicitante (Oikos)
         type: integer
         format: int64
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/controllers.APIResponseLista'
         "400":
           description: parametros invalidos
         "404":
@@ -995,6 +1970,10 @@ paths:
         description: The id
         required: true
         type: string
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
       responses:
         "200":
           description: ""
@@ -1053,7 +2032,7 @@ paths:
       tags:
       - solicitud_pago_parcial
       description: |-
-        get SolicitudPagoParcial
+        get SolicitudPagoParcial. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
         <br>
       operationId: SolicitudPagoParcialController.Get All
       parameters:
@@ -1096,11 +2075,15 @@ paths:
         description: Id de la dependencia solicitante (Oikos)
         type: integer
         format: int64
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/controllers.APIResponseLista'
         "400":
           description: parametros invalidos
         "404":
@@ -1140,6 +2123,10 @@ paths:
         description: The id
         required: true
         type: string
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
       responses:
         "200":
           description: ""
@@ -1198,7 +2185,7 @@ paths:
       tags:
       - solicitud_proveedor
       description: |-
-        get SolicitudProveedor
+        get SolicitudProveedor. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
         <br>
       operationId: SolicitudProveedorController.Get All
       parameters:
@@ -1241,11 +2228,15 @@ paths:
         description: Id de la dependencia solicitante (Oikos)
         type: integer
         format: int64
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/controllers.APIResponseLista'
         "400":
           description: parametros invalidos
         "404":
@@ -1285,6 +2276,10 @@ paths:
         description: The id
         required: true
         type: string
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
       responses:
         "200":
           description: ""
@@ -1343,7 +2338,7 @@ paths:
       tags:
       - solicitud_requisito_documental
       description: |-
-        get SolicitudRequisitoDocumental
+        get SolicitudRequisitoDocumental. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
         <br>
       operationId: SolicitudRequisitoDocumentalController.Get All
       parameters:
@@ -1386,11 +2381,15 @@ paths:
         description: Id de la dependencia solicitante (Oikos)
         type: integer
         format: int64
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/controllers.APIResponseLista'
         "400":
           description: parametros invalidos
         "404":
@@ -1430,6 +2429,10 @@ paths:
         description: The id
         required: true
         type: string
+      - in: query
+        name: activo
+        description: Registros activos (true, predeterminado) o inactivos (false)
+        type: boolean
       responses:
         "200":
           description: ""
@@ -1496,6 +2499,21 @@ definitions:
         type: string
       Success:
         type: boolean
+  controllers.APIResponseLista:
+    title: APIResponseLista
+    type: object
+    properties:
+      Data:
+        $ref: '#/definitions/controllers.interface'
+      Message:
+        type: string
+      Status:
+        type: string
+      Success:
+        type: boolean
+      Total:
+        type: integer
+        format: int64
   controllers.interface:
     title: interface
     type: object
@@ -1603,6 +2621,57 @@ definitions:
       TipoDocumentoId:
         type: integer
         format: int64
+  models.Observacion:
+    title: Observacion
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      EstadoId:
+        type: integer
+        format: int64
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      FechaVista:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      ProveedorConvocadoId:
+        $ref: '#/definitions/models.SolicitudProveedor'
+      SolicitudId:
+        $ref: '#/definitions/models.SolicitudCotizacion'
+      Texto:
+        type: string
+  models.RespuestaObservacion:
+    title: RespuestaObservacion
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      AutorTerceroId:
+        type: integer
+        format: int64
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      ObservacionId:
+        $ref: '#/definitions/models.Observacion'
+      Publica:
+        type: boolean
+      Texto:
+        type: string
   models.SolicitudCiiu:
     title: SolicitudCiiu
     type: object
@@ -1827,6 +2896,31 @@ definitions:
       Vigencia:
         type: integer
         format: int32
+  models.SolicitudEstado:
+    title: SolicitudEstado
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      EstadoId:
+        type: integer
+        format: int64
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      Justificacion:
+        type: string
+      ResponsableTerceroId:
+        type: integer
+        format: int64
+      SolicitudId:
+        $ref: '#/definitions/models.SolicitudCotizacion'
   models.SolicitudItem:
     title: SolicitudItem
     type: object
@@ -1861,6 +2955,79 @@ definitions:
       UnidadMedidaId:
         type: integer
         format: int64
+  models.SolicitudModificacion:
+    title: SolicitudModificacion
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      Numero:
+        type: integer
+        format: int32
+      SolicitudId:
+        $ref: '#/definitions/models.SolicitudCotizacion'
+  models.SolicitudModificacionDetalle:
+    title: SolicitudModificacionDetalle
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      Justificacion:
+        type: string
+      SolicitudItemId:
+        $ref: '#/definitions/models.SolicitudItem'
+      SolicitudModificacionId:
+        $ref: '#/definitions/models.SolicitudModificacion'
+      TipoCambioId:
+        type: integer
+        format: int64
+      ValorAnterior:
+        type: string
+      ValorNuevo:
+        type: string
+  models.SolicitudModificacionEstado:
+    title: SolicitudModificacionEstado
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      EstadoId:
+        type: integer
+        format: int64
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      Justificacion:
+        type: string
+      ResponsableTerceroId:
+        type: integer
+        format: int64
+      SolicitudModificacionId:
+        $ref: '#/definitions/models.SolicitudModificacion'
   models.SolicitudNecesidad:
     title: SolicitudNecesidad
     type: object
@@ -1997,3 +3164,21 @@ tags:
 - name: solicitud_requisito_documental
   description: |
     SolicitudRequisitoDocumentalController operations for SolicitudRequisitoDocumental
+- name: solicitud_estado
+  description: |
+    SolicitudEstadoController operations for SolicitudEstado
+- name: solicitud_modificacion
+  description: |
+    SolicitudModificacionController operations for SolicitudModificacion
+- name: solicitud_modificacion_estado
+  description: |
+    SolicitudModificacionEstadoController operations for SolicitudModificacionEstado
+- name: solicitud_modificacion_detalle
+  description: |
+    SolicitudModificacionDetalleController operations for SolicitudModificacionDetalle
+- name: observacion
+  description: |
+    ObservacionController operations for Observacion
+- name: respuesta_observacion
+  description: |
+    RespuestaObservacionController operations for RespuestaObservacion
