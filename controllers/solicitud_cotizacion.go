@@ -80,7 +80,7 @@ func (c *SolicitudCotizacionController) GetOne() {
 
 // GetDetalle ...
 // @Title Get Detalle
-// @Description get SolicitudCotizacion by id con sus entidades asociadas: necesidades, items, pagos parciales, actividades economicas, documentos, requisitos documentales, proveedores y cargues masivos. La solicitud se retorna este activa o no; el parametro activo filtra las asociadas
+// @Description get SolicitudCotizacion by id con sus entidades asociadas: necesidades, items, pagos parciales, actividades economicas, documentos, requisitos documentales, proveedores, cargues masivos y errores de los cargues masivos (coleccion independiente CarguesMasivosErrores; un error se considera activo si el y su cargue lo estan). La solicitud se retorna este activa o no; el parametro activo filtra las asociadas
 // @Param	id		path 	string	true		"The id"
 // @Param	activo	query	bool	false	"Entidades asociadas activas (true, predeterminado) o inactivas (false)"
 // @Success 200 {object} models.SolicitudCotizacionDetalle

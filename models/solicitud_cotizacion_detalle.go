@@ -17,6 +17,10 @@ type SolicitudCotizacionDetalle struct {
 	RequisitosDocumentales []SolicitudRequisitoDocumental
 	Proveedores            []SolicitudProveedor
 	CarguesMasivos         []CargueMasivo
+	// CarguesMasivosErrores son los errores de los cargues masivos de la solicitud.
+	// Es una coleccion independiente: cargue_masivo_error se relaciona con
+	// cargue_masivo y conserva su propio modelo y CRUD.
+	CarguesMasivosErrores []CargueMasivoError
 }
 
 // GetSolicitudCotizacionDetalle retorna la solicitud con sus entidades asociadas activas
@@ -38,6 +42,7 @@ func GetSolicitudCotizacionDetalle(id int, activo bool) (*SolicitudCotizacionDet
 		RequisitosDocumentales: []SolicitudRequisitoDocumental{},
 		Proveedores:            []SolicitudProveedor{},
 		CarguesMasivos:         []CargueMasivo{},
+		CarguesMasivosErrores:  []CargueMasivoError{},
 	}
 
 	o := orm.NewOrm()
@@ -83,6 +88,23 @@ func GetSolicitudCotizacionDetalle(id int, activo bool) (*SolicitudCotizacionDet
 	}
 	for i := range d.CarguesMasivos {
 		d.CarguesMasivos[i].SolicitudId = nil
+	}
+
+	// Un error esta activo solo si el y su cargue lo estan, para no mostrar por
+	// defecto errores de un cargue eliminado. Con activo=false se retornan los
+	// errores inactivos o los de cargues inactivos.
+	errores := orm.NewCondition().And("CargueMasivoId__SolicitudId__Id", id)
+	if activo {
+		errores = errores.And("Activo", true).And("CargueMasivoId__Activo", true)
+	} else {
+		errores = errores.AndCond(orm.NewCondition().Or("Activo", false).Or("CargueMasivoId__Activo", false))
+	}
+	if _, err := o.QueryTable(new(CargueMasivoError)).SetCond(errores).RelatedSel("CargueMasivoId").
+		OrderBy("Id").All(&d.CarguesMasivosErrores); err != nil {
+		return nil, err
+	}
+	for i := range d.CarguesMasivosErrores {
+		d.CarguesMasivosErrores[i].CargueMasivoId.SolicitudId = nil
 	}
 
 	return d, nil
