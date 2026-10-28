@@ -1088,7 +1088,7 @@ paths:
       tags:
       - solicitud_cotizacion
       description: |-
-        get SolicitudCotizacion by id con sus entidades asociadas: necesidades, items, pagos parciales, actividades economicas, documentos, requisitos documentales, proveedores y cargues masivos. La solicitud se retorna este activa o no; el parametro activo filtra las asociadas
+        get SolicitudCotizacion by id con sus entidades asociadas: necesidades, items, pagos parciales, actividades economicas, documentos, requisitos documentales, proveedores, cargues masivos y errores de los cargues masivos (coleccion independiente CarguesMasivosErrores; un error se considera activo si el y su cargue lo estan). La solicitud se retorna este activa o no; el parametro activo filtra las asociadas
         <br>
       operationId: SolicitudCotizacionController.Get Detalle
       parameters:
@@ -2795,6 +2795,10 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/models.CargueMasivo'
+      CarguesMasivosErrores:
+        type: array
+        items:
+          $ref: '#/definitions/models.CargueMasivoError'
       Consecutivo:
         type: integer
         format: int64

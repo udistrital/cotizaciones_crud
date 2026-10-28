@@ -1525,7 +1525,7 @@
                 "tags": [
                     "solicitud_cotizacion"
                 ],
-                "description": "get SolicitudCotizacion by id con sus entidades asociadas: necesidades, items, pagos parciales, actividades economicas, documentos, requisitos documentales, proveedores y cargues masivos. La solicitud se retorna este activa o no; el parametro activo filtra las asociadas\n\u003cbr\u003e",
+                "description": "get SolicitudCotizacion by id con sus entidades asociadas: necesidades, items, pagos parciales, actividades economicas, documentos, requisitos documentales, proveedores, cargues masivos y errores de los cargues masivos (coleccion independiente CarguesMasivosErrores; un error se considera activo si el y su cargue lo estan). La solicitud se retorna este activa o no; el parametro activo filtra las asociadas\n\u003cbr\u003e",
                 "operationId": "SolicitudCotizacionController.Get Detalle",
                 "parameters": [
                     {
@@ -3920,6 +3920,12 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.CargueMasivo"
+                    }
+                },
+                "CarguesMasivosErrores": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.CargueMasivoError"
                     }
                 },
                 "Consecutivo": {
