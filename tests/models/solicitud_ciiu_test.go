@@ -35,6 +35,7 @@ func TestGetSolicitudCiiuById(t *testing.T) {
 
 func TestGetAllSolicitudCiiu(t *testing.T) {
 	creado := helpers.CrearSolicitudCiiu(t)
+	helpers.CrearSolicitudCiiu(t) // el total debe superar el limit de las pruebas
 	helpers.ProbarGetAll(t, models.GetAllSolicitudCiiu, creado.Id)
 	t.Log("TestGetAllSolicitudCiiu Finalizado Correctamente (OK)")
 }

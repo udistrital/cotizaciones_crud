@@ -38,9 +38,20 @@ func TestCargueMasivoGetOne(t *testing.T) {
 
 func TestCargueMasivoGetAll(t *testing.T) {
 	creado := helpers.CrearCargueMasivo(t)
+	helpers.CrearCargueMasivo(t) // el total debe superar el limit de las pruebas
 	helpers.ProbarGetAllController(t, rutaCargueMasivo, creado.Id)
 	helpers.ProbarFiltrosSolicitud(t, rutaCargueMasivo, creado.SolicitudId, creado.Id)
 	t.Log("TestCargueMasivoGetAll Finalizado Correctamente (OK)")
+}
+
+func TestCargueMasivoActivo(t *testing.T) {
+	activo := helpers.CrearCargueMasivo(t)
+	inactivo := helpers.CrearCargueMasivo(t)
+	if err := models.DeleteCargueMasivo(inactivo.Id); err != nil {
+		t.Fatal("No se pudo inactivar el registro:", err)
+	}
+	helpers.ProbarActivoController(t, rutaCargueMasivo, activo.Id, inactivo.Id)
+	t.Log("TestCargueMasivoActivo Finalizado Correctamente (OK)")
 }
 
 func TestCargueMasivoPut(t *testing.T) {

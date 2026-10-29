@@ -38,9 +38,20 @@ func TestSolicitudPagoParcialGetOne(t *testing.T) {
 
 func TestSolicitudPagoParcialGetAll(t *testing.T) {
 	creado := helpers.CrearSolicitudPagoParcial(t)
+	helpers.CrearSolicitudPagoParcial(t) // el total debe superar el limit de las pruebas
 	helpers.ProbarGetAllController(t, rutaSolicitudPagoParcial, creado.Id)
 	helpers.ProbarFiltrosSolicitud(t, rutaSolicitudPagoParcial, creado.SolicitudId, creado.Id)
 	t.Log("TestSolicitudPagoParcialGetAll Finalizado Correctamente (OK)")
+}
+
+func TestSolicitudPagoParcialActivo(t *testing.T) {
+	activo := helpers.CrearSolicitudPagoParcial(t)
+	inactivo := helpers.CrearSolicitudPagoParcial(t)
+	if err := models.DeleteSolicitudPagoParcial(inactivo.Id); err != nil {
+		t.Fatal("No se pudo inactivar el registro:", err)
+	}
+	helpers.ProbarActivoController(t, rutaSolicitudPagoParcial, activo.Id, inactivo.Id)
+	t.Log("TestSolicitudPagoParcialActivo Finalizado Correctamente (OK)")
 }
 
 func TestSolicitudPagoParcialPut(t *testing.T) {

@@ -187,3 +187,91 @@ func CrearSolicitudProveedor(t *testing.T) *models.SolicitudProveedor {
 	}
 	return v
 }
+
+func NuevoSolicitudEstado(t *testing.T) *models.SolicitudEstado {
+	t.Helper()
+	return &models.SolicitudEstado{SolicitudId: CrearSolicitudCotizacion(t), EstadoId: 1, ResponsableTerceroId: 1, Justificacion: "Creación de la solicitud"}
+}
+
+func CrearSolicitudEstado(t *testing.T) *models.SolicitudEstado {
+	t.Helper()
+	v := NuevoSolicitudEstado(t)
+	if _, err := models.AddSolicitudEstado(v); err != nil {
+		t.Fatal("No se pudo crear SolicitudEstado:", err)
+	}
+	return v
+}
+
+func NuevoSolicitudModificacion(t *testing.T) *models.SolicitudModificacion {
+	t.Helper()
+	return &models.SolicitudModificacion{SolicitudId: CrearSolicitudCotizacion(t), Numero: 1}
+}
+
+func CrearSolicitudModificacion(t *testing.T) *models.SolicitudModificacion {
+	t.Helper()
+	v := NuevoSolicitudModificacion(t)
+	if _, err := models.AddSolicitudModificacion(v); err != nil {
+		t.Fatal("No se pudo crear SolicitudModificacion:", err)
+	}
+	return v
+}
+
+func NuevoSolicitudModificacionEstado(t *testing.T) *models.SolicitudModificacionEstado {
+	t.Helper()
+	return &models.SolicitudModificacionEstado{SolicitudModificacionId: CrearSolicitudModificacion(t), EstadoId: 1, ResponsableTerceroId: 1, Justificacion: "Ajuste de cantidades"}
+}
+
+func CrearSolicitudModificacionEstado(t *testing.T) *models.SolicitudModificacionEstado {
+	t.Helper()
+	v := NuevoSolicitudModificacionEstado(t)
+	if _, err := models.AddSolicitudModificacionEstado(v); err != nil {
+		t.Fatal("No se pudo crear SolicitudModificacionEstado:", err)
+	}
+	return v
+}
+
+func NuevoSolicitudModificacionDetalle(t *testing.T) *models.SolicitudModificacionDetalle {
+	t.Helper()
+	anterior, nuevo := `{"Cantidad": 20}`, `{"Cantidad": 25}`
+	return &models.SolicitudModificacionDetalle{SolicitudModificacionId: CrearSolicitudModificacion(t), TipoCambioId: 1, ValorAnterior: &anterior, ValorNuevo: &nuevo, Justificacion: "Cambio de cantidad"}
+}
+
+func CrearSolicitudModificacionDetalle(t *testing.T) *models.SolicitudModificacionDetalle {
+	t.Helper()
+	v := NuevoSolicitudModificacionDetalle(t)
+	if _, err := models.AddSolicitudModificacionDetalle(v); err != nil {
+		t.Fatal("No se pudo crear SolicitudModificacionDetalle:", err)
+	}
+	return v
+}
+
+// NuevoObservacion crea un proveedor convocado de la misma solicitud, que es
+// quien escribe la observación.
+func NuevoObservacion(t *testing.T) *models.Observacion {
+	t.Helper()
+	proveedor := CrearSolicitudProveedor(t)
+	return &models.Observacion{SolicitudId: proveedor.SolicitudId, ProveedorConvocadoId: proveedor, Texto: "¿Se aceptan equipos con procesador de 10 núcleos?", EstadoId: 1}
+}
+
+func CrearObservacion(t *testing.T) *models.Observacion {
+	t.Helper()
+	v := NuevoObservacion(t)
+	if _, err := models.AddObservacion(v); err != nil {
+		t.Fatal("No se pudo crear Observacion:", err)
+	}
+	return v
+}
+
+func NuevoRespuestaObservacion(t *testing.T) *models.RespuestaObservacion {
+	t.Helper()
+	return &models.RespuestaObservacion{ObservacionId: CrearObservacion(t), AutorTerceroId: 1, Texto: "Sí, se aceptan procesadores iguales o superiores.", Publica: true}
+}
+
+func CrearRespuestaObservacion(t *testing.T) *models.RespuestaObservacion {
+	t.Helper()
+	v := NuevoRespuestaObservacion(t)
+	if _, err := models.AddRespuestaObservacion(v); err != nil {
+		t.Fatal("No se pudo crear RespuestaObservacion:", err)
+	}
+	return v
+}

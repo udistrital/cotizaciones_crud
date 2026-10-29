@@ -35,6 +35,7 @@ func TestGetSolicitudRequisitoDocumentalById(t *testing.T) {
 
 func TestGetAllSolicitudRequisitoDocumental(t *testing.T) {
 	creado := helpers.CrearSolicitudRequisitoDocumental(t)
+	helpers.CrearSolicitudRequisitoDocumental(t) // el total debe superar el limit de las pruebas
 	helpers.ProbarGetAll(t, models.GetAllSolicitudRequisitoDocumental, creado.Id)
 	t.Log("TestGetAllSolicitudRequisitoDocumental Finalizado Correctamente (OK)")
 }

@@ -35,6 +35,7 @@ func TestGetSolicitudPagoParcialById(t *testing.T) {
 
 func TestGetAllSolicitudPagoParcial(t *testing.T) {
 	creado := helpers.CrearSolicitudPagoParcial(t)
+	helpers.CrearSolicitudPagoParcial(t) // el total debe superar el limit de las pruebas
 	helpers.ProbarGetAll(t, models.GetAllSolicitudPagoParcial, creado.Id)
 	t.Log("TestGetAllSolicitudPagoParcial Finalizado Correctamente (OK)")
 }

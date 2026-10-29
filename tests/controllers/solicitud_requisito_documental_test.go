@@ -38,9 +38,20 @@ func TestSolicitudRequisitoDocumentalGetOne(t *testing.T) {
 
 func TestSolicitudRequisitoDocumentalGetAll(t *testing.T) {
 	creado := helpers.CrearSolicitudRequisitoDocumental(t)
+	helpers.CrearSolicitudRequisitoDocumental(t) // el total debe superar el limit de las pruebas
 	helpers.ProbarGetAllController(t, rutaSolicitudRequisitoDocumental, creado.Id)
 	helpers.ProbarFiltrosSolicitud(t, rutaSolicitudRequisitoDocumental, creado.SolicitudId, creado.Id)
 	t.Log("TestSolicitudRequisitoDocumentalGetAll Finalizado Correctamente (OK)")
+}
+
+func TestSolicitudRequisitoDocumentalActivo(t *testing.T) {
+	activo := helpers.CrearSolicitudRequisitoDocumental(t)
+	inactivo := helpers.CrearSolicitudRequisitoDocumental(t)
+	if err := models.DeleteSolicitudRequisitoDocumental(inactivo.Id); err != nil {
+		t.Fatal("No se pudo inactivar el registro:", err)
+	}
+	helpers.ProbarActivoController(t, rutaSolicitudRequisitoDocumental, activo.Id, inactivo.Id)
+	t.Log("TestSolicitudRequisitoDocumentalActivo Finalizado Correctamente (OK)")
 }
 
 func TestSolicitudRequisitoDocumentalPut(t *testing.T) {

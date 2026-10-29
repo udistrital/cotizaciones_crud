@@ -35,6 +35,7 @@ func TestGetSolicitudNecesidadById(t *testing.T) {
 
 func TestGetAllSolicitudNecesidad(t *testing.T) {
 	creado := helpers.CrearSolicitudNecesidad(t)
+	helpers.CrearSolicitudNecesidad(t) // el total debe superar el limit de las pruebas
 	helpers.ProbarGetAll(t, models.GetAllSolicitudNecesidad, creado.Id)
 	t.Log("TestGetAllSolicitudNecesidad Finalizado Correctamente (OK)")
 }

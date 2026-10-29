@@ -38,9 +38,20 @@ func TestSolicitudItemGetOne(t *testing.T) {
 
 func TestSolicitudItemGetAll(t *testing.T) {
 	creado := helpers.CrearSolicitudItem(t)
+	helpers.CrearSolicitudItem(t) // el total debe superar el limit de las pruebas
 	helpers.ProbarGetAllController(t, rutaSolicitudItem, creado.Id)
 	helpers.ProbarFiltrosSolicitud(t, rutaSolicitudItem, creado.SolicitudId, creado.Id)
 	t.Log("TestSolicitudItemGetAll Finalizado Correctamente (OK)")
+}
+
+func TestSolicitudItemActivo(t *testing.T) {
+	activo := helpers.CrearSolicitudItem(t)
+	inactivo := helpers.CrearSolicitudItem(t)
+	if err := models.DeleteSolicitudItem(inactivo.Id); err != nil {
+		t.Fatal("No se pudo inactivar el registro:", err)
+	}
+	helpers.ProbarActivoController(t, rutaSolicitudItem, activo.Id, inactivo.Id)
+	t.Log("TestSolicitudItemActivo Finalizado Correctamente (OK)")
 }
 
 func TestSolicitudItemPut(t *testing.T) {

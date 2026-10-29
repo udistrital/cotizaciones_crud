@@ -36,6 +36,7 @@ func TestGetSolicitudItemById(t *testing.T) {
 
 func TestGetAllSolicitudItem(t *testing.T) {
 	creado := helpers.CrearSolicitudItem(t)
+	helpers.CrearSolicitudItem(t) // el total debe superar el limit de las pruebas
 	helpers.ProbarGetAll(t, models.GetAllSolicitudItem, creado.Id)
 	t.Log("TestGetAllSolicitudItem Finalizado Correctamente (OK)")
 }
@@ -82,7 +83,7 @@ func TestAddSolicitudItemCargueMasivo(t *testing.T) {
 	if sinCargue.CargueMasivoId != nil {
 		t.Fatal("Se esperaba un ítem sin cargue masivo y se obtuvo", sinCargue.CargueMasivoId)
 	}
-	l, err := models.GetAllSolicitudItem(map[string]string{"Id": strconv.Itoa(sinCargue.Id)}, nil, nil, nil, 0, 10)
+	l, _, err := models.GetAllSolicitudItem(map[string]string{"Id": strconv.Itoa(sinCargue.Id)}, nil, nil, nil, 0, 10)
 	if err != nil || len(l) != 1 {
 		t.Error("Se esperaba consultar el ítem sin cargue masivo y se obtuvo", l, err)
 	}
@@ -92,7 +93,7 @@ func TestAddSolicitudItemCargueMasivo(t *testing.T) {
 	if _, err := models.AddSolicitudItem(conCargue); err != nil {
 		t.Fatal("Se esperaba crear el ítem con cargue masivo y se obtuvo", err)
 	}
-	l, err = models.GetAllSolicitudItem(map[string]string{"CargueMasivoId.Id": strconv.Itoa(conCargue.CargueMasivoId.Id)}, nil, nil, nil, 0, 10)
+	l, _, err = models.GetAllSolicitudItem(map[string]string{"CargueMasivoId.Id": strconv.Itoa(conCargue.CargueMasivoId.Id)}, nil, nil, nil, 0, 10)
 	if err != nil || len(l) != 1 {
 		t.Error("Se esperaba consultar el ítem por su cargue masivo y se obtuvo", l, err)
 	}

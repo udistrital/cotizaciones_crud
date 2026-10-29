@@ -35,6 +35,7 @@ func TestGetSolicitudCotizacionById(t *testing.T) {
 
 func TestGetAllSolicitudCotizacion(t *testing.T) {
 	creado := helpers.CrearSolicitudCotizacion(t)
+	helpers.CrearSolicitudCotizacion(t) // el total debe superar el limit de las pruebas
 	helpers.ProbarGetAll(t, models.GetAllSolicitudCotizacion, creado.Id)
 	t.Log("TestGetAllSolicitudCotizacion Finalizado Correctamente (OK)")
 }

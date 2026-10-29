@@ -17,6 +17,7 @@ type Respuesta struct {
 	Success bool
 	Status  string
 	Message string
+	Total   *int64 // solo en las respuestas de GetAll
 	Data    interface{}
 }
 

@@ -38,9 +38,20 @@ func TestSolicitudCotizacionGetOne(t *testing.T) {
 
 func TestSolicitudCotizacionGetAll(t *testing.T) {
 	creado := helpers.CrearSolicitudCotizacion(t)
+	helpers.CrearSolicitudCotizacion(t) // el total debe superar el limit de las pruebas
 	helpers.ProbarGetAllController(t, rutaSolicitudCotizacion, creado.Id)
 	helpers.ProbarFiltrosSolicitud(t, rutaSolicitudCotizacion, creado, creado.Id)
 	t.Log("TestSolicitudCotizacionGetAll Finalizado Correctamente (OK)")
+}
+
+func TestSolicitudCotizacionActivo(t *testing.T) {
+	activo := helpers.CrearSolicitudCotizacion(t)
+	inactivo := helpers.CrearSolicitudCotizacion(t)
+	if err := models.DeleteSolicitudCotizacion(inactivo.Id); err != nil {
+		t.Fatal("No se pudo inactivar el registro:", err)
+	}
+	helpers.ProbarActivoController(t, rutaSolicitudCotizacion, activo.Id, inactivo.Id)
+	t.Log("TestSolicitudCotizacionActivo Finalizado Correctamente (OK)")
 }
 
 func TestSolicitudCotizacionPut(t *testing.T) {
@@ -81,31 +92,92 @@ func TestSolicitudCotizacionGetDetalle(t *testing.T) {
 	solicitud := helpers.CrearSolicitudCotizacion(t)
 	item := helpers.NuevoSolicitudItem(t)
 	item.SolicitudId = solicitud
-	if _, err := models.AddSolicitudItem(item); err != nil {
-		t.Fatal("No se pudo crear el ítem:", err)
-	}
-
-	w := helpers.Peticion("GET", fmt.Sprintf("%s/%d/detalle", rutaSolicitudCotizacion, solicitud.Id), "")
-	d := helpers.VerificarRespuesta(t, w, http.StatusOK).Dato(t)
-	if d["Id"] != float64(solicitud.Id) {
-		t.Error("Se esperaba la solicitud", solicitud.Id, "y se obtuvo", d["Id"])
-	}
-	items, ok := d["Items"].([]interface{})
-	if !ok || len(items) != 1 {
-		t.Fatal("Se esperaba 1 ítem y se obtuvo", d["Items"])
-	}
-	if i, ok := items[0].(map[string]interface{}); !ok || i["Id"] != float64(item.Id) || i["SolicitudId"] != nil {
-		t.Error("Se esperaba el ítem", item.Id, "sin la solicitud repetida y se obtuvo", items[0])
-	}
-	for _, lista := range []string{"Necesidades", "PagosParciales", "ActividadesEconomicas", "Documentos", "RequisitosDocumentales", "Proveedores", "CarguesMasivos"} {
-		if l, ok := d[lista].([]interface{}); !ok || len(l) != 0 {
-			t.Errorf("Se esperaba una lista vacía en %s y se obtuvo %v", lista, d[lista])
+	itemInactivo := helpers.NuevoSolicitudItem(t)
+	itemInactivo.SolicitudId = solicitud
+	cargue := helpers.NuevoCargueMasivo(t)
+	cargue.SolicitudId = solicitud
+	for _, err := range []error{
+		func() error { _, err := models.AddSolicitudItem(item); return err }(),
+		func() error { _, err := models.AddSolicitudItem(itemInactivo); return err }(),
+		func() error { _, err := models.AddCargueMasivo(cargue); return err }(),
+	} {
+		if err != nil {
+			t.Fatal("No se pudieron crear las entidades asociadas:", err)
 		}
 	}
+	errorCargue := helpers.NuevoCargueMasivoError(t)
+	errorCargue.CargueMasivoId = cargue
+	if _, err := models.AddCargueMasivoError(errorCargue); err != nil {
+		t.Fatal("No se pudo crear el error de cargue:", err)
+	}
+	if err := models.DeleteSolicitudItem(itemInactivo.Id); err != nil {
+		t.Fatal("No se pudo inactivar el ítem:", err)
+	}
+	ruta := fmt.Sprintf("%s/%d/detalle", rutaSolicitudCotizacion, solicitud.Id)
 
-	w = helpers.Peticion("GET", fmt.Sprintf("%s/%d/detalle", rutaSolicitudCotizacion, helpers.IdInexistente), "")
-	helpers.VerificarError(t, w, http.StatusNotFound, "registro no encontrado")
-	w = helpers.Peticion("GET", rutaSolicitudCotizacion+"/abc/detalle", "")
-	helpers.VerificarError(t, w, http.StatusNotFound, "el parametro id debe ser numerico")
+	// ids retorna los Id de la colección indicada del detalle
+	ids := func(t *testing.T, d map[string]interface{}, coleccion string) []float64 {
+		t.Helper()
+		l, ok := d[coleccion].([]interface{})
+		if !ok {
+			t.Fatalf("Se esperaba la colección %s y se obtuvo %v", coleccion, d[coleccion])
+		}
+		res := []float64{}
+		for _, r := range l {
+			res = append(res, r.(map[string]interface{})["Id"].(float64))
+		}
+		return res
+	}
+
+	t.Run("AsociadasActivasPorDefecto", func(t *testing.T) {
+		d := helpers.VerificarRespuesta(t, helpers.Peticion("GET", ruta, ""), http.StatusOK).Dato(t)
+		if d["Id"] != float64(solicitud.Id) {
+			t.Error("Se esperaba la solicitud", solicitud.Id, "y se obtuvo", d["Id"])
+		}
+		items, _ := d["Items"].([]interface{})
+		if len(items) != 1 || items[0].(map[string]interface{})["Id"] != float64(item.Id) || items[0].(map[string]interface{})["SolicitudId"] != nil {
+			t.Error("Se esperaba solo el ítem activo", item.Id, "sin la solicitud repetida y se obtuvo", items)
+		}
+		for _, lista := range []string{"Necesidades", "PagosParciales", "ActividadesEconomicas", "Documentos", "RequisitosDocumentales", "Proveedores"} {
+			if l := ids(t, d, lista); len(l) != 0 {
+				t.Errorf("Se esperaba una lista vacía en %s y se obtuvo %v", lista, l)
+			}
+		}
+		if l := ids(t, d, "CarguesMasivos"); len(l) != 1 || l[0] != float64(cargue.Id) {
+			t.Error("Se esperaba el cargue", cargue.Id, "y se obtuvo", l)
+		}
+		// Los errores son una colección independiente, no anidada en cada cargue
+		if l := ids(t, d, "CarguesMasivosErrores"); len(l) != 1 || l[0] != float64(errorCargue.Id) {
+			t.Error("Se esperaba el error de cargue", errorCargue.Id, "y se obtuvo", l)
+		}
+		for _, c := range d["CarguesMasivos"].([]interface{}) {
+			for campo := range c.(map[string]interface{}) {
+				if campo == "CarguesMasivosErrores" || campo == "Errores" {
+					t.Error("Los errores de cargue no deben estar anidados en el cargue")
+				}
+			}
+		}
+	})
+
+	t.Run("AsociadasInactivas", func(t *testing.T) {
+		d := helpers.VerificarRespuesta(t, helpers.Peticion("GET", ruta+"?activo=false", ""), http.StatusOK).Dato(t)
+		if d["Id"] != float64(solicitud.Id) {
+			t.Error("Se esperaba la solicitud", solicitud.Id, "y se obtuvo", d["Id"])
+		}
+		if l := ids(t, d, "Items"); len(l) != 1 || l[0] != float64(itemInactivo.Id) {
+			t.Error("Se esperaba solo el ítem inactivo", itemInactivo.Id, "y se obtuvo", l)
+		}
+		if l := ids(t, d, "CarguesMasivosErrores"); len(l) != 0 {
+			t.Error("Se esperaba una lista vacía de errores inactivos y se obtuvo", l)
+		}
+	})
+
+	t.Run("Errores", func(t *testing.T) {
+		helpers.VerificarError(t, helpers.Peticion("GET", ruta+"?activo=si", ""), http.StatusNotFound, "el parametro activo debe ser true o false")
+		w := helpers.Peticion("GET", fmt.Sprintf("%s/%d/detalle", rutaSolicitudCotizacion, helpers.IdInexistente), "")
+		helpers.VerificarError(t, w, http.StatusNotFound, "registro no encontrado")
+		w = helpers.Peticion("GET", rutaSolicitudCotizacion+"/abc/detalle", "")
+		helpers.VerificarError(t, w, http.StatusNotFound, "el parametro id debe ser numerico")
+	})
 	t.Log("TestSolicitudCotizacionGetDetalle Finalizado Correctamente (OK)")
 }

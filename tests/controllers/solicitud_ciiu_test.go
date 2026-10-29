@@ -38,9 +38,20 @@ func TestSolicitudCiiuGetOne(t *testing.T) {
 
 func TestSolicitudCiiuGetAll(t *testing.T) {
 	creado := helpers.CrearSolicitudCiiu(t)
+	helpers.CrearSolicitudCiiu(t) // el total debe superar el limit de las pruebas
 	helpers.ProbarGetAllController(t, rutaSolicitudCiiu, creado.Id)
 	helpers.ProbarFiltrosSolicitud(t, rutaSolicitudCiiu, creado.SolicitudId, creado.Id)
 	t.Log("TestSolicitudCiiuGetAll Finalizado Correctamente (OK)")
+}
+
+func TestSolicitudCiiuActivo(t *testing.T) {
+	activo := helpers.CrearSolicitudCiiu(t)
+	inactivo := helpers.CrearSolicitudCiiu(t)
+	if err := models.DeleteSolicitudCiiu(inactivo.Id); err != nil {
+		t.Fatal("No se pudo inactivar el registro:", err)
+	}
+	helpers.ProbarActivoController(t, rutaSolicitudCiiu, activo.Id, inactivo.Id)
+	t.Log("TestSolicitudCiiuActivo Finalizado Correctamente (OK)")
 }
 
 func TestSolicitudCiiuPut(t *testing.T) {

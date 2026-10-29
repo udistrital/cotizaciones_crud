@@ -35,6 +35,7 @@ func TestGetCargueMasivoErrorById(t *testing.T) {
 
 func TestGetAllCargueMasivoError(t *testing.T) {
 	creado := helpers.CrearCargueMasivoError(t)
+	helpers.CrearCargueMasivoError(t) // el total debe superar el limit de las pruebas
 	helpers.ProbarGetAll(t, models.GetAllCargueMasivoError, creado.Id)
 	t.Log("TestGetAllCargueMasivoError Finalizado Correctamente (OK)")
 }
