@@ -86,7 +86,7 @@ func GetAllSolicitudCotizacion(query map[string]string, fields []string, sortby 
 		if strings.Contains(k, "isnull") {
 			qs = qs.Filter(k, (v == "true" || v == "1"))
 		} else {
-			qs = qs.Filter(k, v)
+			qs = qs.Filter(k, valorFiltro(new(SolicitudCotizacion), k, v))
 		}
 	}
 	// order by:

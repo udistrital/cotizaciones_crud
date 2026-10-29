@@ -64,7 +64,7 @@ func GetAllSolicitudEstado(query map[string]string, fields []string, sortby []st
 		if strings.Contains(k, "isnull") {
 			qs = qs.Filter(k, (v == "true" || v == "1"))
 		} else {
-			qs = qs.Filter(k, v)
+			qs = qs.Filter(k, valorFiltro(new(SolicitudEstado), k, v))
 		}
 	}
 	// order by:

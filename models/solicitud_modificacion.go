@@ -62,7 +62,7 @@ func GetAllSolicitudModificacion(query map[string]string, fields []string, sortb
 		if strings.Contains(k, "isnull") {
 			qs = qs.Filter(k, (v == "true" || v == "1"))
 		} else {
-			qs = qs.Filter(k, v)
+			qs = qs.Filter(k, valorFiltro(new(SolicitudModificacion), k, v))
 		}
 	}
 	// order by:
