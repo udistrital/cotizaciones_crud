@@ -1,0 +1,12 @@
+cotizaciones_crud
+*.env
+lastupdate.tmp
+.vscode/
+main
+.scannerwork/
+swagger/**
+!swagger/swagger.json
+!swagger/swagger.yml
+coverage.out
+test_report.xml
+lint_report.xml
