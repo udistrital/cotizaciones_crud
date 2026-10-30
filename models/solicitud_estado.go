@@ -83,7 +83,6 @@ func GetAllSolicitudEstado(query map[string]string, fields []string, sortby []st
 				}
 				sortFields = append(sortFields, orderby)
 			}
-			qs = qs.OrderBy(sortFields...)
 		} else if len(sortby) != len(order) && len(order) == 1 {
 			// 2) there is exactly one order, all the sorted fields will be sorted by this order
 			for _, v := range sortby {
