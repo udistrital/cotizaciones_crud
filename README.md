@@ -105,6 +105,18 @@ go test ./... -coverpkg=github.com/udistrital/cotizaciones_crud/models,github.co
 go clean -testcache
 ```
 
+Pruebas de integración
+
+SQLite no aplica los índices únicos ni las llaves foráneas de `database/agora_cotizaciones.sql`. Con `COTIZACIONES_CRUD_PRUEBAS_POSTGRES=true`, las pruebas crean en el servidor PostgreSQL configurado una base de datos temporal con ese script y la eliminan al terminar. Así se ejecutan contra PostgreSQL las pruebas de `tests/models` y `tests/controllers` y además las de `tests/integracion`, que validan los índices únicos, las llaves foráneas, la longitud y el rango de los datos y los mensajes de error de la base de datos. Sin la variable, las pruebas de `tests/integracion` se omiten.
+
+La conexión usa las mismas variables `COTIZACIONES_CRUD_PG*` del API; el usuario debe tener permiso para crear bases de datos. La base de datos del API no se modifica.
+
+```shell
+export COTIZACIONES_CRUD_PRUEBAS_POSTGRES=true
+cd tests
+go test ./... -v
+```
+
 ## Estado CI
 
 | Develop | Release 0.0.1 | Master |
