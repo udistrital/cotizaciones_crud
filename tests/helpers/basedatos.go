@@ -4,15 +4,17 @@ package helpers
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"net/url"
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/beego/beego/v2/client/orm"
-	_ "github.com/lib/pq"
+	"github.com/lib/pq"
 	_ "modernc.org/sqlite"
 
 	// Registra los modelos en el ORM antes de crear las tablas
@@ -70,13 +72,26 @@ func iniciarSQLite() (limpiar func(), err error) {
 // configurado, ejecuta en ella database/agora_cotizaciones.sql y la elimina al
 // finalizar. La base de datos del API (COTIZACIONES_CRUD_PGDB) no se modifica.
 func iniciarPostgres() (limpiar func(), err error) {
+	var faltantes []string
+	for _, v := range []string{"COTIZACIONES_CRUD_PGUSER", "COTIZACIONES_CRUD_PGHOST", "COTIZACIONES_CRUD_PGPORT", "COTIZACIONES_CRUD_PGDB", "COTIZACIONES_CRUD_PGSCHEMA"} {
+		if os.Getenv(v) == "" {
+			faltantes = append(faltantes, v)
+		}
+	}
+	if len(faltantes) > 0 {
+		return nil, fmt.Errorf("%s=true requiere las variables de conexion %s", VariablePostgres, strings.Join(faltantes, ", "))
+	}
+
 	admin, err := sql.Open("postgres", dsnPostgres(os.Getenv("COTIZACIONES_CRUD_PGDB"), ""))
 	if err != nil {
 		return nil, err
 	}
-	// En CI el servidor se inicia junto con las pruebas y puede tardar en aceptar conexiones
+	// En CI el servidor se inicia junto con las pruebas y puede tardar en aceptar
+	// conexiones. Si el servidor ya responde con un error (por ejemplo credenciales
+	// invalidas), reintentar no lo resuelve
 	for intento := 0; intento < 30; intento++ {
-		if err = admin.Ping(); err == nil {
+		var pqErr *pq.Error
+		if err = admin.Ping(); err == nil || errors.As(err, &pqErr) {
 			break
 		}
 		time.Sleep(time.Second)

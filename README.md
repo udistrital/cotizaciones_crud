@@ -112,9 +112,10 @@ SQLite no aplica los índices únicos ni las llaves foráneas de `database/agora
 La conexión usa las mismas variables `COTIZACIONES_CRUD_PG*` del API; el usuario debe tener permiso para crear bases de datos. La base de datos del API no se modifica.
 
 ```shell
-export COTIZACIONES_CRUD_PRUEBAS_POSTGRES=true
+# Carga las variables COTIZACIONES_CRUD_PG* del archivo .env
+set -a && source .env && set +a
 cd tests
-go test ./... -v
+COTIZACIONES_CRUD_PRUEBAS_POSTGRES=true go test ./... -v
 ```
 
 ## Estado CI
