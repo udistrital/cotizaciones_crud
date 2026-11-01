@@ -914,5 +914,3 @@ ALTER TABLE "cotizaciones"."solicitud_modificacion_detalle" ADD FOREIGN KEY ("so
 ALTER TABLE "cotizaciones"."solicitud_estado" ADD FOREIGN KEY ("solicitud_id") REFERENCES "cotizaciones"."solicitud_cotizacion" ("id") DEFERRABLE INITIALLY IMMEDIATE;
 
 ALTER TABLE "cotizaciones"."cotizacion_estado" ADD FOREIGN KEY ("cotizacion_id") REFERENCES "cotizaciones"."cotizacion" ("id") DEFERRABLE INITIALLY IMMEDIATE;
-
-ALTER TABLE "cotizaciones"."solicitud_proveedor" ADD FOREIGN KEY ("fecha_creacion") REFERENCES "cotizaciones"."solicitud_proveedor" ("id") DEFERRABLE INITIALLY IMMEDIATE;

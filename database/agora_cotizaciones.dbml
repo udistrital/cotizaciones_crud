@@ -494,8 +494,3 @@ TableGroup parametros_catalogos {
   parametros.evento_notificacion
   parametros.plantilla_cargue
 }
-
-
-Ref: "cotizaciones"."solicitud_modificacion"."id" <? "cotizaciones"."solicitud_modificacion"."activo"
-
-Ref: "cotizaciones"."solicitud_proveedor"."id" <? "cotizaciones"."solicitud_proveedor"."fecha_creacion"

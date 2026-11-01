@@ -47,6 +47,31 @@ steps:
     event:
       - push
 
+- name: go_integration_test
+  image: golang:1.27
+  environment:
+    # Base de datos temporal del servicio postgres; no son credenciales de un ambiente real
+    COTIZACIONES_CRUD_PRUEBAS_POSTGRES: "true"
+    COTIZACIONES_CRUD_PGHOST: postgres
+    COTIZACIONES_CRUD_PGPORT: "5432"
+    COTIZACIONES_CRUD_PGUSER: postgres
+    COTIZACIONES_CRUD_PGPASS: postgres
+    COTIZACIONES_CRUD_PGDB: postgres
+    COTIZACIONES_CRUD_PGSCHEMA: cotizaciones
+  commands:
+    # Pruebas contra PostgreSQL con database/agora_cotizaciones.sql: la suite completa
+    # y las restricciones de integridad de tests/integracion
+    - go install github.com/jstemmer/go-junit-report/v2@v2.1.0
+    - go test -v ./tests/... -coverpkg=./models,./controllers -coverprofile=coverage_integracion.out 2>&1 | go-junit-report -set-exit-code -iocopy -out test_integracion_report.xml
+    - go tool cover -func=coverage_integracion.out | tail -1
+  when:
+    branch:
+      - feature/*
+      - develop
+      - hotfix/*
+    event:
+      - push
+
 - name: build
   image: golang:1.27
   commands:
@@ -132,3 +157,11 @@ steps:
       - master
     event:
       - push
+
+services:
+- name: postgres
+  image: postgres:16
+  environment:
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    POSTGRES_DB: postgres
