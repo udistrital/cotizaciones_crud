@@ -54,6 +54,7 @@ func (c *SolicitudCotizacionController) Post() {
 // @Param	id		path 	string	true		"The id"
 // @Param	activo	query	bool	false	"Registros activos (true, predeterminado) o inactivos (false)"
 // @Success 200 {object} controllers.APIResponse
+// @Failure 400 parametro activo invalido
 // @Failure 404 id invalido o registro inexistente
 // @router /:id [get]
 func (c *SolicitudCotizacionController) GetOne() {
@@ -65,7 +66,7 @@ func (c *SolicitudCotizacionController) GetOne() {
 
 	activo, err := leerActivo(&c.Controller)
 	if err != nil {
-		abortWithError(&c.Controller, 404, err.Error(), nil)
+		abortWithError(&c.Controller, 400, err.Error(), nil)
 		return
 	}
 
@@ -84,6 +85,7 @@ func (c *SolicitudCotizacionController) GetOne() {
 // @Param	id		path 	string	true		"The id"
 // @Param	activo	query	bool	false	"Entidades asociadas activas (true, predeterminado) o inactivas (false)"
 // @Success 200 {object} models.SolicitudCotizacionDetalle
+// @Failure 400 parametro activo invalido
 // @Failure 404 id invalido o registro inexistente
 // @router /:id/detalle [get]
 func (c *SolicitudCotizacionController) GetDetalle() {
@@ -95,7 +97,7 @@ func (c *SolicitudCotizacionController) GetDetalle() {
 
 	activo, err := leerActivo(&c.Controller)
 	if err != nil {
-		abortWithError(&c.Controller, 404, err.Error(), nil)
+		abortWithError(&c.Controller, 400, err.Error(), nil)
 		return
 	}
 
@@ -125,7 +127,7 @@ func (c *SolicitudCotizacionController) GetDetalle() {
 // @Param	estado	query	int	false	"Id del estado de la solicitud (parametros)"
 // @Param	dependencia	query	int	false	"Id de la dependencia solicitante (Oikos)"
 // @Param	activo	query	bool	false	"Registros activos (true, predeterminado) o inactivos (false)"
-// @Success 200 {object} controllers.APIResponseLista
+// @Success 200 {object} controllers.SolicitudCotizacionLista
 // @Failure 400 parametros invalidos
 // @Failure 404 error al consultar los registros
 // @router / [get]

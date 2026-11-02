@@ -16,25 +16,34 @@ type APIResponse struct {
 	Data    interface{} `json:"Data"`
 }
 
-// APIResponseLista es la respuesta de las consultas GetAll. Total es la cantidad
-// de registros que cumplen los filtros, sin aplicar limit ni offset; Data
-// contiene solo los registros de la pagina solicitada.
+// APIResponseLista contiene los campos comunes de la respuesta de las consultas
+// GetAll. Total es la cantidad de registros que cumplen los filtros, sin aplicar
+// limit ni offset. Cada entidad documenta su respuesta en Swagger con un tipo
+// <Entidad>Lista (respuestas_lista.go) que agrega Data como lista de su modelo.
 type APIResponseLista struct {
-	Success bool        `json:"Success"`
-	Status  string      `json:"Status"`
-	Message string      `json:"Message"`
-	Total   int64       `json:"Total"`
-	Data    interface{} `json:"Data"`
+	Success bool   `json:"Success"`
+	Status  string `json:"Status"`
+	Message string `json:"Message"`
+	Total   int64  `json:"Total"`
+}
+
+// respuestaLista es la respuesta de las consultas GetAll: los campos comunes y en
+// Data solo los registros de la pagina solicitada.
+type respuestaLista struct {
+	APIResponseLista
+	Data interface{} `json:"Data"`
 }
 
 func writeSuccessLista(ctrl *beego.Controller, message string, total int64, data interface{}) {
 	ctrl.Ctx.Output.SetStatus(200)
-	ctrl.Data["json"] = APIResponseLista{
-		Success: true,
-		Status:  "200",
-		Message: message,
-		Total:   total,
-		Data:    data,
+	ctrl.Data["json"] = respuestaLista{
+		APIResponseLista: APIResponseLista{
+			Success: true,
+			Status:  "200",
+			Message: message,
+			Total:   total,
+		},
+		Data: data,
 	}
 	ctrl.ServeJSON()
 }

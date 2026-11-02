@@ -52,6 +52,7 @@ func (c *SolicitudCiiuController) Post() {
 // @Param	id		path 	string	true		"The id"
 // @Param	activo	query	bool	false	"Registros activos (true, predeterminado) o inactivos (false)"
 // @Success 200 {object} controllers.APIResponse
+// @Failure 400 parametro activo invalido
 // @Failure 404 id invalido o registro inexistente
 // @router /:id [get]
 func (c *SolicitudCiiuController) GetOne() {
@@ -63,7 +64,7 @@ func (c *SolicitudCiiuController) GetOne() {
 
 	activo, err := leerActivo(&c.Controller)
 	if err != nil {
-		abortWithError(&c.Controller, 404, err.Error(), nil)
+		abortWithError(&c.Controller, 400, err.Error(), nil)
 		return
 	}
 
@@ -89,7 +90,7 @@ func (c *SolicitudCiiuController) GetOne() {
 // @Param	estado	query	int	false	"Id del estado de la solicitud (parametros)"
 // @Param	dependencia	query	int	false	"Id de la dependencia solicitante (Oikos)"
 // @Param	activo	query	bool	false	"Registros activos (true, predeterminado) o inactivos (false)"
-// @Success 200 {object} controllers.APIResponseLista
+// @Success 200 {object} controllers.SolicitudCiiuLista
 // @Failure 400 parametros invalidos
 // @Failure 404 error al consultar los registros
 // @router / [get]

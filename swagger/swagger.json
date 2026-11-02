@@ -91,7 +91,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponseLista"
+                            "$ref": "#/definitions/controllers.CargueMasivoLista"
                         }
                     },
                     "400": {
@@ -160,6 +160,9 @@
                         "schema": {
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
+                    },
+                    "400": {
+                        "description": "parametro activo invalido"
                     },
                     "404": {
                         "description": "id invalido o registro inexistente"
@@ -306,7 +309,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponseLista"
+                            "$ref": "#/definitions/controllers.CargueMasivoErrorLista"
                         }
                     },
                     "400": {
@@ -375,6 +378,9 @@
                         "schema": {
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
+                    },
+                    "400": {
+                        "description": "parametro activo invalido"
                     },
                     "404": {
                         "description": "id invalido o registro inexistente"
@@ -521,7 +527,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponseLista"
+                            "$ref": "#/definitions/controllers.DocumentoSolicitudLista"
                         }
                     },
                     "400": {
@@ -590,6 +596,9 @@
                         "schema": {
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
+                    },
+                    "400": {
+                        "description": "parametro activo invalido"
                     },
                     "404": {
                         "description": "id invalido o registro inexistente"
@@ -736,7 +745,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponseLista"
+                            "$ref": "#/definitions/controllers.ObservacionLista"
                         }
                     },
                     "400": {
@@ -805,6 +814,9 @@
                         "schema": {
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
+                    },
+                    "400": {
+                        "description": "parametro activo invalido"
                     },
                     "404": {
                         "description": "id invalido o registro inexistente"
@@ -951,7 +963,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponseLista"
+                            "$ref": "#/definitions/controllers.RespuestaObservacionLista"
                         }
                     },
                     "400": {
@@ -1020,6 +1032,9 @@
                         "schema": {
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
+                    },
+                    "400": {
+                        "description": "parametro activo invalido"
                     },
                     "404": {
                         "description": "id invalido o registro inexistente"
@@ -1166,7 +1181,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponseLista"
+                            "$ref": "#/definitions/controllers.SolicitudCiiuLista"
                         }
                     },
                     "400": {
@@ -1235,6 +1250,9 @@
                         "schema": {
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
+                    },
+                    "400": {
+                        "description": "parametro activo invalido"
                     },
                     "404": {
                         "description": "id invalido o registro inexistente"
@@ -1381,7 +1399,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponseLista"
+                            "$ref": "#/definitions/controllers.SolicitudCotizacionLista"
                         }
                     },
                     "400": {
@@ -1450,6 +1468,9 @@
                         "schema": {
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
+                    },
+                    "400": {
+                        "description": "parametro activo invalido"
                     },
                     "404": {
                         "description": "id invalido o registro inexistente"
@@ -1549,6 +1570,9 @@
                             "$ref": "#/definitions/models.SolicitudCotizacionDetalle"
                         }
                     },
+                    "400": {
+                        "description": "parametro activo invalido"
+                    },
                     "404": {
                         "description": "id invalido o registro inexistente"
                     }
@@ -1631,7 +1655,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponseLista"
+                            "$ref": "#/definitions/controllers.SolicitudEstadoLista"
                         }
                     },
                     "400": {
@@ -1700,6 +1724,9 @@
                         "schema": {
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
+                    },
+                    "400": {
+                        "description": "parametro activo invalido"
                     },
                     "404": {
                         "description": "id invalido o registro inexistente"
@@ -1846,7 +1873,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponseLista"
+                            "$ref": "#/definitions/controllers.SolicitudItemLista"
                         }
                     },
                     "400": {
@@ -1915,6 +1942,9 @@
                         "schema": {
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
+                    },
+                    "400": {
+                        "description": "parametro activo invalido"
                     },
                     "404": {
                         "description": "id invalido o registro inexistente"
@@ -2061,7 +2091,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponseLista"
+                            "$ref": "#/definitions/controllers.SolicitudModificacionLista"
                         }
                     },
                     "400": {
@@ -2130,6 +2160,9 @@
                         "schema": {
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
+                    },
+                    "400": {
+                        "description": "parametro activo invalido"
                     },
                     "404": {
                         "description": "id invalido o registro inexistente"
@@ -2276,7 +2309,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponseLista"
+                            "$ref": "#/definitions/controllers.SolicitudModificacionDetalleLista"
                         }
                     },
                     "400": {
@@ -2345,6 +2378,9 @@
                         "schema": {
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
+                    },
+                    "400": {
+                        "description": "parametro activo invalido"
                     },
                     "404": {
                         "description": "id invalido o registro inexistente"
@@ -2491,7 +2527,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponseLista"
+                            "$ref": "#/definitions/controllers.SolicitudModificacionEstadoLista"
                         }
                     },
                     "400": {
@@ -2560,6 +2596,9 @@
                         "schema": {
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
+                    },
+                    "400": {
+                        "description": "parametro activo invalido"
                     },
                     "404": {
                         "description": "id invalido o registro inexistente"
@@ -2706,7 +2745,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponseLista"
+                            "$ref": "#/definitions/controllers.SolicitudNecesidadLista"
                         }
                     },
                     "400": {
@@ -2775,6 +2814,9 @@
                         "schema": {
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
+                    },
+                    "400": {
+                        "description": "parametro activo invalido"
                     },
                     "404": {
                         "description": "id invalido o registro inexistente"
@@ -2921,7 +2963,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponseLista"
+                            "$ref": "#/definitions/controllers.SolicitudPagoParcialLista"
                         }
                     },
                     "400": {
@@ -2990,6 +3032,9 @@
                         "schema": {
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
+                    },
+                    "400": {
+                        "description": "parametro activo invalido"
                     },
                     "404": {
                         "description": "id invalido o registro inexistente"
@@ -3136,7 +3181,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponseLista"
+                            "$ref": "#/definitions/controllers.SolicitudProveedorLista"
                         }
                     },
                     "400": {
@@ -3205,6 +3250,9 @@
                         "schema": {
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
+                    },
+                    "400": {
+                        "description": "parametro activo invalido"
                     },
                     "404": {
                         "description": "id invalido o registro inexistente"
@@ -3351,7 +3399,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/controllers.APIResponseLista"
+                            "$ref": "#/definitions/controllers.SolicitudRequisitoDocumentalLista"
                         }
                     },
                     "400": {
@@ -3420,6 +3468,9 @@
                         "schema": {
                             "$ref": "#/definitions/controllers.APIResponse"
                         }
+                    },
+                    "400": {
+                        "description": "parametro activo invalido"
                     },
                     "404": {
                         "description": "id invalido o registro inexistente"
@@ -3514,8 +3565,405 @@
             "title": "APIResponseLista",
             "type": "object",
             "properties": {
+                "Message": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "string"
+                },
+                "Success": {
+                    "type": "boolean"
+                },
+                "Total": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "controllers.CargueMasivoErrorLista": {
+            "title": "CargueMasivoErrorLista",
+            "type": "object",
+            "properties": {
                 "Data": {
-                    "$ref": "#/definitions/controllers.interface"
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.CargueMasivoError"
+                    }
+                },
+                "Message": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "string"
+                },
+                "Success": {
+                    "type": "boolean"
+                },
+                "Total": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "controllers.CargueMasivoLista": {
+            "title": "CargueMasivoLista",
+            "type": "object",
+            "properties": {
+                "Data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.CargueMasivo"
+                    }
+                },
+                "Message": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "string"
+                },
+                "Success": {
+                    "type": "boolean"
+                },
+                "Total": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "controllers.DocumentoSolicitudLista": {
+            "title": "DocumentoSolicitudLista",
+            "type": "object",
+            "properties": {
+                "Data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.DocumentoSolicitud"
+                    }
+                },
+                "Message": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "string"
+                },
+                "Success": {
+                    "type": "boolean"
+                },
+                "Total": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "controllers.ObservacionLista": {
+            "title": "ObservacionLista",
+            "type": "object",
+            "properties": {
+                "Data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Observacion"
+                    }
+                },
+                "Message": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "string"
+                },
+                "Success": {
+                    "type": "boolean"
+                },
+                "Total": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "controllers.RespuestaObservacionLista": {
+            "title": "RespuestaObservacionLista",
+            "type": "object",
+            "properties": {
+                "Data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RespuestaObservacion"
+                    }
+                },
+                "Message": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "string"
+                },
+                "Success": {
+                    "type": "boolean"
+                },
+                "Total": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "controllers.SolicitudCiiuLista": {
+            "title": "SolicitudCiiuLista",
+            "type": "object",
+            "properties": {
+                "Data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.SolicitudCiiu"
+                    }
+                },
+                "Message": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "string"
+                },
+                "Success": {
+                    "type": "boolean"
+                },
+                "Total": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "controllers.SolicitudCotizacionLista": {
+            "title": "SolicitudCotizacionLista",
+            "type": "object",
+            "properties": {
+                "Data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.SolicitudCotizacion"
+                    }
+                },
+                "Message": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "string"
+                },
+                "Success": {
+                    "type": "boolean"
+                },
+                "Total": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "controllers.SolicitudEstadoLista": {
+            "title": "SolicitudEstadoLista",
+            "type": "object",
+            "properties": {
+                "Data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.SolicitudEstado"
+                    }
+                },
+                "Message": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "string"
+                },
+                "Success": {
+                    "type": "boolean"
+                },
+                "Total": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "controllers.SolicitudItemLista": {
+            "title": "SolicitudItemLista",
+            "type": "object",
+            "properties": {
+                "Data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.SolicitudItem"
+                    }
+                },
+                "Message": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "string"
+                },
+                "Success": {
+                    "type": "boolean"
+                },
+                "Total": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "controllers.SolicitudModificacionDetalleLista": {
+            "title": "SolicitudModificacionDetalleLista",
+            "type": "object",
+            "properties": {
+                "Data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.SolicitudModificacionDetalle"
+                    }
+                },
+                "Message": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "string"
+                },
+                "Success": {
+                    "type": "boolean"
+                },
+                "Total": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "controllers.SolicitudModificacionEstadoLista": {
+            "title": "SolicitudModificacionEstadoLista",
+            "type": "object",
+            "properties": {
+                "Data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.SolicitudModificacionEstado"
+                    }
+                },
+                "Message": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "string"
+                },
+                "Success": {
+                    "type": "boolean"
+                },
+                "Total": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "controllers.SolicitudModificacionLista": {
+            "title": "SolicitudModificacionLista",
+            "type": "object",
+            "properties": {
+                "Data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.SolicitudModificacion"
+                    }
+                },
+                "Message": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "string"
+                },
+                "Success": {
+                    "type": "boolean"
+                },
+                "Total": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "controllers.SolicitudNecesidadLista": {
+            "title": "SolicitudNecesidadLista",
+            "type": "object",
+            "properties": {
+                "Data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.SolicitudNecesidad"
+                    }
+                },
+                "Message": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "string"
+                },
+                "Success": {
+                    "type": "boolean"
+                },
+                "Total": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "controllers.SolicitudPagoParcialLista": {
+            "title": "SolicitudPagoParcialLista",
+            "type": "object",
+            "properties": {
+                "Data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.SolicitudPagoParcial"
+                    }
+                },
+                "Message": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "string"
+                },
+                "Success": {
+                    "type": "boolean"
+                },
+                "Total": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "controllers.SolicitudProveedorLista": {
+            "title": "SolicitudProveedorLista",
+            "type": "object",
+            "properties": {
+                "Data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.SolicitudProveedor"
+                    }
+                },
+                "Message": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "string"
+                },
+                "Success": {
+                    "type": "boolean"
+                },
+                "Total": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "controllers.SolicitudRequisitoDocumentalLista": {
+            "title": "SolicitudRequisitoDocumentalLista",
+            "type": "object",
+            "properties": {
+                "Data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.SolicitudRequisitoDocumental"
+                    }
                 },
                 "Message": {
                     "type": "string"
