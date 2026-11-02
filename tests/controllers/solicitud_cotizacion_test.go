@@ -173,7 +173,7 @@ func TestSolicitudCotizacionGetDetalle(t *testing.T) {
 	})
 
 	t.Run("Errores", func(t *testing.T) {
-		helpers.VerificarError(t, helpers.Peticion("GET", ruta+"?activo=si", ""), http.StatusNotFound, "el parametro activo debe ser true o false")
+		helpers.VerificarError(t, helpers.Peticion("GET", ruta+"?activo=si", ""), http.StatusBadRequest, "el parametro activo debe ser true o false")
 		w := helpers.Peticion("GET", fmt.Sprintf("%s/%d/detalle", rutaSolicitudCotizacion, helpers.IdInexistente), "")
 		helpers.VerificarError(t, w, http.StatusNotFound, "registro no encontrado")
 		w = helpers.Peticion("GET", rutaSolicitudCotizacion+"/abc/detalle", "")

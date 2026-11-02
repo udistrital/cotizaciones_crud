@@ -285,7 +285,7 @@ func ProbarActivoController(t *testing.T, ruta string, idActivo, idInactivo int)
 	}
 
 	t.Run("PorIdActivoInvalido", func(t *testing.T) {
-		VerificarError(t, Peticion("GET", ruta+"/"+activo+"?activo=si", ""), http.StatusNotFound, "el parametro activo debe ser true o false")
+		VerificarError(t, Peticion("GET", ruta+"/"+activo+"?activo=si", ""), http.StatusBadRequest, "el parametro activo debe ser true o false")
 	})
 }
 
