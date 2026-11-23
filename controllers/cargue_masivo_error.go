@@ -6,7 +6,9 @@ import (
 	"strings"
 
 	"github.com/udistrital/cotizaciones_crud/models"
+	"github.com/udistrital/utils_oas/time_bogota"
 
+	beeLogger "github.com/beego/bee/v2/logger"
 	beego "github.com/beego/beego/v2/server/web"
 )
 
@@ -28,140 +30,121 @@ func (c *CargueMasivoErrorController) URLMapping() {
 // @Title Post
 // @Description create CargueMasivoError
 // @Param	body		body 	models.CargueMasivoError	true		"body for CargueMasivoError content"
-// @Success 201 {object} controllers.APIResponse
-// @Failure 400 body o datos invalidos
+// @Success 201 {int} models.CargueMasivoError
+// @Failure 400 the request contains incorrect syntax
 // @router / [post]
 func (c *CargueMasivoErrorController) Post() {
 	var v models.CargueMasivoError
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err != nil {
-		abortWithError(&c.Controller, 400, "cuerpo de la solicitud invalido", err)
-		return
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+		// El Id lo asigna la base de datos (serial): se ignora el enviado por el cliente
+		v.Id = 0
+		v.Activo = true
+		v.FechaCreacion = time_bogota.Tiempo_bogota()
+		v.FechaModificacion = time_bogota.Tiempo_bogota()
+		if _, err := models.AddCargueMasivoError(&v); err == nil {
+			c.Ctx.Output.SetStatus(201)
+			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "201", "Message": "Registration successful", "Data": v}
+		} else {
+			beeLogger.Log.Error(err.Error())
+			c.Data["message"] = "Error service POST: The request contains an incorrect data type or an invalid parameter"
+			c.Abort("400")
+		}
+	} else {
+		beeLogger.Log.Error(err.Error())
+		c.Data["message"] = "Error service POST: The request contains an incorrect data type or an invalid parameter"
+		c.Abort("400")
 	}
-
-	if _, err := models.AddCargueMasivoError(&v); err != nil {
-		abortWithDBError(&c.Controller, 400, "error al crear el registro", err)
-		return
-	}
-
-	writeSuccess(&c.Controller, 201, "registro creado", v)
+	c.ServeJSON()
 }
 
 // GetOne ...
 // @Title Get One
 // @Description get CargueMasivoError by id
-// @Param	id		path 	string	true		"The id"
-// @Param	activo	query	bool	false	"Registros activos (true, predeterminado) o inactivos (false)"
-// @Success 200 {object} controllers.APIResponse
-// @Failure 404 id invalido o registro inexistente
+// @Param	id		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.CargueMasivoError
+// @Failure 404 not found resource
 // @router /:id [get]
 func (c *CargueMasivoErrorController) GetOne() {
-	id, err := strconv.Atoi(c.Ctx.Input.Param(":id"))
-	if err != nil {
-		abortWithError(&c.Controller, 404, "el parametro id debe ser numerico", err)
-		return
-	}
-
-	activo, err := leerActivo(&c.Controller)
-	if err != nil {
-		abortWithError(&c.Controller, 404, err.Error(), nil)
-		return
-	}
-
+	idStr := c.Ctx.Input.Param(":id")
+	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetCargueMasivoErrorById(id)
-	if err != nil || v.Activo != activo {
-		abortWithError(&c.Controller, 404, "registro no encontrado", err)
-		return
+	if err != nil {
+		beeLogger.Log.Error(err.Error())
+		c.Data["message"] = "Error service GetOne: The request contains an incorrect parameter or no record exists"
+		c.Abort("404")
+	} else {
+		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": v}
 	}
-
-	writeSuccess(&c.Controller, 200, "consulta exitosa", v)
+	c.ServeJSON()
 }
 
 // GetAll ...
 // @Title Get All
-// @Description get CargueMasivoError. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+// @Description get CargueMasivoError
 // @Param	query	query	string	false	"Filter. e.g. col1:v1,col2:v2 ..."
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
-// @Param	order	query	string	false	"Order corresponding to each sortby field. e.g. desc,asc ..."
+// @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
 // @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Param	vigencia	query	int	false	"Vigencia de la solicitud. e.g. 2026"
-// @Param	estado	query	int	false	"Id del estado de la solicitud (parametros)"
-// @Param	dependencia	query	int	false	"Id de la dependencia solicitante (Oikos)"
-// @Param	activo	query	bool	false	"Registros activos (true, predeterminado) o inactivos (false)"
-// @Success 200 {object} controllers.APIResponseLista
-// @Failure 400 parametros invalidos
-// @Failure 404 error al consultar los registros
+// @Success 200 {object} models.CargueMasivoError
+// @Failure 404 not found resource
 // @router / [get]
 func (c *CargueMasivoErrorController) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
-	query := make(map[string]string)
-	limit := int64(10)
-	offset := int64(0)
+	var query = make(map[string]string)
+	var limit int64 = 10
+	var offset int64
 
+	// fields: col1,col2,entity.col3
 	if v := c.GetString("fields"); v != "" {
 		fields = strings.Split(v, ",")
 	}
-
-	if v := c.GetString("limit"); v != "" {
-		parsedLimit, err := strconv.ParseInt(v, 10, 64)
-		if err != nil || parsedLimit < 0 {
-			abortWithError(&c.Controller, 400, "el parametro limit debe ser un entero mayor o igual a cero", err)
-			return
-		}
-		limit = parsedLimit
+	// limit: 10 (default is 10)
+	if v, err := c.GetInt64("limit"); err == nil {
+		limit = v
 	}
-
-	if v := c.GetString("offset"); v != "" {
-		parsedOffset, err := strconv.ParseInt(v, 10, 64)
-		if err != nil || parsedOffset < 0 {
-			abortWithError(&c.Controller, 400, "el parametro offset debe ser un entero mayor o igual a cero", err)
-			return
-		}
-		offset = parsedOffset
+	// offset: 0 (default is 0)
+	if v, err := c.GetInt64("offset"); err == nil {
+		offset = v
 	}
-
+	// sortby: col1,col2
 	if v := c.GetString("sortby"); v != "" {
 		sortby = strings.Split(v, ",")
 	}
-
+	// order: desc,asc
 	if v := c.GetString("order"); v != "" {
 		order = strings.Split(v, ",")
 	}
-
+	// query: k:v,k:v
 	if v := c.GetString("query"); v != "" {
 		for _, cond := range strings.Split(v, ",") {
 			kv := strings.SplitN(cond, ":", 2)
 			if len(kv) != 2 {
-				abortWithError(&c.Controller, 400, "query invalida, use formato campo:valor", nil)
+				c.Ctx.Output.SetStatus(400)
+				c.Data["json"] = map[string]interface{}{"Success": false, "Status": "400", "Message": "Error service GetAll: invalid query parameter. Expected format: query=campo:valor,campo2:valor2", "Data": nil}
+				c.ServeJSON()
 				return
 			}
-			query[kv[0]] = kv[1]
+			k, v := kv[0], kv[1]
+			query[k] = v
 		}
-	}
-
-	if err := agregarFiltrosSolicitud(&c.Controller, query, "CargueMasivoId.SolicitudId."); err != nil {
-		abortWithError(&c.Controller, 400, err.Error(), nil)
-		return
-	}
-	if err := agregarFiltroActivo(&c.Controller, query); err != nil {
-		abortWithError(&c.Controller, 400, err.Error(), nil)
-		return
 	}
 
 	l, total, err := models.GetAllCargueMasivoError(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		abortWithError(&c.Controller, 404, "error al consultar los registros", err)
-		return
+		beeLogger.Log.Error(err.Error())
+		c.Data["message"] = "Error service GetAll: The request contains an incorrect parameter or no record exists"
+		c.Abort("404")
+	} else {
+		if l == nil {
+			l = []interface{}{}
+		}
+		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": l, "Total": total}
 	}
-
-	if l == nil {
-		l = append(l, map[string]interface{}{})
-	}
-
-	writeSuccessLista(&c.Controller, "consulta exitosa", total, l)
+	c.ServeJSON()
 }
 
 // Put ...
@@ -169,49 +152,62 @@ func (c *CargueMasivoErrorController) GetAll() {
 // @Description update the CargueMasivoError
 // @Param	id		path 	string	true		"The id you want to update"
 // @Param	body		body 	models.CargueMasivoError	true		"body for CargueMasivoError content"
-// @Success 200 {object} controllers.APIResponse
-// @Failure 400 id, body o datos invalidos, o registro inexistente
+// @Success 200 {object} models.CargueMasivoError
+// @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
 func (c *CargueMasivoErrorController) Put() {
-	id, err := strconv.Atoi(c.Ctx.Input.Param(":id"))
-	if err != nil {
-		abortWithError(&c.Controller, 400, "el parametro id debe ser numerico", err)
-		return
+	idStr := c.Ctx.Input.Param(":id")
+	id, _ := strconv.Atoi(idStr)
+	v := models.CargueMasivoError{Id: id}
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+		if v.Id != id {
+			c.Data["message"] = "Error service Put: The id cannot be modified"
+			c.Abort("400")
+		}
+		if v.Id == 0 {
+			v.Id = id
+		}
+		v.FechaModificacion = time_bogota.Tiempo_bogota()
+		if err := models.UpdateCargueMasivoErrorById(&v); err == nil {
+			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Update successful", "Data": v}
+		} else {
+			beeLogger.Log.Error(err.Error())
+			c.Data["message"] = "Error service Put: The request contains an incorrect data type or an invalid parameter"
+			c.Abort("400")
+		}
+	} else {
+		beeLogger.Log.Error(err.Error())
+		c.Data["message"] = "Error service Put: The request contains an incorrect data type or an invalid parameter"
+		c.Abort("400")
 	}
-
-	var v models.CargueMasivoError
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err != nil {
-		abortWithError(&c.Controller, 400, "cuerpo de la solicitud invalido", err)
-		return
-	}
-	v.Id = id
-
-	if err := models.UpdateCargueMasivoErrorById(&v); err != nil {
-		abortWithDBError(&c.Controller, 400, "error al actualizar el registro", err)
-		return
-	}
-
-	writeSuccess(&c.Controller, 200, "registro actualizado", v)
+	c.ServeJSON()
 }
 
 // Delete ...
 // @Title Delete
 // @Description delete the CargueMasivoError
 // @Param	id		path 	string	true		"The id you want to delete"
-// @Success 200 {object} controllers.APIResponse
-// @Failure 404 id invalido o registro inexistente
+// @Success 200 {string} delete success!
+// @Failure 404 not found resource
 // @router /:id [delete]
 func (c *CargueMasivoErrorController) Delete() {
-	id, err := strconv.Atoi(c.Ctx.Input.Param(":id"))
+	idStr := c.Ctx.Input.Param(":id")
+	id, _ := strconv.Atoi(idStr)
+	v, err := models.GetCargueMasivoErrorById(id)
 	if err != nil {
-		abortWithError(&c.Controller, 404, "el parametro id debe ser numerico", err)
-		return
+		beeLogger.Log.Error(err.Error())
+		c.Data["message"] = "Error service Delete: The request contains an incorrect parameter or no record exists"
+		c.Abort("404")
 	}
-
-	if err := models.DeleteCargueMasivoError(id); err != nil {
-		abortWithDBError(&c.Controller, 404, "error al eliminar el registro", err)
-		return
+	v.Activo = false
+	v.FechaModificacion = time_bogota.Tiempo_bogota()
+	// Borrado lógico: solo cambian activo y fecha_modificacion
+	if err := models.UpdateCargueMasivoErrorById(v, "Activo", "FechaModificacion"); err == nil {
+		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Update successful", "Data": v}
+	} else {
+		beeLogger.Log.Error(err.Error())
+		c.Data["message"] = "Error service Put: The request contains an incorrect data type or an invalid parameter"
+		c.Abort("400")
 	}
-
-	writeSuccess(&c.Controller, 200, "registro eliminado", map[string]interface{}{"Id": id})
+	c.ServeJSON()
 }

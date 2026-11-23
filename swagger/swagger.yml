@@ -1,15 +1,15 @@
 swagger: "2.0"
 info:
-  title: API CRUD Cotizaciones Agora
+  title: beego Test API
   description: |
-    Servicio CRUD para la gestion de cotizaciones del modulo Agora en Arka II
+    beego has a very cool tools to autogenerate documents for your API
   version: 1.0.0
-  termsOfService: https://www.udistrital.edu.co/
+  termsOfService: http://beego.me/
   contact:
-    email: soporte@udistrital.edu.co
+    email: astaxie@gmail.com
   license:
-    name: EUPL-1.2
-    url: https://interoperable-europe.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
 basePath: /v1
 paths:
   /cargue_masivo/:
@@ -17,7 +17,7 @@ paths:
       tags:
       - cargue_masivo
       description: |-
-        get CargueMasivo. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+        get CargueMasivo
         <br>
       operationId: CargueMasivoController.Get All
       parameters:
@@ -35,7 +35,8 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
@@ -45,34 +46,13 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
-      - in: query
-        name: vigencia
-        description: Vigencia de la solicitud. e.g. 2026
-        type: integer
-        format: int64
-      - in: query
-        name: estado
-        description: Id del estado de la solicitud (parametros)
-        type: integer
-        format: int64
-      - in: query
-        name: dependencia
-        description: Id de la dependencia solicitante (Oikos)
-        type: integer
-        format: int64
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponseLista'
-        "400":
-          description: parametros invalidos
+            $ref: '#/definitions/models.CargueMasivo'
         "404":
-          description: error al consultar los registros
+          description: not found resource
     post:
       tags:
       - cargue_masivo
@@ -89,11 +69,9 @@ paths:
           $ref: '#/definitions/models.CargueMasivo'
       responses:
         "201":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{int} models.CargueMasivo'
         "400":
-          description: body o datos invalidos
+          description: the request contains incorrect syntax
   /cargue_masivo/{id}:
     get:
       tags:
@@ -105,20 +83,16 @@ paths:
       parameters:
       - in: path
         name: id
-        description: The id
+        description: The key for staticblock
         required: true
         type: string
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.CargueMasivo'
         "404":
-          description: id invalido o registro inexistente
+          description: not found resource
     put:
       tags:
       - cargue_masivo
@@ -142,9 +116,9 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.CargueMasivo'
         "400":
-          description: id, body o datos invalidos, o registro inexistente
+          description: the request contains incorrect syntax
     delete:
       tags:
       - cargue_masivo
@@ -160,17 +134,15 @@ paths:
         type: string
       responses:
         "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{string} delete success!'
         "404":
-          description: id invalido o registro inexistente
+          description: not found resource
   /cargue_masivo_error/:
     get:
       tags:
       - cargue_masivo_error
       description: |-
-        get CargueMasivoError. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+        get CargueMasivoError
         <br>
       operationId: CargueMasivoErrorController.Get All
       parameters:
@@ -188,7 +160,8 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
@@ -198,34 +171,13 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
-      - in: query
-        name: vigencia
-        description: Vigencia de la solicitud. e.g. 2026
-        type: integer
-        format: int64
-      - in: query
-        name: estado
-        description: Id del estado de la solicitud (parametros)
-        type: integer
-        format: int64
-      - in: query
-        name: dependencia
-        description: Id de la dependencia solicitante (Oikos)
-        type: integer
-        format: int64
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponseLista'
-        "400":
-          description: parametros invalidos
+            $ref: '#/definitions/models.CargueMasivoError'
         "404":
-          description: error al consultar los registros
+          description: not found resource
     post:
       tags:
       - cargue_masivo_error
@@ -242,11 +194,9 @@ paths:
           $ref: '#/definitions/models.CargueMasivoError'
       responses:
         "201":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{int} models.CargueMasivoError'
         "400":
-          description: body o datos invalidos
+          description: the request contains incorrect syntax
   /cargue_masivo_error/{id}:
     get:
       tags:
@@ -258,20 +208,16 @@ paths:
       parameters:
       - in: path
         name: id
-        description: The id
+        description: The key for staticblock
         required: true
         type: string
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.CargueMasivoError'
         "404":
-          description: id invalido o registro inexistente
+          description: not found resource
     put:
       tags:
       - cargue_masivo_error
@@ -295,9 +241,9 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.CargueMasivoError'
         "400":
-          description: id, body o datos invalidos, o registro inexistente
+          description: the request contains incorrect syntax
     delete:
       tags:
       - cargue_masivo_error
@@ -313,19 +259,17 @@ paths:
         type: string
       responses:
         "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{string} delete success!'
         "404":
-          description: id invalido o registro inexistente
-  /documento_solicitud/:
+          description: not found resource
+  /decision_solicitante/:
     get:
       tags:
-      - documento_solicitud
+      - decision_solicitante
       description: |-
-        get DocumentoSolicitud. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+        get DecisionSolicitante
         <br>
-      operationId: DocumentoSolicitudController.Get All
+      operationId: DecisionSolicitanteController.Get All
       parameters:
       - in: query
         name: query
@@ -341,7 +285,8 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
@@ -351,87 +296,60 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
-      - in: query
-        name: vigencia
-        description: Vigencia de la solicitud. e.g. 2026
-        type: integer
-        format: int64
-      - in: query
-        name: estado
-        description: Id del estado de la solicitud (parametros)
-        type: integer
-        format: int64
-      - in: query
-        name: dependencia
-        description: Id de la dependencia solicitante (Oikos)
-        type: integer
-        format: int64
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponseLista'
-        "400":
-          description: parametros invalidos
+            $ref: '#/definitions/models.DecisionSolicitante'
         "404":
-          description: error al consultar los registros
+          description: not found resource
     post:
       tags:
-      - documento_solicitud
+      - decision_solicitante
       description: |-
-        create DocumentoSolicitud
+        create DecisionSolicitante
         <br>
-      operationId: DocumentoSolicitudController.Post
+      operationId: DecisionSolicitanteController.Post
       parameters:
       - in: body
         name: body
-        description: body for DocumentoSolicitud content
+        description: body for DecisionSolicitante content
         required: true
         schema:
-          $ref: '#/definitions/models.DocumentoSolicitud'
+          $ref: '#/definitions/models.DecisionSolicitante'
       responses:
         "201":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{int} models.DecisionSolicitante'
         "400":
-          description: body o datos invalidos
-  /documento_solicitud/{id}:
+          description: the request contains incorrect syntax
+  /decision_solicitante/{id}:
     get:
       tags:
-      - documento_solicitud
+      - decision_solicitante
       description: |-
-        get DocumentoSolicitud by id
+        get DecisionSolicitante by id
         <br>
-      operationId: DocumentoSolicitudController.Get One
+      operationId: DecisionSolicitanteController.Get One
       parameters:
       - in: path
         name: id
-        description: The id
+        description: The key for staticblock
         required: true
         type: string
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.DecisionSolicitante'
         "404":
-          description: id invalido o registro inexistente
+          description: not found resource
     put:
       tags:
-      - documento_solicitud
+      - decision_solicitante
       description: |-
-        update the DocumentoSolicitud
+        update the DecisionSolicitante
         <br>
-      operationId: DocumentoSolicitudController.Put
+      operationId: DecisionSolicitanteController.Put
       parameters:
       - in: path
         name: id
@@ -440,24 +358,24 @@ paths:
         type: string
       - in: body
         name: body
-        description: body for DocumentoSolicitud content
+        description: body for DecisionSolicitante content
         required: true
         schema:
-          $ref: '#/definitions/models.DocumentoSolicitud'
+          $ref: '#/definitions/models.DecisionSolicitante'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.DecisionSolicitante'
         "400":
-          description: id, body o datos invalidos, o registro inexistente
+          description: the request contains incorrect syntax
     delete:
       tags:
-      - documento_solicitud
+      - decision_solicitante
       description: |-
-        delete the DocumentoSolicitud
+        delete the DecisionSolicitante
         <br>
-      operationId: DocumentoSolicitudController.Delete
+      operationId: DecisionSolicitanteController.Delete
       parameters:
       - in: path
         name: id
@@ -466,19 +384,17 @@ paths:
         type: string
       responses:
         "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{string} delete success!'
         "404":
-          description: id invalido o registro inexistente
-  /observacion/:
+          description: not found resource
+  /det_cotizacion/:
     get:
       tags:
-      - observacion
+      - det_cotizacion
       description: |-
-        get Observacion. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+        get DetCotizacion
         <br>
-      operationId: ObservacionController.Get All
+      operationId: DetCotizacionController.Get All
       parameters:
       - in: query
         name: query
@@ -494,7 +410,8 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
@@ -504,87 +421,60 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
-      - in: query
-        name: vigencia
-        description: Vigencia de la solicitud. e.g. 2026
-        type: integer
-        format: int64
-      - in: query
-        name: estado
-        description: Id del estado de la solicitud (parametros)
-        type: integer
-        format: int64
-      - in: query
-        name: dependencia
-        description: Id de la dependencia solicitante (Oikos)
-        type: integer
-        format: int64
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponseLista'
-        "400":
-          description: parametros invalidos
+            $ref: '#/definitions/models.DetCotizacion'
         "404":
-          description: error al consultar los registros
+          description: not found resource
     post:
       tags:
-      - observacion
+      - det_cotizacion
       description: |-
-        create Observacion
+        create DetCotizacion
         <br>
-      operationId: ObservacionController.Post
+      operationId: DetCotizacionController.Post
       parameters:
       - in: body
         name: body
-        description: body for Observacion content
+        description: body for DetCotizacion content
         required: true
         schema:
-          $ref: '#/definitions/models.Observacion'
+          $ref: '#/definitions/models.DetCotizacion'
       responses:
         "201":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{int} models.DetCotizacion'
         "400":
-          description: body o datos invalidos
-  /observacion/{id}:
+          description: the request contains incorrect syntax
+  /det_cotizacion/{id}:
     get:
       tags:
-      - observacion
+      - det_cotizacion
       description: |-
-        get Observacion by id
+        get DetCotizacion by id
         <br>
-      operationId: ObservacionController.Get One
+      operationId: DetCotizacionController.Get One
       parameters:
       - in: path
         name: id
-        description: The id
+        description: The key for staticblock
         required: true
         type: string
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.DetCotizacion'
         "404":
-          description: id invalido o registro inexistente
+          description: not found resource
     put:
       tags:
-      - observacion
+      - det_cotizacion
       description: |-
-        update the Observacion
+        update the DetCotizacion
         <br>
-      operationId: ObservacionController.Put
+      operationId: DetCotizacionController.Put
       parameters:
       - in: path
         name: id
@@ -593,24 +483,24 @@ paths:
         type: string
       - in: body
         name: body
-        description: body for Observacion content
+        description: body for DetCotizacion content
         required: true
         schema:
-          $ref: '#/definitions/models.Observacion'
+          $ref: '#/definitions/models.DetCotizacion'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.DetCotizacion'
         "400":
-          description: id, body o datos invalidos, o registro inexistente
+          description: the request contains incorrect syntax
     delete:
       tags:
-      - observacion
+      - det_cotizacion
       description: |-
-        delete the Observacion
+        delete the DetCotizacion
         <br>
-      operationId: ObservacionController.Delete
+      operationId: DetCotizacionController.Delete
       parameters:
       - in: path
         name: id
@@ -619,19 +509,17 @@ paths:
         type: string
       responses:
         "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{string} delete success!'
         "404":
-          description: id invalido o registro inexistente
-  /respuesta_observacion/:
+          description: not found resource
+  /det_solicitud_cotizacion/:
     get:
       tags:
-      - respuesta_observacion
+      - det_solicitud_cotizacion
       description: |-
-        get RespuestaObservacion. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+        get DetSolicitudCotizacion
         <br>
-      operationId: RespuestaObservacionController.Get All
+      operationId: DetSolicitudCotizacionController.Get All
       parameters:
       - in: query
         name: query
@@ -647,7 +535,8 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
@@ -657,87 +546,60 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
-      - in: query
-        name: vigencia
-        description: Vigencia de la solicitud. e.g. 2026
-        type: integer
-        format: int64
-      - in: query
-        name: estado
-        description: Id del estado de la solicitud (parametros)
-        type: integer
-        format: int64
-      - in: query
-        name: dependencia
-        description: Id de la dependencia solicitante (Oikos)
-        type: integer
-        format: int64
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponseLista'
-        "400":
-          description: parametros invalidos
+            $ref: '#/definitions/models.DetSolicitudCotizacion'
         "404":
-          description: error al consultar los registros
+          description: not found resource
     post:
       tags:
-      - respuesta_observacion
+      - det_solicitud_cotizacion
       description: |-
-        create RespuestaObservacion
+        create DetSolicitudCotizacion
         <br>
-      operationId: RespuestaObservacionController.Post
+      operationId: DetSolicitudCotizacionController.Post
       parameters:
       - in: body
         name: body
-        description: body for RespuestaObservacion content
+        description: body for DetSolicitudCotizacion content
         required: true
         schema:
-          $ref: '#/definitions/models.RespuestaObservacion'
+          $ref: '#/definitions/models.DetSolicitudCotizacion'
       responses:
         "201":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{int} models.DetSolicitudCotizacion'
         "400":
-          description: body o datos invalidos
-  /respuesta_observacion/{id}:
+          description: the request contains incorrect syntax
+  /det_solicitud_cotizacion/{id}:
     get:
       tags:
-      - respuesta_observacion
+      - det_solicitud_cotizacion
       description: |-
-        get RespuestaObservacion by id
+        get DetSolicitudCotizacion by id
         <br>
-      operationId: RespuestaObservacionController.Get One
+      operationId: DetSolicitudCotizacionController.Get One
       parameters:
       - in: path
         name: id
-        description: The id
+        description: The key for staticblock
         required: true
         type: string
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.DetSolicitudCotizacion'
         "404":
-          description: id invalido o registro inexistente
+          description: not found resource
     put:
       tags:
-      - respuesta_observacion
+      - det_solicitud_cotizacion
       description: |-
-        update the RespuestaObservacion
+        update the DetSolicitudCotizacion
         <br>
-      operationId: RespuestaObservacionController.Put
+      operationId: DetSolicitudCotizacionController.Put
       parameters:
       - in: path
         name: id
@@ -746,24 +608,24 @@ paths:
         type: string
       - in: body
         name: body
-        description: body for RespuestaObservacion content
+        description: body for DetSolicitudCotizacion content
         required: true
         schema:
-          $ref: '#/definitions/models.RespuestaObservacion'
+          $ref: '#/definitions/models.DetSolicitudCotizacion'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.DetSolicitudCotizacion'
         "400":
-          description: id, body o datos invalidos, o registro inexistente
+          description: the request contains incorrect syntax
     delete:
       tags:
-      - respuesta_observacion
+      - det_solicitud_cotizacion
       description: |-
-        delete the RespuestaObservacion
+        delete the DetSolicitudCotizacion
         <br>
-      operationId: RespuestaObservacionController.Delete
+      operationId: DetSolicitudCotizacionController.Delete
       parameters:
       - in: path
         name: id
@@ -772,19 +634,17 @@ paths:
         type: string
       responses:
         "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{string} delete success!'
         "404":
-          description: id invalido o registro inexistente
-  /solicitud_ciiu/:
+          description: not found resource
+  /forma_pago/:
     get:
       tags:
-      - solicitud_ciiu
+      - forma_pago
       description: |-
-        get SolicitudCiiu. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+        get FormaPago
         <br>
-      operationId: SolicitudCiiuController.Get All
+      operationId: FormaPagoController.Get All
       parameters:
       - in: query
         name: query
@@ -800,7 +660,8 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
@@ -810,87 +671,60 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
-      - in: query
-        name: vigencia
-        description: Vigencia de la solicitud. e.g. 2026
-        type: integer
-        format: int64
-      - in: query
-        name: estado
-        description: Id del estado de la solicitud (parametros)
-        type: integer
-        format: int64
-      - in: query
-        name: dependencia
-        description: Id de la dependencia solicitante (Oikos)
-        type: integer
-        format: int64
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponseLista'
-        "400":
-          description: parametros invalidos
+            $ref: '#/definitions/models.FormaPago'
         "404":
-          description: error al consultar los registros
+          description: not found resource
     post:
       tags:
-      - solicitud_ciiu
+      - forma_pago
       description: |-
-        create SolicitudCiiu
+        create FormaPago
         <br>
-      operationId: SolicitudCiiuController.Post
+      operationId: FormaPagoController.Post
       parameters:
       - in: body
         name: body
-        description: body for SolicitudCiiu content
+        description: body for FormaPago content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudCiiu'
+          $ref: '#/definitions/models.FormaPago'
       responses:
         "201":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{int} models.FormaPago'
         "400":
-          description: body o datos invalidos
-  /solicitud_ciiu/{id}:
+          description: the request contains incorrect syntax
+  /forma_pago/{id}:
     get:
       tags:
-      - solicitud_ciiu
+      - forma_pago
       description: |-
-        get SolicitudCiiu by id
+        get FormaPago by id
         <br>
-      operationId: SolicitudCiiuController.Get One
+      operationId: FormaPagoController.Get One
       parameters:
       - in: path
         name: id
-        description: The id
+        description: The key for staticblock
         required: true
         type: string
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.FormaPago'
         "404":
-          description: id invalido o registro inexistente
+          description: not found resource
     put:
       tags:
-      - solicitud_ciiu
+      - forma_pago
       description: |-
-        update the SolicitudCiiu
+        update the FormaPago
         <br>
-      operationId: SolicitudCiiuController.Put
+      operationId: FormaPagoController.Put
       parameters:
       - in: path
         name: id
@@ -899,24 +733,24 @@ paths:
         type: string
       - in: body
         name: body
-        description: body for SolicitudCiiu content
+        description: body for FormaPago content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudCiiu'
+          $ref: '#/definitions/models.FormaPago'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.FormaPago'
         "400":
-          description: id, body o datos invalidos, o registro inexistente
+          description: the request contains incorrect syntax
     delete:
       tags:
-      - solicitud_ciiu
+      - forma_pago
       description: |-
-        delete the SolicitudCiiu
+        delete the FormaPago
         <br>
-      operationId: SolicitudCiiuController.Delete
+      operationId: FormaPagoController.Delete
       parameters:
       - in: path
         name: id
@@ -925,19 +759,17 @@ paths:
         type: string
       responses:
         "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{string} delete success!'
         "404":
-          description: id invalido o registro inexistente
-  /solicitud_cotizacion/:
+          description: not found resource
+  /hist_det_cotizacion/:
     get:
       tags:
-      - solicitud_cotizacion
+      - hist_det_cotizacion
       description: |-
-        get SolicitudCotizacion. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+        get HistDetCotizacion
         <br>
-      operationId: SolicitudCotizacionController.Get All
+      operationId: HistDetCotizacionController.Get All
       parameters:
       - in: query
         name: query
@@ -953,7 +785,8 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
@@ -963,87 +796,60 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
-      - in: query
-        name: vigencia
-        description: Vigencia de la solicitud. e.g. 2026
-        type: integer
-        format: int64
-      - in: query
-        name: estado
-        description: Id del estado de la solicitud (parametros)
-        type: integer
-        format: int64
-      - in: query
-        name: dependencia
-        description: Id de la dependencia solicitante (Oikos)
-        type: integer
-        format: int64
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponseLista'
-        "400":
-          description: parametros invalidos
+            $ref: '#/definitions/models.HistDetCotizacion'
         "404":
-          description: error al consultar los registros
+          description: not found resource
     post:
       tags:
-      - solicitud_cotizacion
+      - hist_det_cotizacion
       description: |-
-        create SolicitudCotizacion
+        create HistDetCotizacion
         <br>
-      operationId: SolicitudCotizacionController.Post
+      operationId: HistDetCotizacionController.Post
       parameters:
       - in: body
         name: body
-        description: body for SolicitudCotizacion content
+        description: body for HistDetCotizacion content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudCotizacion'
+          $ref: '#/definitions/models.HistDetCotizacion'
       responses:
         "201":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{int} models.HistDetCotizacion'
         "400":
-          description: body o datos invalidos
-  /solicitud_cotizacion/{id}:
+          description: the request contains incorrect syntax
+  /hist_det_cotizacion/{id}:
     get:
       tags:
-      - solicitud_cotizacion
+      - hist_det_cotizacion
       description: |-
-        get SolicitudCotizacion by id
+        get HistDetCotizacion by id
         <br>
-      operationId: SolicitudCotizacionController.Get One
+      operationId: HistDetCotizacionController.Get One
       parameters:
       - in: path
         name: id
-        description: The id
+        description: The key for staticblock
         required: true
         type: string
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.HistDetCotizacion'
         "404":
-          description: id invalido o registro inexistente
+          description: not found resource
     put:
       tags:
-      - solicitud_cotizacion
+      - hist_det_cotizacion
       description: |-
-        update the SolicitudCotizacion
+        update the HistDetCotizacion
         <br>
-      operationId: SolicitudCotizacionController.Put
+      operationId: HistDetCotizacionController.Put
       parameters:
       - in: path
         name: id
@@ -1052,24 +858,24 @@ paths:
         type: string
       - in: body
         name: body
-        description: body for SolicitudCotizacion content
+        description: body for HistDetCotizacion content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudCotizacion'
+          $ref: '#/definitions/models.HistDetCotizacion'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.HistDetCotizacion'
         "400":
-          description: id, body o datos invalidos, o registro inexistente
+          description: the request contains incorrect syntax
     delete:
       tags:
-      - solicitud_cotizacion
+      - hist_det_cotizacion
       description: |-
-        delete the SolicitudCotizacion
+        delete the HistDetCotizacion
         <br>
-      operationId: SolicitudCotizacionController.Delete
+      operationId: HistDetCotizacionController.Delete
       parameters:
       - in: path
         name: id
@@ -1078,45 +884,17 @@ paths:
         type: string
       responses:
         "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{string} delete success!'
         "404":
-          description: id invalido o registro inexistente
-  /solicitud_cotizacion/{id}/detalle:
+          description: not found resource
+  /hist_det_solicitud_cotizacion/:
     get:
       tags:
-      - solicitud_cotizacion
+      - hist_det_solicitud_cotizacion
       description: |-
-        get SolicitudCotizacion by id con sus entidades asociadas: necesidades, items, pagos parciales, actividades economicas, documentos, requisitos documentales, proveedores, cargues masivos y errores de los cargues masivos (coleccion independiente CarguesMasivosErrores; un error se considera activo si el y su cargue lo estan). La solicitud se retorna este activa o no; el parametro activo filtra las asociadas
+        get HistDetSolicitudCotizacion
         <br>
-      operationId: SolicitudCotizacionController.Get Detalle
-      parameters:
-      - in: path
-        name: id
-        description: The id
-        required: true
-        type: string
-      - in: query
-        name: activo
-        description: Entidades asociadas activas (true, predeterminado) o inactivas
-          (false)
-        type: boolean
-      responses:
-        "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/models.SolicitudCotizacionDetalle'
-        "404":
-          description: id invalido o registro inexistente
-  /solicitud_estado/:
-    get:
-      tags:
-      - solicitud_estado
-      description: |-
-        get SolicitudEstado. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
-        <br>
-      operationId: SolicitudEstadoController.Get All
+      operationId: HistDetSolicitudCotizacionController.Get All
       parameters:
       - in: query
         name: query
@@ -1132,7 +910,8 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
@@ -1142,87 +921,60 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
-      - in: query
-        name: vigencia
-        description: Vigencia de la solicitud. e.g. 2026
-        type: integer
-        format: int64
-      - in: query
-        name: estado
-        description: Id del estado de la solicitud (parametros)
-        type: integer
-        format: int64
-      - in: query
-        name: dependencia
-        description: Id de la dependencia solicitante (Oikos)
-        type: integer
-        format: int64
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponseLista'
-        "400":
-          description: parametros invalidos
+            $ref: '#/definitions/models.HistDetSolicitudCotizacion'
         "404":
-          description: error al consultar los registros
+          description: not found resource
     post:
       tags:
-      - solicitud_estado
+      - hist_det_solicitud_cotizacion
       description: |-
-        create SolicitudEstado
+        create HistDetSolicitudCotizacion
         <br>
-      operationId: SolicitudEstadoController.Post
+      operationId: HistDetSolicitudCotizacionController.Post
       parameters:
       - in: body
         name: body
-        description: body for SolicitudEstado content
+        description: body for HistDetSolicitudCotizacion content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudEstado'
+          $ref: '#/definitions/models.HistDetSolicitudCotizacion'
       responses:
         "201":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{int} models.HistDetSolicitudCotizacion'
         "400":
-          description: body o datos invalidos
-  /solicitud_estado/{id}:
+          description: the request contains incorrect syntax
+  /hist_det_solicitud_cotizacion/{id}:
     get:
       tags:
-      - solicitud_estado
+      - hist_det_solicitud_cotizacion
       description: |-
-        get SolicitudEstado by id
+        get HistDetSolicitudCotizacion by id
         <br>
-      operationId: SolicitudEstadoController.Get One
+      operationId: HistDetSolicitudCotizacionController.Get One
       parameters:
       - in: path
         name: id
-        description: The id
+        description: The key for staticblock
         required: true
         type: string
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.HistDetSolicitudCotizacion'
         "404":
-          description: id invalido o registro inexistente
+          description: not found resource
     put:
       tags:
-      - solicitud_estado
+      - hist_det_solicitud_cotizacion
       description: |-
-        update the SolicitudEstado
+        update the HistDetSolicitudCotizacion
         <br>
-      operationId: SolicitudEstadoController.Put
+      operationId: HistDetSolicitudCotizacionController.Put
       parameters:
       - in: path
         name: id
@@ -1231,24 +983,24 @@ paths:
         type: string
       - in: body
         name: body
-        description: body for SolicitudEstado content
+        description: body for HistDetSolicitudCotizacion content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudEstado'
+          $ref: '#/definitions/models.HistDetSolicitudCotizacion'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.HistDetSolicitudCotizacion'
         "400":
-          description: id, body o datos invalidos, o registro inexistente
+          description: the request contains incorrect syntax
     delete:
       tags:
-      - solicitud_estado
+      - hist_det_solicitud_cotizacion
       description: |-
-        delete the SolicitudEstado
+        delete the HistDetSolicitudCotizacion
         <br>
-      operationId: SolicitudEstadoController.Delete
+      operationId: HistDetSolicitudCotizacionController.Delete
       parameters:
       - in: path
         name: id
@@ -1257,19 +1009,17 @@ paths:
         type: string
       responses:
         "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{string} delete success!'
         "404":
-          description: id invalido o registro inexistente
-  /solicitud_item/:
+          description: not found resource
+  /hist_mst_cotizacion/:
     get:
       tags:
-      - solicitud_item
+      - hist_mst_cotizacion
       description: |-
-        get SolicitudItem. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+        get HistMstCotizacion
         <br>
-      operationId: SolicitudItemController.Get All
+      operationId: HistMstCotizacionController.Get All
       parameters:
       - in: query
         name: query
@@ -1285,7 +1035,8 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
@@ -1295,87 +1046,60 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
-      - in: query
-        name: vigencia
-        description: Vigencia de la solicitud. e.g. 2026
-        type: integer
-        format: int64
-      - in: query
-        name: estado
-        description: Id del estado de la solicitud (parametros)
-        type: integer
-        format: int64
-      - in: query
-        name: dependencia
-        description: Id de la dependencia solicitante (Oikos)
-        type: integer
-        format: int64
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponseLista'
-        "400":
-          description: parametros invalidos
+            $ref: '#/definitions/models.HistMstCotizacion'
         "404":
-          description: error al consultar los registros
+          description: not found resource
     post:
       tags:
-      - solicitud_item
+      - hist_mst_cotizacion
       description: |-
-        create SolicitudItem
+        create HistMstCotizacion
         <br>
-      operationId: SolicitudItemController.Post
+      operationId: HistMstCotizacionController.Post
       parameters:
       - in: body
         name: body
-        description: body for SolicitudItem content
+        description: body for HistMstCotizacion content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudItem'
+          $ref: '#/definitions/models.HistMstCotizacion'
       responses:
         "201":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{int} models.HistMstCotizacion'
         "400":
-          description: body o datos invalidos
-  /solicitud_item/{id}:
+          description: the request contains incorrect syntax
+  /hist_mst_cotizacion/{id}:
     get:
       tags:
-      - solicitud_item
+      - hist_mst_cotizacion
       description: |-
-        get SolicitudItem by id
+        get HistMstCotizacion by id
         <br>
-      operationId: SolicitudItemController.Get One
+      operationId: HistMstCotizacionController.Get One
       parameters:
       - in: path
         name: id
-        description: The id
+        description: The key for staticblock
         required: true
         type: string
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.HistMstCotizacion'
         "404":
-          description: id invalido o registro inexistente
+          description: not found resource
     put:
       tags:
-      - solicitud_item
+      - hist_mst_cotizacion
       description: |-
-        update the SolicitudItem
+        update the HistMstCotizacion
         <br>
-      operationId: SolicitudItemController.Put
+      operationId: HistMstCotizacionController.Put
       parameters:
       - in: path
         name: id
@@ -1384,24 +1108,24 @@ paths:
         type: string
       - in: body
         name: body
-        description: body for SolicitudItem content
+        description: body for HistMstCotizacion content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudItem'
+          $ref: '#/definitions/models.HistMstCotizacion'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.HistMstCotizacion'
         "400":
-          description: id, body o datos invalidos, o registro inexistente
+          description: the request contains incorrect syntax
     delete:
       tags:
-      - solicitud_item
+      - hist_mst_cotizacion
       description: |-
-        delete the SolicitudItem
+        delete the HistMstCotizacion
         <br>
-      operationId: SolicitudItemController.Delete
+      operationId: HistMstCotizacionController.Delete
       parameters:
       - in: path
         name: id
@@ -1410,19 +1134,17 @@ paths:
         type: string
       responses:
         "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{string} delete success!'
         "404":
-          description: id invalido o registro inexistente
-  /solicitud_modificacion/:
+          description: not found resource
+  /hist_mst_solicitud_cotizacion/:
     get:
       tags:
-      - solicitud_modificacion
+      - hist_mst_solicitud_cotizacion
       description: |-
-        get SolicitudModificacion. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+        get HistMstSolicitudCotizacion
         <br>
-      operationId: SolicitudModificacionController.Get All
+      operationId: HistMstSolicitudCotizacionController.Get All
       parameters:
       - in: query
         name: query
@@ -1438,7 +1160,8 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
@@ -1448,87 +1171,60 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
-      - in: query
-        name: vigencia
-        description: Vigencia de la solicitud. e.g. 2026
-        type: integer
-        format: int64
-      - in: query
-        name: estado
-        description: Id del estado de la solicitud (parametros)
-        type: integer
-        format: int64
-      - in: query
-        name: dependencia
-        description: Id de la dependencia solicitante (Oikos)
-        type: integer
-        format: int64
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponseLista'
-        "400":
-          description: parametros invalidos
+            $ref: '#/definitions/models.HistMstSolicitudCotizacion'
         "404":
-          description: error al consultar los registros
+          description: not found resource
     post:
       tags:
-      - solicitud_modificacion
+      - hist_mst_solicitud_cotizacion
       description: |-
-        create SolicitudModificacion
+        create HistMstSolicitudCotizacion
         <br>
-      operationId: SolicitudModificacionController.Post
+      operationId: HistMstSolicitudCotizacionController.Post
       parameters:
       - in: body
         name: body
-        description: body for SolicitudModificacion content
+        description: body for HistMstSolicitudCotizacion content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudModificacion'
+          $ref: '#/definitions/models.HistMstSolicitudCotizacion'
       responses:
         "201":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{int} models.HistMstSolicitudCotizacion'
         "400":
-          description: body o datos invalidos
-  /solicitud_modificacion/{id}:
+          description: the request contains incorrect syntax
+  /hist_mst_solicitud_cotizacion/{id}:
     get:
       tags:
-      - solicitud_modificacion
+      - hist_mst_solicitud_cotizacion
       description: |-
-        get SolicitudModificacion by id
+        get HistMstSolicitudCotizacion by id
         <br>
-      operationId: SolicitudModificacionController.Get One
+      operationId: HistMstSolicitudCotizacionController.Get One
       parameters:
       - in: path
         name: id
-        description: The id
+        description: The key for staticblock
         required: true
         type: string
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.HistMstSolicitudCotizacion'
         "404":
-          description: id invalido o registro inexistente
+          description: not found resource
     put:
       tags:
-      - solicitud_modificacion
+      - hist_mst_solicitud_cotizacion
       description: |-
-        update the SolicitudModificacion
+        update the HistMstSolicitudCotizacion
         <br>
-      operationId: SolicitudModificacionController.Put
+      operationId: HistMstSolicitudCotizacionController.Put
       parameters:
       - in: path
         name: id
@@ -1537,24 +1233,24 @@ paths:
         type: string
       - in: body
         name: body
-        description: body for SolicitudModificacion content
+        description: body for HistMstSolicitudCotizacion content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudModificacion'
+          $ref: '#/definitions/models.HistMstSolicitudCotizacion'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.HistMstSolicitudCotizacion'
         "400":
-          description: id, body o datos invalidos, o registro inexistente
+          description: the request contains incorrect syntax
     delete:
       tags:
-      - solicitud_modificacion
+      - hist_mst_solicitud_cotizacion
       description: |-
-        delete the SolicitudModificacion
+        delete the HistMstSolicitudCotizacion
         <br>
-      operationId: SolicitudModificacionController.Delete
+      operationId: HistMstSolicitudCotizacionController.Delete
       parameters:
       - in: path
         name: id
@@ -1563,19 +1259,17 @@ paths:
         type: string
       responses:
         "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{string} delete success!'
         "404":
-          description: id invalido o registro inexistente
-  /solicitud_modificacion_detalle/:
+          description: not found resource
+  /hist_mst_solicitud_cotizacion_estado_hist/:
     get:
       tags:
-      - solicitud_modificacion_detalle
+      - hist_mst_solicitud_cotizacion_estado_hist
       description: |-
-        get SolicitudModificacionDetalle. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+        get HistMstSolicitudCotizacionEstadoHist
         <br>
-      operationId: SolicitudModificacionDetalleController.Get All
+      operationId: HistMstSolicitudCotizacionEstadoHistController.Get All
       parameters:
       - in: query
         name: query
@@ -1591,7 +1285,8 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
@@ -1601,87 +1296,60 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
-      - in: query
-        name: vigencia
-        description: Vigencia de la solicitud. e.g. 2026
-        type: integer
-        format: int64
-      - in: query
-        name: estado
-        description: Id del estado de la solicitud (parametros)
-        type: integer
-        format: int64
-      - in: query
-        name: dependencia
-        description: Id de la dependencia solicitante (Oikos)
-        type: integer
-        format: int64
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponseLista'
-        "400":
-          description: parametros invalidos
+            $ref: '#/definitions/models.HistMstSolicitudCotizacionEstadoHist'
         "404":
-          description: error al consultar los registros
+          description: not found resource
     post:
       tags:
-      - solicitud_modificacion_detalle
+      - hist_mst_solicitud_cotizacion_estado_hist
       description: |-
-        create SolicitudModificacionDetalle
+        create HistMstSolicitudCotizacionEstadoHist
         <br>
-      operationId: SolicitudModificacionDetalleController.Post
+      operationId: HistMstSolicitudCotizacionEstadoHistController.Post
       parameters:
       - in: body
         name: body
-        description: body for SolicitudModificacionDetalle content
+        description: body for HistMstSolicitudCotizacionEstadoHist content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudModificacionDetalle'
+          $ref: '#/definitions/models.HistMstSolicitudCotizacionEstadoHist'
       responses:
         "201":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{int} models.HistMstSolicitudCotizacionEstadoHist'
         "400":
-          description: body o datos invalidos
-  /solicitud_modificacion_detalle/{id}:
+          description: the request contains incorrect syntax
+  /hist_mst_solicitud_cotizacion_estado_hist/{id}:
     get:
       tags:
-      - solicitud_modificacion_detalle
+      - hist_mst_solicitud_cotizacion_estado_hist
       description: |-
-        get SolicitudModificacionDetalle by id
+        get HistMstSolicitudCotizacionEstadoHist by id
         <br>
-      operationId: SolicitudModificacionDetalleController.Get One
+      operationId: HistMstSolicitudCotizacionEstadoHistController.Get One
       parameters:
       - in: path
         name: id
-        description: The id
+        description: The key for staticblock
         required: true
         type: string
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.HistMstSolicitudCotizacionEstadoHist'
         "404":
-          description: id invalido o registro inexistente
+          description: not found resource
     put:
       tags:
-      - solicitud_modificacion_detalle
+      - hist_mst_solicitud_cotizacion_estado_hist
       description: |-
-        update the SolicitudModificacionDetalle
+        update the HistMstSolicitudCotizacionEstadoHist
         <br>
-      operationId: SolicitudModificacionDetalleController.Put
+      operationId: HistMstSolicitudCotizacionEstadoHistController.Put
       parameters:
       - in: path
         name: id
@@ -1690,24 +1358,24 @@ paths:
         type: string
       - in: body
         name: body
-        description: body for SolicitudModificacionDetalle content
+        description: body for HistMstSolicitudCotizacionEstadoHist content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudModificacionDetalle'
+          $ref: '#/definitions/models.HistMstSolicitudCotizacionEstadoHist'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.HistMstSolicitudCotizacionEstadoHist'
         "400":
-          description: id, body o datos invalidos, o registro inexistente
+          description: the request contains incorrect syntax
     delete:
       tags:
-      - solicitud_modificacion_detalle
+      - hist_mst_solicitud_cotizacion_estado_hist
       description: |-
-        delete the SolicitudModificacionDetalle
+        delete the HistMstSolicitudCotizacionEstadoHist
         <br>
-      operationId: SolicitudModificacionDetalleController.Delete
+      operationId: HistMstSolicitudCotizacionEstadoHistController.Delete
       parameters:
       - in: path
         name: id
@@ -1716,19 +1384,17 @@ paths:
         type: string
       responses:
         "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{string} delete success!'
         "404":
-          description: id invalido o registro inexistente
-  /solicitud_modificacion_estado/:
+          description: not found resource
+  /mst_cotizacion/:
     get:
       tags:
-      - solicitud_modificacion_estado
+      - mst_cotizacion
       description: |-
-        get SolicitudModificacionEstado. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+        get MstCotizacion
         <br>
-      operationId: SolicitudModificacionEstadoController.Get All
+      operationId: MstCotizacionController.Get All
       parameters:
       - in: query
         name: query
@@ -1744,7 +1410,8 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
@@ -1754,87 +1421,60 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
-      - in: query
-        name: vigencia
-        description: Vigencia de la solicitud. e.g. 2026
-        type: integer
-        format: int64
-      - in: query
-        name: estado
-        description: Id del estado de la solicitud (parametros)
-        type: integer
-        format: int64
-      - in: query
-        name: dependencia
-        description: Id de la dependencia solicitante (Oikos)
-        type: integer
-        format: int64
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponseLista'
-        "400":
-          description: parametros invalidos
+            $ref: '#/definitions/models.MstCotizacion'
         "404":
-          description: error al consultar los registros
+          description: not found resource
     post:
       tags:
-      - solicitud_modificacion_estado
+      - mst_cotizacion
       description: |-
-        create SolicitudModificacionEstado
+        create MstCotizacion
         <br>
-      operationId: SolicitudModificacionEstadoController.Post
+      operationId: MstCotizacionController.Post
       parameters:
       - in: body
         name: body
-        description: body for SolicitudModificacionEstado content
+        description: body for MstCotizacion content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudModificacionEstado'
+          $ref: '#/definitions/models.MstCotizacion'
       responses:
         "201":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{int} models.MstCotizacion'
         "400":
-          description: body o datos invalidos
-  /solicitud_modificacion_estado/{id}:
+          description: the request contains incorrect syntax
+  /mst_cotizacion/{id}:
     get:
       tags:
-      - solicitud_modificacion_estado
+      - mst_cotizacion
       description: |-
-        get SolicitudModificacionEstado by id
+        get MstCotizacion by id
         <br>
-      operationId: SolicitudModificacionEstadoController.Get One
+      operationId: MstCotizacionController.Get One
       parameters:
       - in: path
         name: id
-        description: The id
+        description: The key for staticblock
         required: true
         type: string
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.MstCotizacion'
         "404":
-          description: id invalido o registro inexistente
+          description: not found resource
     put:
       tags:
-      - solicitud_modificacion_estado
+      - mst_cotizacion
       description: |-
-        update the SolicitudModificacionEstado
+        update the MstCotizacion
         <br>
-      operationId: SolicitudModificacionEstadoController.Put
+      operationId: MstCotizacionController.Put
       parameters:
       - in: path
         name: id
@@ -1843,24 +1483,24 @@ paths:
         type: string
       - in: body
         name: body
-        description: body for SolicitudModificacionEstado content
+        description: body for MstCotizacion content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudModificacionEstado'
+          $ref: '#/definitions/models.MstCotizacion'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.MstCotizacion'
         "400":
-          description: id, body o datos invalidos, o registro inexistente
+          description: the request contains incorrect syntax
     delete:
       tags:
-      - solicitud_modificacion_estado
+      - mst_cotizacion
       description: |-
-        delete the SolicitudModificacionEstado
+        delete the MstCotizacion
         <br>
-      operationId: SolicitudModificacionEstadoController.Delete
+      operationId: MstCotizacionController.Delete
       parameters:
       - in: path
         name: id
@@ -1869,19 +1509,17 @@ paths:
         type: string
       responses:
         "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{string} delete success!'
         "404":
-          description: id invalido o registro inexistente
-  /solicitud_necesidad/:
+          description: not found resource
+  /mst_solicitud_cotizacion/:
     get:
       tags:
-      - solicitud_necesidad
+      - mst_solicitud_cotizacion
       description: |-
-        get SolicitudNecesidad. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+        get MstSolicitudCotizacion
         <br>
-      operationId: SolicitudNecesidadController.Get All
+      operationId: MstSolicitudCotizacionController.Get All
       parameters:
       - in: query
         name: query
@@ -1897,7 +1535,8 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
@@ -1907,87 +1546,60 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
-      - in: query
-        name: vigencia
-        description: Vigencia de la solicitud. e.g. 2026
-        type: integer
-        format: int64
-      - in: query
-        name: estado
-        description: Id del estado de la solicitud (parametros)
-        type: integer
-        format: int64
-      - in: query
-        name: dependencia
-        description: Id de la dependencia solicitante (Oikos)
-        type: integer
-        format: int64
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponseLista'
-        "400":
-          description: parametros invalidos
+            $ref: '#/definitions/models.MstSolicitudCotizacion'
         "404":
-          description: error al consultar los registros
+          description: not found resource
     post:
       tags:
-      - solicitud_necesidad
+      - mst_solicitud_cotizacion
       description: |-
-        create SolicitudNecesidad
+        create MstSolicitudCotizacion
         <br>
-      operationId: SolicitudNecesidadController.Post
+      operationId: MstSolicitudCotizacionController.Post
       parameters:
       - in: body
         name: body
-        description: body for SolicitudNecesidad content
+        description: body for MstSolicitudCotizacion content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudNecesidad'
+          $ref: '#/definitions/models.MstSolicitudCotizacion'
       responses:
         "201":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{int} models.MstSolicitudCotizacion'
         "400":
-          description: body o datos invalidos
-  /solicitud_necesidad/{id}:
+          description: the request contains incorrect syntax
+  /mst_solicitud_cotizacion/{id}:
     get:
       tags:
-      - solicitud_necesidad
+      - mst_solicitud_cotizacion
       description: |-
-        get SolicitudNecesidad by id
+        get MstSolicitudCotizacion by id
         <br>
-      operationId: SolicitudNecesidadController.Get One
+      operationId: MstSolicitudCotizacionController.Get One
       parameters:
       - in: path
         name: id
-        description: The id
+        description: The key for staticblock
         required: true
         type: string
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.MstSolicitudCotizacion'
         "404":
-          description: id invalido o registro inexistente
+          description: not found resource
     put:
       tags:
-      - solicitud_necesidad
+      - mst_solicitud_cotizacion
       description: |-
-        update the SolicitudNecesidad
+        update the MstSolicitudCotizacion
         <br>
-      operationId: SolicitudNecesidadController.Put
+      operationId: MstSolicitudCotizacionController.Put
       parameters:
       - in: path
         name: id
@@ -1996,24 +1608,24 @@ paths:
         type: string
       - in: body
         name: body
-        description: body for SolicitudNecesidad content
+        description: body for MstSolicitudCotizacion content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudNecesidad'
+          $ref: '#/definitions/models.MstSolicitudCotizacion'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.MstSolicitudCotizacion'
         "400":
-          description: id, body o datos invalidos, o registro inexistente
+          description: the request contains incorrect syntax
     delete:
       tags:
-      - solicitud_necesidad
+      - mst_solicitud_cotizacion
       description: |-
-        delete the SolicitudNecesidad
+        delete the MstSolicitudCotizacion
         <br>
-      operationId: SolicitudNecesidadController.Delete
+      operationId: MstSolicitudCotizacionController.Delete
       parameters:
       - in: path
         name: id
@@ -2022,19 +1634,17 @@ paths:
         type: string
       responses:
         "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{string} delete success!'
         "404":
-          description: id invalido o registro inexistente
-  /solicitud_pago_parcial/:
+          description: not found resource
+  /notificacion/:
     get:
       tags:
-      - solicitud_pago_parcial
+      - notificacion
       description: |-
-        get SolicitudPagoParcial. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+        get Notificacion
         <br>
-      operationId: SolicitudPagoParcialController.Get All
+      operationId: NotificacionController.Get All
       parameters:
       - in: query
         name: query
@@ -2050,7 +1660,8 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
@@ -2060,87 +1671,60 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
-      - in: query
-        name: vigencia
-        description: Vigencia de la solicitud. e.g. 2026
-        type: integer
-        format: int64
-      - in: query
-        name: estado
-        description: Id del estado de la solicitud (parametros)
-        type: integer
-        format: int64
-      - in: query
-        name: dependencia
-        description: Id de la dependencia solicitante (Oikos)
-        type: integer
-        format: int64
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponseLista'
-        "400":
-          description: parametros invalidos
+            $ref: '#/definitions/models.Notificacion'
         "404":
-          description: error al consultar los registros
+          description: not found resource
     post:
       tags:
-      - solicitud_pago_parcial
+      - notificacion
       description: |-
-        create SolicitudPagoParcial
+        create Notificacion
         <br>
-      operationId: SolicitudPagoParcialController.Post
+      operationId: NotificacionController.Post
       parameters:
       - in: body
         name: body
-        description: body for SolicitudPagoParcial content
+        description: body for Notificacion content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudPagoParcial'
+          $ref: '#/definitions/models.Notificacion'
       responses:
         "201":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{int} models.Notificacion'
         "400":
-          description: body o datos invalidos
-  /solicitud_pago_parcial/{id}:
+          description: the request contains incorrect syntax
+  /notificacion/{id}:
     get:
       tags:
-      - solicitud_pago_parcial
+      - notificacion
       description: |-
-        get SolicitudPagoParcial by id
+        get Notificacion by id
         <br>
-      operationId: SolicitudPagoParcialController.Get One
+      operationId: NotificacionController.Get One
       parameters:
       - in: path
         name: id
-        description: The id
+        description: The key for staticblock
         required: true
         type: string
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.Notificacion'
         "404":
-          description: id invalido o registro inexistente
+          description: not found resource
     put:
       tags:
-      - solicitud_pago_parcial
+      - notificacion
       description: |-
-        update the SolicitudPagoParcial
+        update the Notificacion
         <br>
-      operationId: SolicitudPagoParcialController.Put
+      operationId: NotificacionController.Put
       parameters:
       - in: path
         name: id
@@ -2149,24 +1733,24 @@ paths:
         type: string
       - in: body
         name: body
-        description: body for SolicitudPagoParcial content
+        description: body for Notificacion content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudPagoParcial'
+          $ref: '#/definitions/models.Notificacion'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.Notificacion'
         "400":
-          description: id, body o datos invalidos, o registro inexistente
+          description: the request contains incorrect syntax
     delete:
       tags:
-      - solicitud_pago_parcial
+      - notificacion
       description: |-
-        delete the SolicitudPagoParcial
+        delete the Notificacion
         <br>
-      operationId: SolicitudPagoParcialController.Delete
+      operationId: NotificacionController.Delete
       parameters:
       - in: path
         name: id
@@ -2175,19 +1759,17 @@ paths:
         type: string
       responses:
         "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{string} delete success!'
         "404":
-          description: id invalido o registro inexistente
-  /solicitud_proveedor/:
+          description: not found resource
+  /rel_solicitud_cotizacion_proveedor/:
     get:
       tags:
-      - solicitud_proveedor
+      - rel_solicitud_cotizacion_proveedor
       description: |-
-        get SolicitudProveedor. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+        get RelSolicitudCotizacionProveedor
         <br>
-      operationId: SolicitudProveedorController.Get All
+      operationId: RelSolicitudCotizacionProveedorController.Get All
       parameters:
       - in: query
         name: query
@@ -2203,7 +1785,8 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
@@ -2213,87 +1796,60 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
-      - in: query
-        name: vigencia
-        description: Vigencia de la solicitud. e.g. 2026
-        type: integer
-        format: int64
-      - in: query
-        name: estado
-        description: Id del estado de la solicitud (parametros)
-        type: integer
-        format: int64
-      - in: query
-        name: dependencia
-        description: Id de la dependencia solicitante (Oikos)
-        type: integer
-        format: int64
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponseLista'
-        "400":
-          description: parametros invalidos
+            $ref: '#/definitions/models.RelSolicitudCotizacionProveedor'
         "404":
-          description: error al consultar los registros
+          description: not found resource
     post:
       tags:
-      - solicitud_proveedor
+      - rel_solicitud_cotizacion_proveedor
       description: |-
-        create SolicitudProveedor
+        create RelSolicitudCotizacionProveedor
         <br>
-      operationId: SolicitudProveedorController.Post
+      operationId: RelSolicitudCotizacionProveedorController.Post
       parameters:
       - in: body
         name: body
-        description: body for SolicitudProveedor content
+        description: body for RelSolicitudCotizacionProveedor content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudProveedor'
+          $ref: '#/definitions/models.RelSolicitudCotizacionProveedor'
       responses:
         "201":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{int} models.RelSolicitudCotizacionProveedor'
         "400":
-          description: body o datos invalidos
-  /solicitud_proveedor/{id}:
+          description: the request contains incorrect syntax
+  /rel_solicitud_cotizacion_proveedor/{id}:
     get:
       tags:
-      - solicitud_proveedor
+      - rel_solicitud_cotizacion_proveedor
       description: |-
-        get SolicitudProveedor by id
+        get RelSolicitudCotizacionProveedor by id
         <br>
-      operationId: SolicitudProveedorController.Get One
+      operationId: RelSolicitudCotizacionProveedorController.Get One
       parameters:
       - in: path
         name: id
-        description: The id
+        description: The key for staticblock
         required: true
         type: string
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.RelSolicitudCotizacionProveedor'
         "404":
-          description: id invalido o registro inexistente
+          description: not found resource
     put:
       tags:
-      - solicitud_proveedor
+      - rel_solicitud_cotizacion_proveedor
       description: |-
-        update the SolicitudProveedor
+        update the RelSolicitudCotizacionProveedor
         <br>
-      operationId: SolicitudProveedorController.Put
+      operationId: RelSolicitudCotizacionProveedorController.Put
       parameters:
       - in: path
         name: id
@@ -2302,24 +1858,24 @@ paths:
         type: string
       - in: body
         name: body
-        description: body for SolicitudProveedor content
+        description: body for RelSolicitudCotizacionProveedor content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudProveedor'
+          $ref: '#/definitions/models.RelSolicitudCotizacionProveedor'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.RelSolicitudCotizacionProveedor'
         "400":
-          description: id, body o datos invalidos, o registro inexistente
+          description: the request contains incorrect syntax
     delete:
       tags:
-      - solicitud_proveedor
+      - rel_solicitud_cotizacion_proveedor
       description: |-
-        delete the SolicitudProveedor
+        delete the RelSolicitudCotizacionProveedor
         <br>
-      operationId: SolicitudProveedorController.Delete
+      operationId: RelSolicitudCotizacionProveedorController.Delete
       parameters:
       - in: path
         name: id
@@ -2328,19 +1884,17 @@ paths:
         type: string
       responses:
         "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{string} delete success!'
         "404":
-          description: id invalido o registro inexistente
-  /solicitud_requisito_documental/:
+          description: not found resource
+  /solicitud_cotizacion_actividad_economica/:
     get:
       tags:
-      - solicitud_requisito_documental
+      - solicitud_cotizacion_actividad_economica
       description: |-
-        get SolicitudRequisitoDocumental. Total es la cantidad de registros que cumplen los filtros, sin limit ni offset; Data contiene los registros de la pagina
+        get SolicitudCotizacionActividadEconomica
         <br>
-      operationId: SolicitudRequisitoDocumentalController.Get All
+      operationId: SolicitudCotizacionActividadEconomicaController.Get All
       parameters:
       - in: query
         name: query
@@ -2356,7 +1910,8 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
@@ -2366,87 +1921,60 @@ paths:
         name: offset
         description: Start position of result set. Must be an integer
         type: string
-      - in: query
-        name: vigencia
-        description: Vigencia de la solicitud. e.g. 2026
-        type: integer
-        format: int64
-      - in: query
-        name: estado
-        description: Id del estado de la solicitud (parametros)
-        type: integer
-        format: int64
-      - in: query
-        name: dependencia
-        description: Id de la dependencia solicitante (Oikos)
-        type: integer
-        format: int64
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponseLista'
-        "400":
-          description: parametros invalidos
+            $ref: '#/definitions/models.SolicitudCotizacionActividadEconomica'
         "404":
-          description: error al consultar los registros
+          description: not found resource
     post:
       tags:
-      - solicitud_requisito_documental
+      - solicitud_cotizacion_actividad_economica
       description: |-
-        create SolicitudRequisitoDocumental
+        create SolicitudCotizacionActividadEconomica
         <br>
-      operationId: SolicitudRequisitoDocumentalController.Post
+      operationId: SolicitudCotizacionActividadEconomicaController.Post
       parameters:
       - in: body
         name: body
-        description: body for SolicitudRequisitoDocumental content
+        description: body for SolicitudCotizacionActividadEconomica content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudRequisitoDocumental'
+          $ref: '#/definitions/models.SolicitudCotizacionActividadEconomica'
       responses:
         "201":
-          description: ""
-          schema:
-            $ref: '#/definitions/controllers.APIResponse'
+          description: '{int} models.SolicitudCotizacionActividadEconomica'
         "400":
-          description: body o datos invalidos
-  /solicitud_requisito_documental/{id}:
+          description: the request contains incorrect syntax
+  /solicitud_cotizacion_actividad_economica/{id}:
     get:
       tags:
-      - solicitud_requisito_documental
+      - solicitud_cotizacion_actividad_economica
       description: |-
-        get SolicitudRequisitoDocumental by id
+        get SolicitudCotizacionActividadEconomica by id
         <br>
-      operationId: SolicitudRequisitoDocumentalController.Get One
+      operationId: SolicitudCotizacionActividadEconomicaController.Get One
       parameters:
       - in: path
         name: id
-        description: The id
+        description: The key for staticblock
         required: true
         type: string
-      - in: query
-        name: activo
-        description: Registros activos (true, predeterminado) o inactivos (false)
-        type: boolean
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.SolicitudCotizacionActividadEconomica'
         "404":
-          description: id invalido o registro inexistente
+          description: not found resource
     put:
       tags:
-      - solicitud_requisito_documental
+      - solicitud_cotizacion_actividad_economica
       description: |-
-        update the SolicitudRequisitoDocumental
+        update the SolicitudCotizacionActividadEconomica
         <br>
-      operationId: SolicitudRequisitoDocumentalController.Put
+      operationId: SolicitudCotizacionActividadEconomicaController.Put
       parameters:
       - in: path
         name: id
@@ -2455,24 +1983,24 @@ paths:
         type: string
       - in: body
         name: body
-        description: body for SolicitudRequisitoDocumental content
+        description: body for SolicitudCotizacionActividadEconomica content
         required: true
         schema:
-          $ref: '#/definitions/models.SolicitudRequisitoDocumental'
+          $ref: '#/definitions/models.SolicitudCotizacionActividadEconomica'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.SolicitudCotizacionActividadEconomica'
         "400":
-          description: id, body o datos invalidos, o registro inexistente
+          description: the request contains incorrect syntax
     delete:
       tags:
-      - solicitud_requisito_documental
+      - solicitud_cotizacion_actividad_economica
       description: |-
-        delete the SolicitudRequisitoDocumental
+        delete the SolicitudCotizacionActividadEconomica
         <br>
-      operationId: SolicitudRequisitoDocumentalController.Delete
+      operationId: SolicitudCotizacionActividadEconomicaController.Delete
       parameters:
       - in: path
         name: id
@@ -2481,42 +2009,637 @@ paths:
         type: string
       responses:
         "200":
+          description: '{string} delete success!'
+        "404":
+          description: not found resource
+  /solicitud_cotizacion_especificacion_tecnica/:
+    get:
+      tags:
+      - solicitud_cotizacion_especificacion_tecnica
+      description: |-
+        get SolicitudCotizacionEspecificacionTecnica
+        <br>
+      operationId: SolicitudCotizacionEspecificacionTecnicaController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
           description: ""
           schema:
-            $ref: '#/definitions/controllers.APIResponse'
+            $ref: '#/definitions/models.SolicitudCotizacionEspecificacionTecnica'
         "404":
-          description: id invalido o registro inexistente
+          description: not found resource
+    post:
+      tags:
+      - solicitud_cotizacion_especificacion_tecnica
+      description: |-
+        create SolicitudCotizacionEspecificacionTecnica
+        <br>
+      operationId: SolicitudCotizacionEspecificacionTecnicaController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for SolicitudCotizacionEspecificacionTecnica content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudCotizacionEspecificacionTecnica'
+      responses:
+        "201":
+          description: '{int} models.SolicitudCotizacionEspecificacionTecnica'
+        "400":
+          description: the request contains incorrect syntax
+  /solicitud_cotizacion_especificacion_tecnica/{id}:
+    get:
+      tags:
+      - solicitud_cotizacion_especificacion_tecnica
+      description: |-
+        get SolicitudCotizacionEspecificacionTecnica by id
+        <br>
+      operationId: SolicitudCotizacionEspecificacionTecnicaController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.SolicitudCotizacionEspecificacionTecnica'
+        "404":
+          description: not found resource
+    put:
+      tags:
+      - solicitud_cotizacion_especificacion_tecnica
+      description: |-
+        update the SolicitudCotizacionEspecificacionTecnica
+        <br>
+      operationId: SolicitudCotizacionEspecificacionTecnicaController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for SolicitudCotizacionEspecificacionTecnica content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudCotizacionEspecificacionTecnica'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.SolicitudCotizacionEspecificacionTecnica'
+        "400":
+          description: the request contains incorrect syntax
+    delete:
+      tags:
+      - solicitud_cotizacion_especificacion_tecnica
+      description: |-
+        delete the SolicitudCotizacionEspecificacionTecnica
+        <br>
+      operationId: SolicitudCotizacionEspecificacionTecnicaController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "404":
+          description: not found resource
+  /solicitud_cotizacion_nucleo_basico/:
+    get:
+      tags:
+      - solicitud_cotizacion_nucleo_basico
+      description: |-
+        get SolicitudCotizacionNucleoBasico
+        <br>
+      operationId: SolicitudCotizacionNucleoBasicoController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.SolicitudCotizacionNucleoBasico'
+        "404":
+          description: not found resource
+    post:
+      tags:
+      - solicitud_cotizacion_nucleo_basico
+      description: |-
+        create SolicitudCotizacionNucleoBasico
+        <br>
+      operationId: SolicitudCotizacionNucleoBasicoController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for SolicitudCotizacionNucleoBasico content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudCotizacionNucleoBasico'
+      responses:
+        "201":
+          description: '{int} models.SolicitudCotizacionNucleoBasico'
+        "400":
+          description: the request contains incorrect syntax
+  /solicitud_cotizacion_nucleo_basico/{id}:
+    get:
+      tags:
+      - solicitud_cotizacion_nucleo_basico
+      description: |-
+        get SolicitudCotizacionNucleoBasico by id
+        <br>
+      operationId: SolicitudCotizacionNucleoBasicoController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.SolicitudCotizacionNucleoBasico'
+        "404":
+          description: not found resource
+    put:
+      tags:
+      - solicitud_cotizacion_nucleo_basico
+      description: |-
+        update the SolicitudCotizacionNucleoBasico
+        <br>
+      operationId: SolicitudCotizacionNucleoBasicoController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for SolicitudCotizacionNucleoBasico content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudCotizacionNucleoBasico'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.SolicitudCotizacionNucleoBasico'
+        "400":
+          description: the request contains incorrect syntax
+    delete:
+      tags:
+      - solicitud_cotizacion_nucleo_basico
+      description: |-
+        delete the SolicitudCotizacionNucleoBasico
+        <br>
+      operationId: SolicitudCotizacionNucleoBasicoController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "404":
+          description: not found resource
+  /solicitud_cotizacion_observacion_proveedor/:
+    get:
+      tags:
+      - solicitud_cotizacion_observacion_proveedor
+      description: |-
+        get SolicitudCotizacionObservacionProveedor
+        <br>
+      operationId: SolicitudCotizacionObservacionProveedorController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.SolicitudCotizacionObservacionProveedor'
+        "404":
+          description: not found resource
+    post:
+      tags:
+      - solicitud_cotizacion_observacion_proveedor
+      description: |-
+        create SolicitudCotizacionObservacionProveedor
+        <br>
+      operationId: SolicitudCotizacionObservacionProveedorController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for SolicitudCotizacionObservacionProveedor content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudCotizacionObservacionProveedor'
+      responses:
+        "201":
+          description: '{int} models.SolicitudCotizacionObservacionProveedor'
+        "400":
+          description: the request contains incorrect syntax
+  /solicitud_cotizacion_observacion_proveedor/{id}:
+    get:
+      tags:
+      - solicitud_cotizacion_observacion_proveedor
+      description: |-
+        get SolicitudCotizacionObservacionProveedor by id
+        <br>
+      operationId: SolicitudCotizacionObservacionProveedorController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.SolicitudCotizacionObservacionProveedor'
+        "404":
+          description: not found resource
+    put:
+      tags:
+      - solicitud_cotizacion_observacion_proveedor
+      description: |-
+        update the SolicitudCotizacionObservacionProveedor
+        <br>
+      operationId: SolicitudCotizacionObservacionProveedorController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for SolicitudCotizacionObservacionProveedor content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudCotizacionObservacionProveedor'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.SolicitudCotizacionObservacionProveedor'
+        "400":
+          description: the request contains incorrect syntax
+    delete:
+      tags:
+      - solicitud_cotizacion_observacion_proveedor
+      description: |-
+        delete the SolicitudCotizacionObservacionProveedor
+        <br>
+      operationId: SolicitudCotizacionObservacionProveedorController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "404":
+          description: not found resource
+  /solicitud_cotizacion_observacion_proveedor_respuesta/:
+    get:
+      tags:
+      - solicitud_cotizacion_observacion_proveedor_respuesta
+      description: |-
+        get SolicitudCotizacionObservacionProveedorRespuesta
+        <br>
+      operationId: SolicitudCotizacionObservacionProveedorRespuestaController.Get
+        All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.SolicitudCotizacionObservacionProveedorRespuesta'
+        "404":
+          description: not found resource
+    post:
+      tags:
+      - solicitud_cotizacion_observacion_proveedor_respuesta
+      description: |-
+        create SolicitudCotizacionObservacionProveedorRespuesta
+        <br>
+      operationId: SolicitudCotizacionObservacionProveedorRespuestaController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for SolicitudCotizacionObservacionProveedorRespuesta content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudCotizacionObservacionProveedorRespuesta'
+      responses:
+        "201":
+          description: '{int} models.SolicitudCotizacionObservacionProveedorRespuesta'
+        "400":
+          description: the request contains incorrect syntax
+  /solicitud_cotizacion_observacion_proveedor_respuesta/{id}:
+    get:
+      tags:
+      - solicitud_cotizacion_observacion_proveedor_respuesta
+      description: |-
+        get SolicitudCotizacionObservacionProveedorRespuesta by id
+        <br>
+      operationId: SolicitudCotizacionObservacionProveedorRespuestaController.Get
+        One
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.SolicitudCotizacionObservacionProveedorRespuesta'
+        "404":
+          description: not found resource
+    put:
+      tags:
+      - solicitud_cotizacion_observacion_proveedor_respuesta
+      description: |-
+        update the SolicitudCotizacionObservacionProveedorRespuesta
+        <br>
+      operationId: SolicitudCotizacionObservacionProveedorRespuestaController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for SolicitudCotizacionObservacionProveedorRespuesta content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SolicitudCotizacionObservacionProveedorRespuesta'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.SolicitudCotizacionObservacionProveedorRespuesta'
+        "400":
+          description: the request contains incorrect syntax
+    delete:
+      tags:
+      - solicitud_cotizacion_observacion_proveedor_respuesta
+      description: |-
+        delete the SolicitudCotizacionObservacionProveedorRespuesta
+        <br>
+      operationId: SolicitudCotizacionObservacionProveedorRespuestaController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "404":
+          description: not found resource
+  /validacion_ordenador/:
+    get:
+      tags:
+      - validacion_ordenador
+      description: |-
+        get ValidacionOrdenador
+        <br>
+      operationId: ValidacionOrdenadorController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.ValidacionOrdenador'
+        "404":
+          description: not found resource
+    post:
+      tags:
+      - validacion_ordenador
+      description: |-
+        create ValidacionOrdenador
+        <br>
+      operationId: ValidacionOrdenadorController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for ValidacionOrdenador content
+        required: true
+        schema:
+          $ref: '#/definitions/models.ValidacionOrdenador'
+      responses:
+        "201":
+          description: '{int} models.ValidacionOrdenador'
+        "400":
+          description: the request contains incorrect syntax
+  /validacion_ordenador/{id}:
+    get:
+      tags:
+      - validacion_ordenador
+      description: |-
+        get ValidacionOrdenador by id
+        <br>
+      operationId: ValidacionOrdenadorController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.ValidacionOrdenador'
+        "404":
+          description: not found resource
+    put:
+      tags:
+      - validacion_ordenador
+      description: |-
+        update the ValidacionOrdenador
+        <br>
+      operationId: ValidacionOrdenadorController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for ValidacionOrdenador content
+        required: true
+        schema:
+          $ref: '#/definitions/models.ValidacionOrdenador'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.ValidacionOrdenador'
+        "400":
+          description: the request contains incorrect syntax
+    delete:
+      tags:
+      - validacion_ordenador
+      description: |-
+        delete the ValidacionOrdenador
+        <br>
+      operationId: ValidacionOrdenadorController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "404":
+          description: not found resource
 definitions:
-  controllers.APIResponse:
-    title: APIResponse
-    type: object
-    properties:
-      Data:
-        $ref: '#/definitions/controllers.interface'
-      Message:
-        type: string
-      Status:
-        type: string
-      Success:
-        type: boolean
-  controllers.APIResponseLista:
-    title: APIResponseLista
-    type: object
-    properties:
-      Data:
-        $ref: '#/definitions/controllers.interface'
-      Message:
-        type: string
-      Status:
-        type: string
-      Success:
-        type: boolean
-      Total:
-        type: integer
-        format: int64
-  controllers.interface:
-    title: interface
-    type: object
   models.CargueMasivo:
     title: CargueMasivo
     type: object
@@ -2529,12 +2652,8 @@ definitions:
       CargadoPorTerceroId:
         type: integer
         format: int64
-      DocumentoId:
-        type: integer
-        format: int64
-      EstadoId:
-        type: integer
-        format: int64
+      EnlacePlantilla:
+        type: string
       FechaCreacion:
         type: string
         format: datetime
@@ -2544,17 +2663,15 @@ definitions:
       Id:
         type: integer
         format: int64
-      NombreArchivo:
-        type: string
-      PlantillaId:
-        type: integer
-        format: int64
+      MstSolicitudCotizacionId:
+        $ref: '#/definitions/models.MstSolicitudCotizacion'
       Rechazados:
         type: integer
         format: int64
-      SolicitudId:
-        $ref: '#/definitions/models.SolicitudCotizacion'
       TotalRegistros:
+        type: integer
+        format: int64
+      UsuarioModificacionId:
         type: integer
         format: int64
   models.CargueMasivoError:
@@ -2563,11 +2680,9 @@ definitions:
     properties:
       Activo:
         type: boolean
-      Campo:
-        type: string
       CargueMasivoId:
         $ref: '#/definitions/models.CargueMasivo'
-      Detalle:
+      DetalleError:
         type: string
       FechaCreacion:
         type: string
@@ -2575,33 +2690,20 @@ definitions:
       FechaModificacion:
         type: string
         format: datetime
-      Fila:
-        type: integer
-        format: int64
-      Hoja:
-        type: string
       Id:
         type: integer
         format: int64
-      MotivoId:
+      Registro:
+        type: string
+      UsuarioModificacionId:
         type: integer
         format: int64
-      ValorDetectado:
-        type: string
-  models.DocumentoSolicitud:
-    title: DocumentoSolicitud
+  models.DecisionSolicitante:
+    title: DecisionSolicitante
     type: object
     properties:
       Activo:
         type: boolean
-      CargadoPorTerceroId:
-        type: integer
-        format: int64
-      DocumentoId:
-        type: integer
-        format: int64
-      Extension:
-        type: string
       FechaCreacion:
         type: string
         format: datetime
@@ -2611,50 +2713,347 @@ definitions:
       Id:
         type: integer
         format: int64
-      NombreArchivo:
+      MensajeAProveedor:
         type: string
+      RelSolicitudCotizacionProveedorId:
+        $ref: '#/definitions/models.RelSolicitudCotizacionProveedor'
+      ResultadoId:
+        type: integer
+        format: int64
+      UsuarioModificacionId:
+        type: integer
+        format: int64
+  models.DetCotizacion:
+    title: DetCotizacion
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      DetSolicitudCotizacion:
+        $ref: '#/definitions/models.DetSolicitudCotizacion'
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      MstCotizacionId:
+        $ref: '#/definitions/models.MstCotizacion'
+      UsuarioModificacionId:
+        type: integer
+        format: int64
+  models.DetSolicitudCotizacion:
+    title: DetSolicitudCotizacion
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
       SolicitudId:
-        $ref: '#/definitions/models.SolicitudCotizacion'
-      TamanoBytes:
+        $ref: '#/definitions/models.MstSolicitudCotizacion'
+      UsuarioModificacionId:
         type: integer
         format: int64
-      TipoDocumentoId:
-        type: integer
-        format: int64
-  models.Observacion:
-    title: Observacion
+  models.FormaPago:
+    title: FormaPago
     type: object
     properties:
       Activo:
         type: boolean
+      Condicion:
+        type: string
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      MstSolicitudCotizacionId:
+        $ref: '#/definitions/models.MstSolicitudCotizacion'
+      PorcentajePago:
+        type: number
+        format: double
+      TipoFormaPagoId:
+        type: integer
+        format: int64
+      UsuarioModificacionId:
+        type: integer
+        format: int64
+  models.HistDetCotizacion:
+    title: HistDetCotizacion
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      DetCotizacionId:
+        $ref: '#/definitions/models.DetCotizacion'
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      FichaTecnica:
+        type: string
+      HistMstCotizacionId:
+        $ref: '#/definitions/models.HistMstCotizacion'
+      Id:
+        type: integer
+        format: int64
+      Iva:
+        type: number
+        format: double
+      UsuarioModificacionId:
+        type: integer
+        format: int64
+      ValorUnitario:
+        type: number
+        format: double
+  models.HistDetSolicitudCotizacion:
+    title: HistDetSolicitudCotizacion
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      Cantidad:
+        type: number
+        format: double
+      Descripcion:
+        type: string
+      DetSolicitudCotizacionId:
+        $ref: '#/definitions/models.DetSolicitudCotizacion'
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      HistMstSolicitudCotizacionId:
+        $ref: '#/definitions/models.HistMstSolicitudCotizacion'
+      Id:
+        type: integer
+        format: int64
+      Nombre:
+        type: string
+      TipoBienServicioId:
+        type: integer
+        format: int64
+      UnidadMedidaId:
+        type: integer
+        format: int64
+      UsuarioModificacionId:
+        type: integer
+        format: int64
+  models.HistMstCotizacion:
+    title: HistMstCotizacion
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      Descripcion:
+        type: string
+      Descuentos:
+        type: string
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaEnvio:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      FechaVencimiento:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      InformacionEntrega:
+        type: string
+      MstCotizacionId:
+        $ref: '#/definitions/models.MstCotizacion'
+      Observaciones:
+        type: string
+      SoporteCotizacion:
+        type: string
+      UsuarioModificacionId:
+        type: integer
+        format: int64
+  models.HistMstSolicitudCotizacion:
+    title: HistMstSolicitudCotizacion
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      Consecutivo:
+        type: integer
+        format: int64
+      CriterioSeleccion:
+        type: string
+      DependenciaDestinoId:
+        type: integer
+        format: int64
+      DependenciaSolicitanteId:
+        type: integer
+        format: int64
       EstadoId:
         type: integer
         format: int64
+      FechaApertura:
+        type: string
+        format: datetime
+      FechaCierre:
+        type: string
+        format: datetime
       FechaCreacion:
         type: string
         format: datetime
       FechaModificacion:
         type: string
         format: datetime
-      FechaVista:
+      FechaProcesamiento:
         type: string
         format: datetime
       Id:
         type: integer
         format: int64
-      ProveedorConvocadoId:
-        $ref: '#/definitions/models.SolicitudProveedor'
-      SolicitudId:
-        $ref: '#/definitions/models.SolicitudCotizacion'
-      Texto:
+      JustificacionSeleccion:
         type: string
-  models.RespuestaObservacion:
-    title: RespuestaObservacion
+      MedioPagoId:
+        type: integer
+        format: int64
+      MetodoSeleccionId:
+        type: integer
+        format: int64
+      MstSolicitudCotizacionId:
+        $ref: '#/definitions/models.MstSolicitudCotizacion'
+      NumeroNecesidad:
+        type: number
+        format: double
+      NumeroSolicitud:
+        type: string
+      Objetivo:
+        type: string
+      Observaciones:
+        type: string
+      OrdenadorGastoId:
+        type: integer
+        format: int64
+      PlanAccionId:
+        type: integer
+        format: int64
+      PlazoEjecucion:
+        type: string
+      Requisitos:
+        type: string
+      ResponsableTerceroId:
+        type: integer
+        format: int64
+      TipoContratoId:
+        type: integer
+        format: int64
+      TipoNecesidadId:
+        type: integer
+        format: int64
+      Titulo:
+        type: string
+      UnidadEjecutoraId:
+        type: integer
+        format: int64
+      UsuarioModificacionId:
+        type: integer
+        format: int64
+      Vigencia:
+        type: integer
+        format: int32
+  models.HistMstSolicitudCotizacionEstadoHist:
+    title: HistMstSolicitudCotizacionEstadoHist
     type: object
     properties:
       Activo:
         type: boolean
-      AutorTerceroId:
+      EstadoHistId:
+        type: integer
+        format: int64
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      HistMstSolicitudCotizacionId:
+        $ref: '#/definitions/models.HistMstSolicitudCotizacion'
+      Id:
+        type: integer
+        format: int64
+      Justificacion:
+        type: string
+      ResponsableTerceroId:
+        type: integer
+        format: int64
+      UsuarioModificacionId:
+        type: integer
+        format: int64
+  models.MstCotizacion:
+    title: MstCotizacion
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      RelSolicitudCotizacionProveedorId:
+        $ref: '#/definitions/models.RelSolicitudCotizacionProveedor'
+      UsuarioModificacionId:
+        type: integer
+        format: int64
+  models.MstSolicitudCotizacion:
+    title: MstSolicitudCotizacion
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      UsuarioModificacionId:
+        type: integer
+        format: int64
+  models.Notificacion:
+    title: Notificacion
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      EstadoEnvioId:
         type: integer
         format: int64
       FechaCreacion:
@@ -2666,14 +3065,44 @@ definitions:
       Id:
         type: integer
         format: int64
-      ObservacionId:
-        $ref: '#/definitions/models.Observacion'
-      Publica:
+      MstSolicitudCotizacionId:
+        $ref: '#/definitions/models.MstSolicitudCotizacion'
+      ProveedorNotificadoId:
+        type: integer
+        format: int64
+      TerceroNotificaId:
+        type: integer
+        format: int64
+      UsuarioModificacionId:
+        type: integer
+        format: int64
+  models.RelSolicitudCotizacionProveedor:
+    title: RelSolicitudCotizacionProveedor
+    type: object
+    properties:
+      Activo:
         type: boolean
-      Texto:
+      FechaCreacion:
         type: string
-  models.SolicitudCiiu:
-    title: SolicitudCiiu
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      MstSolicitudCotizacionId:
+        $ref: '#/definitions/models.MstSolicitudCotizacion'
+      NotificacionId:
+        $ref: '#/definitions/models.Notificacion'
+      ProveedorId:
+        type: integer
+        format: int64
+      UsuarioModificacionId:
+        type: integer
+        format: int64
+  models.SolicitudCotizacionActividadEconomica:
+    title: SolicitudCotizacionActividadEconomica
     type: object
     properties:
       ActividadEconomicaId:
@@ -2690,499 +3119,188 @@ definitions:
       Id:
         type: integer
         format: int64
-      SolicitudId:
-        $ref: '#/definitions/models.SolicitudCotizacion'
-  models.SolicitudCotizacion:
-    title: SolicitudCotizacion
+      MstSolicitudCotizacionId:
+        $ref: '#/definitions/models.MstSolicitudCotizacion'
+      UsuarioModificacionId:
+        type: integer
+        format: int64
+  models.SolicitudCotizacionEspecificacionTecnica:
+    title: SolicitudCotizacionEspecificacionTecnica
     type: object
     properties:
       Activo:
         type: boolean
-      AreaConocimientoId:
-        type: integer
-        format: int64
-      Consecutivo:
-        type: integer
-        format: int64
-      CriterioSeleccion:
+      Enlace:
         type: string
-      DependenciaDestinoId:
-        type: integer
-        format: int64
-      DependenciaSolicitanteId:
-        type: integer
-        format: int64
-      EstadoId:
-        type: integer
-        format: int64
-      FechaApertura:
-        type: string
-        format: datetime
-      FechaCierre:
-        type: string
-        format: datetime
       FechaCreacion:
         type: string
         format: datetime
       FechaModificacion:
         type: string
         format: datetime
-      FechaProcesamiento:
+      Id:
+        type: integer
+        format: int64
+      MstSolicitudCotizacionId:
+        $ref: '#/definitions/models.MstSolicitudCotizacion'
+      UsuarioModificacionId:
+        type: integer
+        format: int64
+  models.SolicitudCotizacionNucleoBasico:
+    title: SolicitudCotizacionNucleoBasico
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
         type: string
         format: datetime
       Id:
         type: integer
         format: int64
-      MedioPagoId:
-        type: integer
-        format: int64
+      MstSolicitudCotizacionId:
+        $ref: '#/definitions/models.MstSolicitudCotizacion'
       NucleoBasicoId:
         type: integer
         format: int64
-      NumeroSolicitud:
+      UsuarioModificacionId:
+        type: integer
+        format: int64
+  models.SolicitudCotizacionObservacionProveedor:
+    title: SolicitudCotizacionObservacionProveedor
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      FechaCreacion:
         type: string
-      Objetivo:
+        format: datetime
+      FechaModificacion:
         type: string
+        format: datetime
+      FechaVistoSolicitante:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      RelSolicitudCotizacionProveedorId:
+        $ref: '#/definitions/models.RelSolicitudCotizacionProveedor'
+      Texto:
+        type: string
+      UsuarioModificacionId:
+        type: integer
+        format: int64
+      VistoSolicitante:
+        type: boolean
+  models.SolicitudCotizacionObservacionProveedorRespuesta:
+    title: SolicitudCotizacionObservacionProveedorRespuesta
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      ObservacionId:
+        $ref: '#/definitions/models.SolicitudCotizacionObservacionProveedor'
+      Texto:
+        type: string
+      UsuarioModificacionId:
+        type: integer
+        format: int64
+  models.ValidacionOrdenador:
+    title: ValidacionOrdenador
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      MstSolicitudCotizacionId:
+        $ref: '#/definitions/models.MstSolicitudCotizacion'
       Observaciones:
         type: string
-      OrdenadorGastoId:
-        type: integer
-        format: int64
-      PlanAccionId:
-        type: integer
-        format: int64
-      PlazoEjecucion:
-        type: string
-      Requisitos:
-        type: string
-      ResponsableTerceroId:
-        type: integer
-        format: int64
-      TipoContratoId:
-        type: integer
-        format: int64
-      TipoFormaPagoId:
-        type: integer
-        format: int64
-      TipoNecesidadId:
-        type: integer
-        format: int64
-      TipoProcesoId:
-        type: integer
-        format: int64
-      Titulo:
-        type: string
-      UnidadEjecutoraId:
-        type: integer
-        format: int64
-      Vigencia:
-        type: integer
-        format: int32
-  models.SolicitudCotizacionDetalle:
-    title: SolicitudCotizacionDetalle
-    type: object
-    properties:
-      ActividadesEconomicas:
-        type: array
-        items:
-          $ref: '#/definitions/models.SolicitudCiiu'
-      Activo:
-        type: boolean
-      AreaConocimientoId:
-        type: integer
-        format: int64
-      CarguesMasivos:
-        type: array
-        items:
-          $ref: '#/definitions/models.CargueMasivo'
-      CarguesMasivosErrores:
-        type: array
-        items:
-          $ref: '#/definitions/models.CargueMasivoError'
-      Consecutivo:
-        type: integer
-        format: int64
-      CriterioSeleccion:
-        type: string
-      DependenciaDestinoId:
-        type: integer
-        format: int64
-      DependenciaSolicitanteId:
-        type: integer
-        format: int64
-      Documentos:
-        type: array
-        items:
-          $ref: '#/definitions/models.DocumentoSolicitud'
-      EstadoId:
-        type: integer
-        format: int64
-      FechaApertura:
-        type: string
-        format: datetime
-      FechaCierre:
-        type: string
-        format: datetime
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
-      FechaProcesamiento:
-        type: string
-        format: datetime
-      Id:
-        type: integer
-        format: int64
-      Items:
-        type: array
-        items:
-          $ref: '#/definitions/models.SolicitudItem'
-      MedioPagoId:
-        type: integer
-        format: int64
-      Necesidades:
-        type: array
-        items:
-          $ref: '#/definitions/models.SolicitudNecesidad'
-      NucleoBasicoId:
-        type: integer
-        format: int64
-      NumeroSolicitud:
-        type: string
-      Objetivo:
-        type: string
-      Observaciones:
-        type: string
-      OrdenadorGastoId:
-        type: integer
-        format: int64
-      PagosParciales:
-        type: array
-        items:
-          $ref: '#/definitions/models.SolicitudPagoParcial'
-      PlanAccionId:
-        type: integer
-        format: int64
-      PlazoEjecucion:
-        type: string
-      Proveedores:
-        type: array
-        items:
-          $ref: '#/definitions/models.SolicitudProveedor'
-      Requisitos:
-        type: string
-      RequisitosDocumentales:
-        type: array
-        items:
-          $ref: '#/definitions/models.SolicitudRequisitoDocumental'
-      ResponsableTerceroId:
-        type: integer
-        format: int64
-      TipoContratoId:
-        type: integer
-        format: int64
-      TipoFormaPagoId:
-        type: integer
-        format: int64
-      TipoNecesidadId:
-        type: integer
-        format: int64
-      TipoProcesoId:
-        type: integer
-        format: int64
-      Titulo:
-        type: string
-      UnidadEjecutoraId:
-        type: integer
-        format: int64
-      Vigencia:
-        type: integer
-        format: int32
-  models.SolicitudEstado:
-    title: SolicitudEstado
-    type: object
-    properties:
-      Activo:
-        type: boolean
-      EstadoId:
-        type: integer
-        format: int64
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
-      Id:
-        type: integer
-        format: int64
-      Justificacion:
-        type: string
-      ResponsableTerceroId:
-        type: integer
-        format: int64
-      SolicitudId:
-        $ref: '#/definitions/models.SolicitudCotizacion'
-  models.SolicitudItem:
-    title: SolicitudItem
-    type: object
-    properties:
-      Activo:
-        type: boolean
-      Cantidad:
-        type: number
-        format: double
-      CargueMasivoId:
-        $ref: '#/definitions/models.CargueMasivo'
-      CodigoUnspsc:
-        type: string
-      Descripcion:
-        type: string
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
-      Id:
-        type: integer
-        format: int64
-      Nombre:
-        type: string
-      SolicitudId:
-        $ref: '#/definitions/models.SolicitudCotizacion'
-      TipoBienServicioId:
-        type: integer
-        format: int64
-      UnidadMedidaId:
-        type: integer
-        format: int64
-  models.SolicitudModificacion:
-    title: SolicitudModificacion
-    type: object
-    properties:
-      Activo:
-        type: boolean
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
-      Id:
-        type: integer
-        format: int64
-      Numero:
-        type: integer
-        format: int32
-      SolicitudId:
-        $ref: '#/definitions/models.SolicitudCotizacion'
-  models.SolicitudModificacionDetalle:
-    title: SolicitudModificacionDetalle
-    type: object
-    properties:
-      Activo:
-        type: boolean
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
-      Id:
-        type: integer
-        format: int64
-      Justificacion:
-        type: string
-      SolicitudItemId:
-        $ref: '#/definitions/models.SolicitudItem'
-      SolicitudModificacionId:
-        $ref: '#/definitions/models.SolicitudModificacion'
-      TipoCambioId:
-        type: integer
-        format: int64
-      ValorAnterior:
-        type: string
-      ValorNuevo:
-        type: string
-  models.SolicitudModificacionEstado:
-    title: SolicitudModificacionEstado
-    type: object
-    properties:
-      Activo:
-        type: boolean
-      EstadoId:
-        type: integer
-        format: int64
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
-      Id:
-        type: integer
-        format: int64
-      Justificacion:
-        type: string
-      ResponsableTerceroId:
-        type: integer
-        format: int64
-      SolicitudModificacionId:
-        $ref: '#/definitions/models.SolicitudModificacion'
-  models.SolicitudNecesidad:
-    title: SolicitudNecesidad
-    type: object
-    properties:
-      Activo:
-        type: boolean
-      DependenciaNecesidad:
-        type: string
-      EstadoNecesidad:
-        type: string
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
-      Id:
-        type: integer
-        format: int64
-      NumeroDisponibilidad:
-        type: string
-      NumeroNecesidad:
-        type: string
-      RubroCodigo:
-        type: string
-      RubroNombre:
-        type: string
-      SolicitudId:
-        $ref: '#/definitions/models.SolicitudCotizacion'
-      ValorCdp:
-        type: number
-        format: double
-      ValorDisponibilidad:
-        type: number
-        format: double
-  models.SolicitudPagoParcial:
-    title: SolicitudPagoParcial
-    type: object
-    properties:
-      Activo:
-        type: boolean
-      Condicion:
-        type: string
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
-      Id:
-        type: integer
-        format: int64
-      Porcentaje:
-        type: number
-        format: double
-      SolicitudId:
-        $ref: '#/definitions/models.SolicitudCotizacion'
-  models.SolicitudProveedor:
-    title: SolicitudProveedor
-    type: object
-    properties:
-      Activo:
-        type: boolean
-      FechaConvocatoria:
-        type: string
-        format: datetime
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
-      Id:
-        type: integer
-        format: int64
-      ProveedorId:
-        type: integer
-        format: int64
-      SolicitudId:
-        $ref: '#/definitions/models.SolicitudCotizacion'
-  models.SolicitudRequisitoDocumental:
-    title: SolicitudRequisitoDocumental
-    type: object
-    properties:
-      Activo:
-        type: boolean
-      ClasificacionId:
-        type: integer
-        format: int64
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
-      Id:
-        type: integer
-        format: int64
-      Instruccion:
-        type: string
-      SolicitudId:
-        $ref: '#/definitions/models.SolicitudCotizacion'
-      TipoDocumentoId:
+      UsuarioModificacionId:
         type: integer
         format: int64
 tags:
+- name: hist_mst_solicitud_cotizacion_estado_hist
+  description: |
+    HistMstSolicitudCotizacionEstadoHistController operations for HistMstSolicitudCotizacionEstadoHist
+- name: mst_cotizacion
+  description: |
+    MstCotizacionController operations for MstCotizacion
+- name: mst_solicitud_cotizacion
+  description: |
+    MstSolicitudCotizacionController operations for MstSolicitudCotizacion
 - name: cargue_masivo_error
   description: |
     CargueMasivoErrorController operations for CargueMasivoError
-- name: solicitud_item
+- name: det_cotizacion
   description: |
-    SolicitudItemController operations for SolicitudItem
-- name: solicitud_proveedor
+    DetCotizacionController operations for DetCotizacion
+- name: det_solicitud_cotizacion
   description: |
-    SolicitudProveedorController operations for SolicitudProveedor
+    DetSolicitudCotizacionController operations for DetSolicitudCotizacion
+- name: forma_pago
+  description: |
+    FormaPagoController operations for FormaPago
+- name: solicitud_cotizacion_actividad_economica
+  description: |
+    SolicitudCotizacionActividadEconomicaController operations for SolicitudCotizacionActividadEconomica
+- name: rel_solicitud_cotizacion_proveedor
+  description: |
+    RelSolicitudCotizacionProveedorController operations for RelSolicitudCotizacionProveedor
+- name: solicitud_cotizacion_observacion_proveedor
+  description: |
+    SolicitudCotizacionObservacionProveedorController operations for SolicitudCotizacionObservacionProveedor
+- name: solicitud_cotizacion_observacion_proveedor_respuesta
+  description: |
+    SolicitudCotizacionObservacionProveedorRespuestaController operations for SolicitudCotizacionObservacionProveedorRespuesta
+- name: validacion_ordenador
+  description: |
+    ValidacionOrdenadorController operations for ValidacionOrdenador
 - name: cargue_masivo
   description: |
     CargueMasivoController operations for CargueMasivo
-- name: documento_solicitud
+- name: hist_det_cotizacion
   description: |
-    DocumentoSolicitudController operations for DocumentoSolicitud
-- name: solicitud_ciiu
+    HistDetCotizacionController operations for HistDetCotizacion
+- name: hist_det_solicitud_cotizacion
   description: |
-    SolicitudCiiuController operations for SolicitudCiiu
-- name: solicitud_cotizacion
+    HistDetSolicitudCotizacionController operations for HistDetSolicitudCotizacion
+- name: hist_mst_solicitud_cotizacion
   description: |
-    SolicitudCotizacionController operations for SolicitudCotizacion
-- name: solicitud_necesidad
+    HistMstSolicitudCotizacionController operations for HistMstSolicitudCotizacion
+- name: solicitud_cotizacion_especificacion_tecnica
   description: |
-    SolicitudNecesidadController operations for SolicitudNecesidad
-- name: solicitud_pago_parcial
+    SolicitudCotizacionEspecificacionTecnicaController operations for SolicitudCotizacionEspecificacionTecnica
+- name: decision_solicitante
   description: |
-    SolicitudPagoParcialController operations for SolicitudPagoParcial
-- name: solicitud_requisito_documental
+    DecisionSolicitanteController operations for DecisionSolicitante
+- name: hist_mst_cotizacion
   description: |
-    SolicitudRequisitoDocumentalController operations for SolicitudRequisitoDocumental
-- name: solicitud_estado
+    HistMstCotizacionController operations for HistMstCotizacion
+- name: notificacion
   description: |
-    SolicitudEstadoController operations for SolicitudEstado
-- name: solicitud_modificacion
+    NotificacionController operations for Notificacion
+- name: solicitud_cotizacion_nucleo_basico
   description: |
-    SolicitudModificacionController operations for SolicitudModificacion
-- name: solicitud_modificacion_estado
-  description: |
-    SolicitudModificacionEstadoController operations for SolicitudModificacionEstado
-- name: solicitud_modificacion_detalle
-  description: |
-    SolicitudModificacionDetalleController operations for SolicitudModificacionDetalle
-- name: observacion
-  description: |
-    ObservacionController operations for Observacion
-- name: respuesta_observacion
-  description: |
-    RespuestaObservacionController operations for RespuestaObservacion
+    SolicitudCotizacionNucleoBasicoController operations for SolicitudCotizacionNucleoBasico

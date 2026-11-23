@@ -2,18 +2,18 @@ package main
 
 import (
 	_ "github.com/udistrital/cotizaciones_crud/routers"
-	apistatus "github.com/udistrital/utils_oas/v2/apiStatusLib"
-	"github.com/udistrital/utils_oas/v2/auditoria"
-	"github.com/udistrital/utils_oas/v2/customerror"
-	"github.com/udistrital/utils_oas/v2/database"
-	"github.com/udistrital/utils_oas/v2/security"
-	"github.com/udistrital/utils_oas/v2/xray"
 
 	beeLogger "github.com/beego/bee/v2/logger"
 	"github.com/beego/beego/v2/client/orm"
 	beego "github.com/beego/beego/v2/server/web"
 	"github.com/beego/beego/v2/server/web/filter/cors"
 	_ "github.com/lib/pq"
+	apistatus "github.com/udistrital/utils_oas/v2/apiStatusLib"
+	"github.com/udistrital/utils_oas/v2/auditoria"
+	"github.com/udistrital/utils_oas/v2/customerror"
+	"github.com/udistrital/utils_oas/v2/database"
+	"github.com/udistrital/utils_oas/v2/security"
+	"github.com/udistrital/utils_oas/v2/xray"
 )
 
 func main() {
@@ -36,7 +36,6 @@ func main() {
 		beego.BConfig.WebConfig.DirectoryIndex = true
 		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
 	}
-
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowOrigins: allowedOrigins,
 		AllowMethods: []string{"PUT", "PATCH", "GET", "POST", "OPTIONS", "DELETE"},

@@ -1,10 +1,10 @@
 // @APIVersion 1.0.0
-// @Title API CRUD Cotizaciones Agora
-// @Description Servicio CRUD para la gestion de cotizaciones del modulo Agora en Arka II
-// @Contact soporte@udistrital.edu.co
-// @TermsOfServiceUrl https://www.udistrital.edu.co/
-// @License EUPL-1.2
-// @LicenseUrl https://interoperable-europe.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+// @Title beego Test API
+// @Description beego has a very cool tools to autogenerate documents for your API
+// @Contact astaxie@gmail.com
+// @TermsOfServiceUrl http://beego.me/
+// @License Apache 2.0
+// @LicenseUrl http://www.apache.org/licenses/LICENSE-2.0.html
 package routers
 
 import (
@@ -16,21 +16,75 @@ import (
 func init() {
 	ns := beego.NewNamespace("/v1",
 
+		beego.NSNamespace("/hist_mst_solicitud_cotizacion_estado_hist",
+			beego.NSInclude(
+				&controllers.HistMstSolicitudCotizacionEstadoHistController{},
+			),
+		),
+
+		beego.NSNamespace("/mst_cotizacion",
+			beego.NSInclude(
+				&controllers.MstCotizacionController{},
+			),
+		),
+
+		beego.NSNamespace("/mst_solicitud_cotizacion",
+			beego.NSInclude(
+				&controllers.MstSolicitudCotizacionController{},
+			),
+		),
+
 		beego.NSNamespace("/cargue_masivo_error",
 			beego.NSInclude(
 				&controllers.CargueMasivoErrorController{},
 			),
 		),
 
-		beego.NSNamespace("/solicitud_item",
+		beego.NSNamespace("/det_cotizacion",
 			beego.NSInclude(
-				&controllers.SolicitudItemController{},
+				&controllers.DetCotizacionController{},
 			),
 		),
 
-		beego.NSNamespace("/solicitud_proveedor",
+		beego.NSNamespace("/det_solicitud_cotizacion",
 			beego.NSInclude(
-				&controllers.SolicitudProveedorController{},
+				&controllers.DetSolicitudCotizacionController{},
+			),
+		),
+
+		beego.NSNamespace("/forma_pago",
+			beego.NSInclude(
+				&controllers.FormaPagoController{},
+			),
+		),
+
+		beego.NSNamespace("/solicitud_cotizacion_actividad_economica",
+			beego.NSInclude(
+				&controllers.SolicitudCotizacionActividadEconomicaController{},
+			),
+		),
+
+		beego.NSNamespace("/rel_solicitud_cotizacion_proveedor",
+			beego.NSInclude(
+				&controllers.RelSolicitudCotizacionProveedorController{},
+			),
+		),
+
+		beego.NSNamespace("/solicitud_cotizacion_observacion_proveedor",
+			beego.NSInclude(
+				&controllers.SolicitudCotizacionObservacionProveedorController{},
+			),
+		),
+
+		beego.NSNamespace("/solicitud_cotizacion_observacion_proveedor_respuesta",
+			beego.NSInclude(
+				&controllers.SolicitudCotizacionObservacionProveedorRespuestaController{},
+			),
+		),
+
+		beego.NSNamespace("/validacion_ordenador",
+			beego.NSInclude(
+				&controllers.ValidacionOrdenadorController{},
 			),
 		),
 
@@ -40,75 +94,51 @@ func init() {
 			),
 		),
 
-		beego.NSNamespace("/documento_solicitud",
+		beego.NSNamespace("/hist_det_cotizacion",
 			beego.NSInclude(
-				&controllers.DocumentoSolicitudController{},
+				&controllers.HistDetCotizacionController{},
 			),
 		),
 
-		beego.NSNamespace("/solicitud_ciiu",
+		beego.NSNamespace("/hist_det_solicitud_cotizacion",
 			beego.NSInclude(
-				&controllers.SolicitudCiiuController{},
+				&controllers.HistDetSolicitudCotizacionController{},
 			),
 		),
 
-		beego.NSNamespace("/solicitud_cotizacion",
+		beego.NSNamespace("/hist_mst_solicitud_cotizacion",
 			beego.NSInclude(
-				&controllers.SolicitudCotizacionController{},
+				&controllers.HistMstSolicitudCotizacionController{},
 			),
 		),
 
-		beego.NSNamespace("/solicitud_necesidad",
+		beego.NSNamespace("/solicitud_cotizacion_especificacion_tecnica",
 			beego.NSInclude(
-				&controllers.SolicitudNecesidadController{},
+				&controllers.SolicitudCotizacionEspecificacionTecnicaController{},
 			),
 		),
 
-		beego.NSNamespace("/solicitud_pago_parcial",
+		beego.NSNamespace("/decision_solicitante",
 			beego.NSInclude(
-				&controllers.SolicitudPagoParcialController{},
+				&controllers.DecisionSolicitanteController{},
 			),
 		),
 
-		beego.NSNamespace("/solicitud_requisito_documental",
+		beego.NSNamespace("/hist_mst_cotizacion",
 			beego.NSInclude(
-				&controllers.SolicitudRequisitoDocumentalController{},
+				&controllers.HistMstCotizacionController{},
 			),
 		),
 
-		beego.NSNamespace("/solicitud_estado",
+		beego.NSNamespace("/notificacion",
 			beego.NSInclude(
-				&controllers.SolicitudEstadoController{},
+				&controllers.NotificacionController{},
 			),
 		),
 
-		beego.NSNamespace("/solicitud_modificacion",
+		beego.NSNamespace("/solicitud_cotizacion_nucleo_basico",
 			beego.NSInclude(
-				&controllers.SolicitudModificacionController{},
-			),
-		),
-
-		beego.NSNamespace("/solicitud_modificacion_estado",
-			beego.NSInclude(
-				&controllers.SolicitudModificacionEstadoController{},
-			),
-		),
-
-		beego.NSNamespace("/solicitud_modificacion_detalle",
-			beego.NSInclude(
-				&controllers.SolicitudModificacionDetalleController{},
-			),
-		),
-
-		beego.NSNamespace("/observacion",
-			beego.NSInclude(
-				&controllers.ObservacionController{},
-			),
-		),
-
-		beego.NSNamespace("/respuesta_observacion",
-			beego.NSInclude(
-				&controllers.RespuestaObservacionController{},
+				&controllers.SolicitudCotizacionNucleoBasicoController{},
 			),
 		),
 	)

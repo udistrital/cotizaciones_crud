@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
@@ -10,19 +11,17 @@ import (
 )
 
 type CargueMasivo struct {
-	Id                  int                  `orm:"column(id);pk;auto"`
-	Activo              bool                 `orm:"column(activo)"`
-	FechaCreacion       time.Time            `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	SolicitudId         *SolicitudCotizacion `orm:"column(solicitud_id);rel(fk)"`
-	PlantillaId         int                  `orm:"column(plantilla_id)"`
-	DocumentoId         int                  `orm:"column(documento_id)"`
-	NombreArchivo       string               `orm:"column(nombre_archivo)"`
-	CargadoPorTerceroId int                  `orm:"column(cargado_por_tercero_id)"`
-	TotalRegistros      int                  `orm:"column(total_registros)"`
-	Aceptados           int                  `orm:"column(aceptados)"`
-	Rechazados          int                  `orm:"column(rechazados)"`
-	EstadoId            int                  `orm:"column(estado_id)"`
-	FechaModificacion   time.Time            `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+	Id                       int                     `orm:"column(id);pk;auto"`
+	MstSolicitudCotizacionId *MstSolicitudCotizacion `orm:"column(mst_solicitud_cotizacion_id);rel(fk)"`
+	EnlacePlantilla          string                  `orm:"column(enlace_plantilla);type(uuid)"`
+	CargadoPorTerceroId      int                     `orm:"column(cargado_por_tercero_id)"`
+	TotalRegistros           int                     `orm:"column(total_registros);null"`
+	Aceptados                int                     `orm:"column(aceptados);null"`
+	Rechazados               int                     `orm:"column(rechazados);null"`
+	Activo                   bool                    `orm:"column(activo)"`
+	FechaCreacion            time.Time               `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion        time.Time               `orm:"column(fecha_modificacion);type(timestamp without time zone);null"`
+	UsuarioModificacionId    int                     `orm:"column(usuario_modificacion_id);null"`
 }
 
 func (t *CargueMasivo) TableName() string {
@@ -37,9 +36,6 @@ func init() {
 // last inserted Id on success.
 func AddCargueMasivo(m *CargueMasivo) (id int64, err error) {
 	o := orm.NewOrm()
-	m.Activo = true
-	m.FechaCreacion = time.Now()
-	m.FechaModificacion = m.FechaCreacion
 	id, err = o.Insert(m)
 	return
 }
@@ -48,18 +44,19 @@ func AddCargueMasivo(m *CargueMasivo) (id int64, err error) {
 // Id doesn't exist
 func GetCargueMasivoById(id int) (v *CargueMasivo, err error) {
 	o := orm.NewOrm()
-	v = &CargueMasivo{Id: id}
-	if err = o.Read(v); err == nil {
+	v = &CargueMasivo{}
+	// RelatedSel expande las FK, igual que en GetAllCargueMasivo
+	if err = o.QueryTable(new(CargueMasivo)).Filter("Id", id).RelatedSel().One(v); err == nil {
 		return v, nil
 	}
 	return nil, err
 }
 
 // GetAllCargueMasivo retrieves all CargueMasivo matches certain condition. Returns empty list if
-// no records exist. total es la cantidad de registros que cumplen los filtros, sin aplicar limit ni offset
+// no records exist
+// Total is the number of records matching the query filters, ignoring offset and limit.
 func GetAllCargueMasivo(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, total int64, err error) {
-	defer recuperarConsulta(&err)
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(CargueMasivo)).RelatedSel()
 	// query k=v
@@ -69,7 +66,7 @@ func GetAllCargueMasivo(query map[string]string, fields []string, sortby []strin
 		if strings.Contains(k, "isnull") {
 			qs = qs.Filter(k, (v == "true" || v == "1"))
 		} else {
-			qs = qs.Filter(k, valorFiltro(new(CargueMasivo), k, v))
+			qs = qs.Filter(k, v)
 		}
 	}
 	// order by:
@@ -110,11 +107,11 @@ func GetAllCargueMasivo(query map[string]string, fields []string, sortby []strin
 		}
 	}
 
-	// total de registros que cumplen los filtros, antes de aplicar limit y offset
-	if total, err = qs.Count(); err != nil {
+	// El total se calcula antes de ordenar: PostgreSQL no admite ORDER BY en el COUNT
+	total, err = qs.Count()
+	if err != nil {
 		return nil, 0, err
 	}
-
 	var l []CargueMasivo
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
@@ -140,14 +137,21 @@ func GetAllCargueMasivo(query map[string]string, fields []string, sortby []strin
 
 // UpdateCargueMasivo updates CargueMasivo by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateCargueMasivoById(m *CargueMasivo) (err error) {
+// columnas limits the updated columns; by default all except Id and FechaCreacion
+func UpdateCargueMasivoById(m *CargueMasivo, columnas ...string) (err error) {
 	o := orm.NewOrm()
 	v := CargueMasivo{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
-		m.FechaCreacion = v.FechaCreacion
-		m.FechaModificacion = time.Now()
-		_, err = o.Update(m)
+		var num int64
+		if len(columnas) == 0 {
+			columnas = []string{"MstSolicitudCotizacionId", "EnlacePlantilla", "CargadoPorTerceroId",
+				"TotalRegistros", "Aceptados", "Rechazados", "Activo", "FechaModificacion",
+				"UsuarioModificacionId"}
+		}
+		if num, err = o.Update(m, columnas...); err == nil {
+			fmt.Println("Number of records updated in database:", num)
+		}
 	}
 	return
 }
@@ -159,9 +163,10 @@ func DeleteCargueMasivo(id int) (err error) {
 	v := CargueMasivo{Id: id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
-		v.Activo = false
-		v.FechaModificacion = time.Now()
-		_, err = o.Update(&v, "activo", "fecha_modificacion")
+		var num int64
+		if num, err = o.Delete(&CargueMasivo{Id: id}); err == nil {
+			fmt.Println("Number of records deleted in database:", num)
+		}
 	}
 	return
 }

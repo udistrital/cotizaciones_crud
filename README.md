@@ -1,6 +1,6 @@
 # cotizaciones_crud
 
-El API provee la gestión de las solicitudes de cotización del sistema Ágora en su etapa de solicitud y publicación, con sus necesidades, ítems, cargues masivos, forma de pago, segmentación por actividad económica, documentos, requisitos documentales y proveedores convocados.
+El API provee la gestión de las solicitudes de cotización del sistema Ágora: solicitudes, proveedores convocados, cotizaciones de los proveedores con su historial, observaciones, decisiones del solicitante, validación del ordenador del gasto, cargues masivos y notificaciones.
 
 ## Especificaciones Técnicas
 
@@ -90,43 +90,39 @@ El script se ejecuta únicamente cuando se crea el volumen de PostgreSQL. Para r
 
 ### Ejecución Pruebas
 
-Pruebas unitarias
-
-Las pruebas de `tests/models` y `tests/controllers` usan una base de datos SQLite temporal que se crea y elimina en cada ejecución, por lo que no requieren PostgreSQL ni variables de entorno.
+Pruebas unitarias de controladores (`tests/controllers`), según el [lineamiento de pruebas unitarias de la OAS](https://github.com/udistrital/lineamientos_oas/tree/master/pruebas_unitarias_api_beego). Se ejecutan contra la base de datos PostgreSQL configurada en las variables `COTIZACIONES_CRUD_PG*`; cada prueba crea sus propios registros y los elimina al terminar.
 
 ```shell
+# Cargar las variables de conexión
+set -a; source environment.env; set +a
+
+# Ejecutar las pruebas
 cd tests
 go test ./... -v
 
-# Cobertura de models y controllers
-go test ./... -coverpkg=github.com/udistrital/cotizaciones_crud/models,github.com/udistrital/cotizaciones_crud/controllers -cover
-
-# Limpiar la caché de las pruebas
+# Limpiar la caché de pruebas
 go clean -testcache
 ```
 
-Pruebas de integración
+Si las variables no están definidas (por ejemplo en el pipeline de IC), las pruebas se omiten (`SKIP`).
 
-SQLite no aplica los índices únicos ni las llaves foráneas de `database/agora_cotizaciones.sql`. Con `COTIZACIONES_CRUD_PRUEBAS_POSTGRES=true`, las pruebas crean en el servidor PostgreSQL configurado una base de datos temporal con ese script y la eliminan al terminar. Así se ejecutan contra PostgreSQL las pruebas de `tests/models` y `tests/controllers` y además las de `tests/integracion`, que validan los índices únicos, las llaves foráneas, la longitud y el rango de los datos y los mensajes de error de la base de datos. Sin la variable, las pruebas de `tests/integracion` se omiten.
-
-La conexión usa las mismas variables `COTIZACIONES_CRUD_PG*` del API; el usuario debe tener permiso para crear bases de datos. La base de datos del API no se modifica.
+Las pruebas de cada controlador se generan a partir de los modelos, el router y el script `database/agora_cotizaciones.sql`. Al modificar el modelo de datos, regenérelas desde la raíz del proyecto:
 
 ```shell
-# Carga las variables COTIZACIONES_CRUD_PG* del archivo .env
-set -a && source .env && set +a
-cd tests
-COTIZACIONES_CRUD_PRUEBAS_POSTGRES=true go test ./... -v
+go run ./scripts/generar_pruebas
 ```
+
+El generador también advierte cuando un modelo no coincide con el script SQL (columnas inexistentes o llaves foráneas con distinta obligatoriedad).
 
 ## Estado CI
 
-| Develop | Release 0.0.1 | Master |
+| Develop | Relese 0.0.1 | Master |
 | -- | -- | -- |
 | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/cotizaciones_crud/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/cotizaciones_crud/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/cotizaciones_crud/status.svg?ref=refs/heads/release/0.0.1)](https://hubci.portaloas.udistrital.edu.co/udistrital/cotizaciones_crud/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/cotizaciones_crud/status.svg)](https://hubci.portaloas.udistrital.edu.co/udistrital/cotizaciones_crud/) |
 
 ## Modelo de Datos
 
-[Modelo de Datos API CRUD Cotizaciones](https://github.com/udistrital/cotizaciones_crud/blob/develop/database/agora_cotizaciones.sql)
+[Modelo de Datos API CRUD Cotizaciones](https://github.com/udistrital/cotizaciones_crud/blob/develop/database/agora_cotizaciones.dbml)
 
 ## Licencia
 
@@ -136,4 +132,4 @@ cotizaciones_crud is free software: you can redistribute it and/or modify it und
 
 cotizaciones_crud is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with cotizaciones_crud. If not, see [https://www.gnu.org/licenses/](https://www.gnu.org/licenses/).
+You should have received a copy of the GNU General Public License along with novedades_crud. If not, see [https://www.gnu.org/licenses/](https://www.gnu.org/licenses/).

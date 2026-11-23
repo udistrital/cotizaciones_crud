@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
@@ -10,17 +11,14 @@ import (
 )
 
 type CargueMasivoError struct {
-	Id                int           `orm:"column(id);pk;auto"`
-	Activo            bool          `orm:"column(activo)"`
-	FechaCreacion     time.Time     `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	CargueMasivoId    *CargueMasivo `orm:"column(cargue_masivo_id);rel(fk)"`
-	Hoja              string        `orm:"column(hoja)"`
-	Fila              int           `orm:"column(fila)"`
-	Campo             string        `orm:"column(campo);null"`
-	ValorDetectado    string        `orm:"column(valor_detectado);null"`
-	MotivoId          int           `orm:"column(motivo_id);null"`
-	Detalle           string        `orm:"column(detalle);null"`
-	FechaModificacion time.Time     `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+	Id                    int           `orm:"column(id);pk;auto"`
+	CargueMasivoId        *CargueMasivo `orm:"column(cargue_masivo_id);rel(fk)"`
+	Registro              string        `orm:"column(registro);null"`
+	DetalleError          string        `orm:"column(detalle_error);null"`
+	Activo                bool          `orm:"column(activo)"`
+	FechaCreacion         time.Time     `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion     time.Time     `orm:"column(fecha_modificacion);type(timestamp without time zone);null"`
+	UsuarioModificacionId int           `orm:"column(usuario_modificacion_id);null"`
 }
 
 func (t *CargueMasivoError) TableName() string {
@@ -35,9 +33,6 @@ func init() {
 // last inserted Id on success.
 func AddCargueMasivoError(m *CargueMasivoError) (id int64, err error) {
 	o := orm.NewOrm()
-	m.Activo = true
-	m.FechaCreacion = time.Now()
-	m.FechaModificacion = m.FechaCreacion
 	id, err = o.Insert(m)
 	return
 }
@@ -46,18 +41,19 @@ func AddCargueMasivoError(m *CargueMasivoError) (id int64, err error) {
 // Id doesn't exist
 func GetCargueMasivoErrorById(id int) (v *CargueMasivoError, err error) {
 	o := orm.NewOrm()
-	v = &CargueMasivoError{Id: id}
-	if err = o.Read(v); err == nil {
+	v = &CargueMasivoError{}
+	// RelatedSel expande las FK, igual que en GetAllCargueMasivoError
+	if err = o.QueryTable(new(CargueMasivoError)).Filter("Id", id).RelatedSel().One(v); err == nil {
 		return v, nil
 	}
 	return nil, err
 }
 
 // GetAllCargueMasivoError retrieves all CargueMasivoError matches certain condition. Returns empty list if
-// no records exist. total es la cantidad de registros que cumplen los filtros, sin aplicar limit ni offset
+// no records exist
+// Total is the number of records matching the query filters, ignoring offset and limit.
 func GetAllCargueMasivoError(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, total int64, err error) {
-	defer recuperarConsulta(&err)
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(CargueMasivoError)).RelatedSel()
 	// query k=v
@@ -67,7 +63,7 @@ func GetAllCargueMasivoError(query map[string]string, fields []string, sortby []
 		if strings.Contains(k, "isnull") {
 			qs = qs.Filter(k, (v == "true" || v == "1"))
 		} else {
-			qs = qs.Filter(k, valorFiltro(new(CargueMasivoError), k, v))
+			qs = qs.Filter(k, v)
 		}
 	}
 	// order by:
@@ -108,11 +104,11 @@ func GetAllCargueMasivoError(query map[string]string, fields []string, sortby []
 		}
 	}
 
-	// total de registros que cumplen los filtros, antes de aplicar limit y offset
-	if total, err = qs.Count(); err != nil {
+	// El total se calcula antes de ordenar: PostgreSQL no admite ORDER BY en el COUNT
+	total, err = qs.Count()
+	if err != nil {
 		return nil, 0, err
 	}
-
 	var l []CargueMasivoError
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
@@ -138,14 +134,20 @@ func GetAllCargueMasivoError(query map[string]string, fields []string, sortby []
 
 // UpdateCargueMasivoError updates CargueMasivoError by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateCargueMasivoErrorById(m *CargueMasivoError) (err error) {
+// columnas limits the updated columns; by default all except Id and FechaCreacion
+func UpdateCargueMasivoErrorById(m *CargueMasivoError, columnas ...string) (err error) {
 	o := orm.NewOrm()
 	v := CargueMasivoError{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
-		m.FechaCreacion = v.FechaCreacion
-		m.FechaModificacion = time.Now()
-		_, err = o.Update(m)
+		var num int64
+		if len(columnas) == 0 {
+			columnas = []string{"CargueMasivoId", "Registro", "DetalleError", "Activo", "FechaModificacion",
+				"UsuarioModificacionId"}
+		}
+		if num, err = o.Update(m, columnas...); err == nil {
+			fmt.Println("Number of records updated in database:", num)
+		}
 	}
 	return
 }
@@ -157,9 +159,10 @@ func DeleteCargueMasivoError(id int) (err error) {
 	v := CargueMasivoError{Id: id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
-		v.Activo = false
-		v.FechaModificacion = time.Now()
-		_, err = o.Update(&v, "activo", "fecha_modificacion")
+		var num int64
+		if num, err = o.Delete(&CargueMasivoError{Id: id}); err == nil {
+			fmt.Println("Number of records deleted in database:", num)
+		}
 	}
 	return
 }

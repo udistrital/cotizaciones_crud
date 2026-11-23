@@ -7,8 +7,10 @@ main
 swagger/**
 !swagger/swagger.json
 !swagger/swagger.yml
-coverage.out
-test_report.xml
-lint_report.xml
-coverage_integracion.out
-test_integracion_report.xml
+
+# Agentes
+.agents/
+.github/
+!.github/workflows/
+.kiro/
+.opencode/
