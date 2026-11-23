@@ -360,7 +360,7 @@ Table cotizaciones.validacion_ordenador {
 
 Table cotizaciones.cargue_masivo {
   ~id
-  mst_solicitud_cotizacion_id integer [not null]
+  hist_mst_solicitud_cotizacion_id integer [not null]
   enlace_plantilla uuid [not null]
   cargado_por_tercero_id integer [not null]
   total_registros integer
@@ -370,7 +370,7 @@ Table cotizaciones.cargue_masivo {
 
   indexes {
     id [name: 'pk_cargue_masivo']
-    mst_solicitud_cotizacion_id [name: 'idx_cargue_masivo_mst_solicitud_cotizacion_id']
+    hist_mst_solicitud_cotizacion_id [name: 'idx_cargue_masivo_hist_mst_solicitud_cotizacion_id']
     cargado_por_tercero_id [name: 'idx_cargue_masivo_cargado_por_tercero_id']
     activo [name: 'idx_cargue_masivo_activo']
     fecha_creacion [name: 'idx_cargue_masivo_fecha_creacion']
@@ -540,8 +540,8 @@ Ref fk_validacion_ordenador_mst_solicitud_cotizacion {
   cotizaciones.mst_solicitud_cotizacion.id < cotizaciones.validacion_ordenador.mst_solicitud_cotizacion_id
 }
 
-Ref fk_cargue_masivo_mst_solicitud_cotizacion {
-  cotizaciones.mst_solicitud_cotizacion.id < cotizaciones.cargue_masivo.mst_solicitud_cotizacion_id
+Ref fk_cargue_masivo_hist_mst_solicitud_cotizacion {
+  cotizaciones.hist_mst_solicitud_cotizacion.id < cotizaciones.cargue_masivo.hist_mst_solicitud_cotizacion_id
 }
 
 Ref fk_cargue_masivo_error_cargue_masivo {

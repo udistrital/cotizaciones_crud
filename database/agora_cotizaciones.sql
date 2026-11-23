@@ -214,7 +214,7 @@ CREATE TABLE "cotizaciones"."validacion_ordenador" (
 
 CREATE TABLE "cotizaciones"."cargue_masivo" (
   "id" serial PRIMARY KEY,
-  "mst_solicitud_cotizacion_id" integer NOT NULL,
+  "hist_mst_solicitud_cotizacion_id" integer NOT NULL,
   "enlace_plantilla" uuid NOT NULL,
   "cargado_por_tercero_id" integer NOT NULL,
   "total_registros" integer,
@@ -501,7 +501,7 @@ CREATE INDEX "idx_validacion_ordenador_usuario_modificacion_id" ON "cotizaciones
 
 CREATE INDEX "pk_cargue_masivo" ON "cotizaciones"."cargue_masivo" ("id");
 
-CREATE INDEX "idx_cargue_masivo_mst_solicitud_cotizacion_id" ON "cotizaciones"."cargue_masivo" ("mst_solicitud_cotizacion_id");
+CREATE INDEX "idx_cargue_masivo_hist_mst_solicitud_cotizacion_id" ON "cotizaciones"."cargue_masivo" ("hist_mst_solicitud_cotizacion_id");
 
 CREATE INDEX "idx_cargue_masivo_cargado_por_tercero_id" ON "cotizaciones"."cargue_masivo" ("cargado_por_tercero_id");
 
@@ -637,7 +637,7 @@ ALTER TABLE "cotizaciones"."decision_solicitante" ADD CONSTRAINT "fk_decision_so
 
 ALTER TABLE "cotizaciones"."validacion_ordenador" ADD CONSTRAINT "fk_validacion_ordenador_mst_solicitud_cotizacion" FOREIGN KEY ("mst_solicitud_cotizacion_id") REFERENCES "cotizaciones"."mst_solicitud_cotizacion" ("id") DEFERRABLE INITIALLY IMMEDIATE;
 
-ALTER TABLE "cotizaciones"."cargue_masivo" ADD CONSTRAINT "fk_cargue_masivo_mst_solicitud_cotizacion" FOREIGN KEY ("mst_solicitud_cotizacion_id") REFERENCES "cotizaciones"."mst_solicitud_cotizacion" ("id") DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE "cotizaciones"."cargue_masivo" ADD CONSTRAINT "fk_cargue_masivo_hist_mst_solicitud_cotizacion" FOREIGN KEY ("hist_mst_solicitud_cotizacion_id") REFERENCES "cotizaciones"."hist_mst_solicitud_cotizacion" ("id") DEFERRABLE INITIALLY IMMEDIATE;
 
 ALTER TABLE "cotizaciones"."cargue_masivo_error" ADD CONSTRAINT "fk_cargue_masivo_error_cargue_masivo" FOREIGN KEY ("cargue_masivo_id") REFERENCES "cotizaciones"."cargue_masivo" ("id") DEFERRABLE INITIALLY IMMEDIATE;
 

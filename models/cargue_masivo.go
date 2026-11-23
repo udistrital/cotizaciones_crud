@@ -11,17 +11,17 @@ import (
 )
 
 type CargueMasivo struct {
-	Id                       int                     `orm:"column(id);pk;auto"`
-	MstSolicitudCotizacionId *MstSolicitudCotizacion `orm:"column(mst_solicitud_cotizacion_id);rel(fk)"`
-	EnlacePlantilla          string                  `orm:"column(enlace_plantilla);type(uuid)"`
-	CargadoPorTerceroId      int                     `orm:"column(cargado_por_tercero_id)"`
-	TotalRegistros           int                     `orm:"column(total_registros);null"`
-	Aceptados                int                     `orm:"column(aceptados);null"`
-	Rechazados               int                     `orm:"column(rechazados);null"`
-	Activo                   bool                    `orm:"column(activo)"`
-	FechaCreacion            time.Time               `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion        time.Time               `orm:"column(fecha_modificacion);type(timestamp without time zone);null"`
-	UsuarioModificacionId    int                     `orm:"column(usuario_modificacion_id);null"`
+	Id                           int                         `orm:"column(id);pk;auto"`
+	HistMstSolicitudCotizacionId *HistMstSolicitudCotizacion `orm:"column(hist_mst_solicitud_cotizacion_id);rel(fk)"`
+	EnlacePlantilla              string                      `orm:"column(enlace_plantilla);type(uuid)"`
+	CargadoPorTerceroId          int                         `orm:"column(cargado_por_tercero_id)"`
+	TotalRegistros               int                         `orm:"column(total_registros);null"`
+	Aceptados                    int                         `orm:"column(aceptados);null"`
+	Rechazados                   int                         `orm:"column(rechazados);null"`
+	Activo                       bool                        `orm:"column(activo)"`
+	FechaCreacion                time.Time                   `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion            time.Time                   `orm:"column(fecha_modificacion);type(timestamp without time zone);null"`
+	UsuarioModificacionId        int                         `orm:"column(usuario_modificacion_id);null"`
 }
 
 func (t *CargueMasivo) TableName() string {
@@ -145,7 +145,7 @@ func UpdateCargueMasivoById(m *CargueMasivo, columnas ...string) (err error) {
 	if err = o.Read(&v); err == nil {
 		var num int64
 		if len(columnas) == 0 {
-			columnas = []string{"MstSolicitudCotizacionId", "EnlacePlantilla", "CargadoPorTerceroId",
+			columnas = []string{"HistMstSolicitudCotizacionId", "EnlacePlantilla", "CargadoPorTerceroId",
 				"TotalRegistros", "Aceptados", "Rechazados", "Activo", "FechaModificacion",
 				"UsuarioModificacionId"}
 		}
