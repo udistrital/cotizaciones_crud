@@ -137,131 +137,6 @@ paths:
           description: '{string} delete success!'
         "404":
           description: not found resource
-  /cargue_masivo_error/:
-    get:
-      tags:
-      - cargue_masivo_error
-      description: |-
-        get CargueMasivoError
-        <br>
-      operationId: CargueMasivoErrorController.Get All
-      parameters:
-      - in: query
-        name: query
-        description: Filter. e.g. col1:v1,col2:v2 ...
-        type: string
-      - in: query
-        name: fields
-        description: Fields returned. e.g. col1,col2 ...
-        type: string
-      - in: query
-        name: sortby
-        description: Sorted-by fields. e.g. col1,col2 ...
-        type: string
-      - in: query
-        name: order
-        description: Order corresponding to each sortby field, if single value, apply
-          to all sortby fields. e.g. desc,asc ...
-        type: string
-      - in: query
-        name: limit
-        description: Limit the size of result set. Must be an integer
-        type: string
-      - in: query
-        name: offset
-        description: Start position of result set. Must be an integer
-        type: string
-      responses:
-        "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/models.CargueMasivoError'
-        "404":
-          description: not found resource
-    post:
-      tags:
-      - cargue_masivo_error
-      description: |-
-        create CargueMasivoError
-        <br>
-      operationId: CargueMasivoErrorController.Post
-      parameters:
-      - in: body
-        name: body
-        description: body for CargueMasivoError content
-        required: true
-        schema:
-          $ref: '#/definitions/models.CargueMasivoError'
-      responses:
-        "201":
-          description: '{int} models.CargueMasivoError'
-        "400":
-          description: the request contains incorrect syntax
-  /cargue_masivo_error/{id}:
-    get:
-      tags:
-      - cargue_masivo_error
-      description: |-
-        get CargueMasivoError by id
-        <br>
-      operationId: CargueMasivoErrorController.Get One
-      parameters:
-      - in: path
-        name: id
-        description: The key for staticblock
-        required: true
-        type: string
-      responses:
-        "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/models.CargueMasivoError'
-        "404":
-          description: not found resource
-    put:
-      tags:
-      - cargue_masivo_error
-      description: |-
-        update the CargueMasivoError
-        <br>
-      operationId: CargueMasivoErrorController.Put
-      parameters:
-      - in: path
-        name: id
-        description: The id you want to update
-        required: true
-        type: string
-      - in: body
-        name: body
-        description: body for CargueMasivoError content
-        required: true
-        schema:
-          $ref: '#/definitions/models.CargueMasivoError'
-      responses:
-        "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/models.CargueMasivoError'
-        "400":
-          description: the request contains incorrect syntax
-    delete:
-      tags:
-      - cargue_masivo_error
-      description: |-
-        delete the CargueMasivoError
-        <br>
-      operationId: CargueMasivoErrorController.Delete
-      parameters:
-      - in: path
-        name: id
-        description: The id you want to delete
-        required: true
-        type: string
-      responses:
-        "200":
-          description: '{string} delete success!'
-        "404":
-          description: not found resource
   /decision_solicitante/:
     get:
       tags:
@@ -376,256 +251,6 @@ paths:
         delete the DecisionSolicitante
         <br>
       operationId: DecisionSolicitanteController.Delete
-      parameters:
-      - in: path
-        name: id
-        description: The id you want to delete
-        required: true
-        type: string
-      responses:
-        "200":
-          description: '{string} delete success!'
-        "404":
-          description: not found resource
-  /det_cotizacion/:
-    get:
-      tags:
-      - det_cotizacion
-      description: |-
-        get DetCotizacion
-        <br>
-      operationId: DetCotizacionController.Get All
-      parameters:
-      - in: query
-        name: query
-        description: Filter. e.g. col1:v1,col2:v2 ...
-        type: string
-      - in: query
-        name: fields
-        description: Fields returned. e.g. col1,col2 ...
-        type: string
-      - in: query
-        name: sortby
-        description: Sorted-by fields. e.g. col1,col2 ...
-        type: string
-      - in: query
-        name: order
-        description: Order corresponding to each sortby field, if single value, apply
-          to all sortby fields. e.g. desc,asc ...
-        type: string
-      - in: query
-        name: limit
-        description: Limit the size of result set. Must be an integer
-        type: string
-      - in: query
-        name: offset
-        description: Start position of result set. Must be an integer
-        type: string
-      responses:
-        "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/models.DetCotizacion'
-        "404":
-          description: not found resource
-    post:
-      tags:
-      - det_cotizacion
-      description: |-
-        create DetCotizacion
-        <br>
-      operationId: DetCotizacionController.Post
-      parameters:
-      - in: body
-        name: body
-        description: body for DetCotizacion content
-        required: true
-        schema:
-          $ref: '#/definitions/models.DetCotizacion'
-      responses:
-        "201":
-          description: '{int} models.DetCotizacion'
-        "400":
-          description: the request contains incorrect syntax
-  /det_cotizacion/{id}:
-    get:
-      tags:
-      - det_cotizacion
-      description: |-
-        get DetCotizacion by id
-        <br>
-      operationId: DetCotizacionController.Get One
-      parameters:
-      - in: path
-        name: id
-        description: The key for staticblock
-        required: true
-        type: string
-      responses:
-        "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/models.DetCotizacion'
-        "404":
-          description: not found resource
-    put:
-      tags:
-      - det_cotizacion
-      description: |-
-        update the DetCotizacion
-        <br>
-      operationId: DetCotizacionController.Put
-      parameters:
-      - in: path
-        name: id
-        description: The id you want to update
-        required: true
-        type: string
-      - in: body
-        name: body
-        description: body for DetCotizacion content
-        required: true
-        schema:
-          $ref: '#/definitions/models.DetCotizacion'
-      responses:
-        "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/models.DetCotizacion'
-        "400":
-          description: the request contains incorrect syntax
-    delete:
-      tags:
-      - det_cotizacion
-      description: |-
-        delete the DetCotizacion
-        <br>
-      operationId: DetCotizacionController.Delete
-      parameters:
-      - in: path
-        name: id
-        description: The id you want to delete
-        required: true
-        type: string
-      responses:
-        "200":
-          description: '{string} delete success!'
-        "404":
-          description: not found resource
-  /det_solicitud_cotizacion/:
-    get:
-      tags:
-      - det_solicitud_cotizacion
-      description: |-
-        get DetSolicitudCotizacion
-        <br>
-      operationId: DetSolicitudCotizacionController.Get All
-      parameters:
-      - in: query
-        name: query
-        description: Filter. e.g. col1:v1,col2:v2 ...
-        type: string
-      - in: query
-        name: fields
-        description: Fields returned. e.g. col1,col2 ...
-        type: string
-      - in: query
-        name: sortby
-        description: Sorted-by fields. e.g. col1,col2 ...
-        type: string
-      - in: query
-        name: order
-        description: Order corresponding to each sortby field, if single value, apply
-          to all sortby fields. e.g. desc,asc ...
-        type: string
-      - in: query
-        name: limit
-        description: Limit the size of result set. Must be an integer
-        type: string
-      - in: query
-        name: offset
-        description: Start position of result set. Must be an integer
-        type: string
-      responses:
-        "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/models.DetSolicitudCotizacion'
-        "404":
-          description: not found resource
-    post:
-      tags:
-      - det_solicitud_cotizacion
-      description: |-
-        create DetSolicitudCotizacion
-        <br>
-      operationId: DetSolicitudCotizacionController.Post
-      parameters:
-      - in: body
-        name: body
-        description: body for DetSolicitudCotizacion content
-        required: true
-        schema:
-          $ref: '#/definitions/models.DetSolicitudCotizacion'
-      responses:
-        "201":
-          description: '{int} models.DetSolicitudCotizacion'
-        "400":
-          description: the request contains incorrect syntax
-  /det_solicitud_cotizacion/{id}:
-    get:
-      tags:
-      - det_solicitud_cotizacion
-      description: |-
-        get DetSolicitudCotizacion by id
-        <br>
-      operationId: DetSolicitudCotizacionController.Get One
-      parameters:
-      - in: path
-        name: id
-        description: The key for staticblock
-        required: true
-        type: string
-      responses:
-        "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/models.DetSolicitudCotizacion'
-        "404":
-          description: not found resource
-    put:
-      tags:
-      - det_solicitud_cotizacion
-      description: |-
-        update the DetSolicitudCotizacion
-        <br>
-      operationId: DetSolicitudCotizacionController.Put
-      parameters:
-      - in: path
-        name: id
-        description: The id you want to update
-        required: true
-        type: string
-      - in: body
-        name: body
-        description: body for DetSolicitudCotizacion content
-        required: true
-        schema:
-          $ref: '#/definitions/models.DetSolicitudCotizacion'
-      responses:
-        "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/models.DetSolicitudCotizacion'
-        "400":
-          description: the request contains incorrect syntax
-    delete:
-      tags:
-      - det_solicitud_cotizacion
-      description: |-
-        delete the DetSolicitudCotizacion
-        <br>
-      operationId: DetSolicitudCotizacionController.Delete
       parameters:
       - in: path
         name: id
@@ -1762,6 +1387,256 @@ paths:
           description: '{string} delete success!'
         "404":
           description: not found resource
+  /rel_hist_mst_det_cotizacion/:
+    get:
+      tags:
+      - rel_hist_mst_det_cotizacion
+      description: |-
+        get RelHistMstDetCotizacion
+        <br>
+      operationId: RelHistMstDetCotizacionController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.RelHistMstDetCotizacion'
+        "404":
+          description: not found resource
+    post:
+      tags:
+      - rel_hist_mst_det_cotizacion
+      description: |-
+        create RelHistMstDetCotizacion
+        <br>
+      operationId: RelHistMstDetCotizacionController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for RelHistMstDetCotizacion content
+        required: true
+        schema:
+          $ref: '#/definitions/models.RelHistMstDetCotizacion'
+      responses:
+        "201":
+          description: '{int} models.RelHistMstDetCotizacion'
+        "400":
+          description: the request contains incorrect syntax
+  /rel_hist_mst_det_cotizacion/{id}:
+    get:
+      tags:
+      - rel_hist_mst_det_cotizacion
+      description: |-
+        get RelHistMstDetCotizacion by id
+        <br>
+      operationId: RelHistMstDetCotizacionController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.RelHistMstDetCotizacion'
+        "404":
+          description: not found resource
+    put:
+      tags:
+      - rel_hist_mst_det_cotizacion
+      description: |-
+        update the RelHistMstDetCotizacion
+        <br>
+      operationId: RelHistMstDetCotizacionController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for RelHistMstDetCotizacion content
+        required: true
+        schema:
+          $ref: '#/definitions/models.RelHistMstDetCotizacion'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.RelHistMstDetCotizacion'
+        "400":
+          description: the request contains incorrect syntax
+    delete:
+      tags:
+      - rel_hist_mst_det_cotizacion
+      description: |-
+        delete the RelHistMstDetCotizacion
+        <br>
+      operationId: RelHistMstDetCotizacionController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "404":
+          description: not found resource
+  /rel_hist_mst_det_solicitud_cotizacion/:
+    get:
+      tags:
+      - rel_hist_mst_det_solicitud_cotizacion
+      description: |-
+        get RelHistMstDetSolicitudCotizacion
+        <br>
+      operationId: RelHistMstDetSolicitudCotizacionController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.RelHistMstDetSolicitudCotizacion'
+        "404":
+          description: not found resource
+    post:
+      tags:
+      - rel_hist_mst_det_solicitud_cotizacion
+      description: |-
+        create RelHistMstDetSolicitudCotizacion
+        <br>
+      operationId: RelHistMstDetSolicitudCotizacionController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for RelHistMstDetSolicitudCotizacion content
+        required: true
+        schema:
+          $ref: '#/definitions/models.RelHistMstDetSolicitudCotizacion'
+      responses:
+        "201":
+          description: '{int} models.RelHistMstDetSolicitudCotizacion'
+        "400":
+          description: the request contains incorrect syntax
+  /rel_hist_mst_det_solicitud_cotizacion/{id}:
+    get:
+      tags:
+      - rel_hist_mst_det_solicitud_cotizacion
+      description: |-
+        get RelHistMstDetSolicitudCotizacion by id
+        <br>
+      operationId: RelHistMstDetSolicitudCotizacionController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.RelHistMstDetSolicitudCotizacion'
+        "404":
+          description: not found resource
+    put:
+      tags:
+      - rel_hist_mst_det_solicitud_cotizacion
+      description: |-
+        update the RelHistMstDetSolicitudCotizacion
+        <br>
+      operationId: RelHistMstDetSolicitudCotizacionController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for RelHistMstDetSolicitudCotizacion content
+        required: true
+        schema:
+          $ref: '#/definitions/models.RelHistMstDetSolicitudCotizacion'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.RelHistMstDetSolicitudCotizacion'
+        "400":
+          description: the request contains incorrect syntax
+    delete:
+      tags:
+      - rel_hist_mst_det_solicitud_cotizacion
+      description: |-
+        delete the RelHistMstDetSolicitudCotizacion
+        <br>
+      operationId: RelHistMstDetSolicitudCotizacionController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "404":
+          description: not found resource
   /rel_solicitud_cotizacion_proveedor/:
     get:
       tags:
@@ -2660,41 +2535,22 @@ definitions:
       FechaModificacion:
         type: string
         format: datetime
+      HistMstSolicitudCotizacionId:
+        $ref: '#/definitions/models.HistMstSolicitudCotizacion'
       Id:
         type: integer
         format: int64
-      MstSolicitudCotizacionId:
-        $ref: '#/definitions/models.MstSolicitudCotizacion'
       Rechazados:
         type: integer
         format: int64
+      Respuesta:
+        type: string
       TotalRegistros:
         type: integer
         format: int64
-      UsuarioModificacionId:
+      UsuarioCreacionId:
         type: integer
         format: int64
-  models.CargueMasivoError:
-    title: CargueMasivoError
-    type: object
-    properties:
-      Activo:
-        type: boolean
-      CargueMasivoId:
-        $ref: '#/definitions/models.CargueMasivo'
-      DetalleError:
-        type: string
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
-      Id:
-        type: integer
-        format: int64
-      Registro:
-        type: string
       UsuarioModificacionId:
         type: integer
         format: int64
@@ -2720,48 +2576,9 @@ definitions:
       ResultadoId:
         type: integer
         format: int64
-      UsuarioModificacionId:
+      UsuarioCreacionId:
         type: integer
         format: int64
-  models.DetCotizacion:
-    title: DetCotizacion
-    type: object
-    properties:
-      Activo:
-        type: boolean
-      DetSolicitudCotizacion:
-        $ref: '#/definitions/models.DetSolicitudCotizacion'
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
-      Id:
-        type: integer
-        format: int64
-      MstCotizacionId:
-        $ref: '#/definitions/models.MstCotizacion'
-      UsuarioModificacionId:
-        type: integer
-        format: int64
-  models.DetSolicitudCotizacion:
-    title: DetSolicitudCotizacion
-    type: object
-    properties:
-      Activo:
-        type: boolean
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
-      Id:
-        type: integer
-        format: int64
-      SolicitudId:
-        $ref: '#/definitions/models.MstSolicitudCotizacion'
       UsuarioModificacionId:
         type: integer
         format: int64
@@ -2790,6 +2607,9 @@ definitions:
       TipoFormaPagoId:
         type: integer
         format: int64
+      UsuarioCreacionId:
+        type: integer
+        format: int64
       UsuarioModificacionId:
         type: integer
         format: int64
@@ -2800,7 +2620,11 @@ definitions:
       Activo:
         type: boolean
       DetCotizacionId:
-        $ref: '#/definitions/models.DetCotizacion'
+        type: integer
+        format: int64
+      DetSolicitudCotizacionId:
+        type: integer
+        format: int64
       FechaCreacion:
         type: string
         format: datetime
@@ -2809,14 +2633,19 @@ definitions:
         format: datetime
       FichaTecnica:
         type: string
-      HistMstCotizacionId:
-        $ref: '#/definitions/models.HistMstCotizacion'
       Id:
         type: integer
         format: int64
       Iva:
         type: number
         format: double
+      MstCotizacionId:
+        $ref: '#/definitions/models.MstCotizacion'
+      RegistroActual:
+        type: boolean
+      UsuarioCreacionId:
+        type: integer
+        format: int64
       UsuarioModificacionId:
         type: integer
         format: int64
@@ -2835,24 +2664,32 @@ definitions:
       Descripcion:
         type: string
       DetSolicitudCotizacionId:
-        $ref: '#/definitions/models.DetSolicitudCotizacion'
+        type: integer
+        format: int64
       FechaCreacion:
         type: string
         format: datetime
       FechaModificacion:
         type: string
         format: datetime
-      HistMstSolicitudCotizacionId:
-        $ref: '#/definitions/models.HistMstSolicitudCotizacion'
       Id:
         type: integer
         format: int64
+      MstSolicitudCotizacionId:
+        $ref: '#/definitions/models.MstSolicitudCotizacion'
       Nombre:
         type: string
+      RegistroActual:
+        type: boolean
       TipoBienServicioId:
         type: integer
         format: int64
+      TipoRegistro:
+        type: string
       UnidadMedidaId:
+        type: integer
+        format: int64
+      UsuarioCreacionId:
         type: integer
         format: int64
       UsuarioModificacionId:
@@ -2889,8 +2726,13 @@ definitions:
         $ref: '#/definitions/models.MstCotizacion'
       Observaciones:
         type: string
+      RegistroActual:
+        type: boolean
       SoporteCotizacion:
         type: string
+      UsuarioCreacionId:
+        type: integer
+        format: int64
       UsuarioModificacionId:
         type: integer
         format: int64
@@ -2959,6 +2801,8 @@ definitions:
         format: int64
       PlazoEjecucion:
         type: string
+      RegistroActual:
+        type: boolean
       Requisitos:
         type: string
       ResponsableTerceroId:
@@ -2973,6 +2817,9 @@ definitions:
       Titulo:
         type: string
       UnidadEjecutoraId:
+        type: integer
+        format: int64
+      UsuarioCreacionId:
         type: integer
         format: int64
       UsuarioModificacionId:
@@ -3006,6 +2853,9 @@ definitions:
       ResponsableTerceroId:
         type: integer
         format: int64
+      UsuarioCreacionId:
+        type: integer
+        format: int64
       UsuarioModificacionId:
         type: integer
         format: int64
@@ -3026,6 +2876,9 @@ definitions:
         format: int64
       RelSolicitudCotizacionProveedorId:
         $ref: '#/definitions/models.RelSolicitudCotizacionProveedor'
+      UsuarioCreacionId:
+        type: integer
+        format: int64
       UsuarioModificacionId:
         type: integer
         format: int64
@@ -3042,6 +2895,9 @@ definitions:
         type: string
         format: datetime
       Id:
+        type: integer
+        format: int64
+      UsuarioCreacionId:
         type: integer
         format: int64
       UsuarioModificacionId:
@@ -3065,12 +2921,63 @@ definitions:
       Id:
         type: integer
         format: int64
-      MstSolicitudCotizacionId:
-        $ref: '#/definitions/models.MstSolicitudCotizacion'
       ProveedorNotificadoId:
         type: integer
         format: int64
       TerceroNotificaId:
+        type: integer
+        format: int64
+      UsuarioCreacionId:
+        type: integer
+        format: int64
+      UsuarioModificacionId:
+        type: integer
+        format: int64
+  models.RelHistMstDetCotizacion:
+    title: RelHistMstDetCotizacion
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      DetalleId:
+        $ref: '#/definitions/models.HistDetCotizacion'
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      MaestroId:
+        $ref: '#/definitions/models.HistMstCotizacion'
+      UsuarioCreacionId:
+        type: integer
+        format: int64
+      UsuarioModificacionId:
+        type: integer
+        format: int64
+  models.RelHistMstDetSolicitudCotizacion:
+    title: RelHistMstDetSolicitudCotizacion
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      DetalleId:
+        $ref: '#/definitions/models.HistDetSolicitudCotizacion'
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
+      Id:
+        type: integer
+        format: int64
+      MaestroId:
+        $ref: '#/definitions/models.HistMstSolicitudCotizacion'
+      UsuarioCreacionId:
         type: integer
         format: int64
       UsuarioModificacionId:
@@ -3098,6 +3005,9 @@ definitions:
       ProveedorId:
         type: integer
         format: int64
+      UsuarioCreacionId:
+        type: integer
+        format: int64
       UsuarioModificacionId:
         type: integer
         format: int64
@@ -3121,6 +3031,9 @@ definitions:
         format: int64
       MstSolicitudCotizacionId:
         $ref: '#/definitions/models.MstSolicitudCotizacion'
+      UsuarioCreacionId:
+        type: integer
+        format: int64
       UsuarioModificacionId:
         type: integer
         format: int64
@@ -3143,6 +3056,9 @@ definitions:
         format: int64
       MstSolicitudCotizacionId:
         $ref: '#/definitions/models.MstSolicitudCotizacion'
+      UsuarioCreacionId:
+        type: integer
+        format: int64
       UsuarioModificacionId:
         type: integer
         format: int64
@@ -3164,6 +3080,9 @@ definitions:
       MstSolicitudCotizacionId:
         $ref: '#/definitions/models.MstSolicitudCotizacion'
       NucleoBasicoId:
+        type: integer
+        format: int64
+      UsuarioCreacionId:
         type: integer
         format: int64
       UsuarioModificacionId:
@@ -3191,6 +3110,9 @@ definitions:
         $ref: '#/definitions/models.RelSolicitudCotizacionProveedor'
       Texto:
         type: string
+      UsuarioCreacionId:
+        type: integer
+        format: int64
       UsuarioModificacionId:
         type: integer
         format: int64
@@ -3215,6 +3137,9 @@ definitions:
         $ref: '#/definitions/models.SolicitudCotizacionObservacionProveedor'
       Texto:
         type: string
+      UsuarioCreacionId:
+        type: integer
+        format: int64
       UsuarioModificacionId:
         type: integer
         format: int64
@@ -3237,6 +3162,9 @@ definitions:
         $ref: '#/definitions/models.MstSolicitudCotizacion'
       Observaciones:
         type: string
+      UsuarioCreacionId:
+        type: integer
+        format: int64
       UsuarioModificacionId:
         type: integer
         format: int64
@@ -3250,15 +3178,6 @@ tags:
 - name: mst_solicitud_cotizacion
   description: |
     MstSolicitudCotizacionController operations for MstSolicitudCotizacion
-- name: cargue_masivo_error
-  description: |
-    CargueMasivoErrorController operations for CargueMasivoError
-- name: det_cotizacion
-  description: |
-    DetCotizacionController operations for DetCotizacion
-- name: det_solicitud_cotizacion
-  description: |
-    DetSolicitudCotizacionController operations for DetSolicitudCotizacion
 - name: forma_pago
   description: |
     FormaPagoController operations for FormaPago
@@ -3304,3 +3223,9 @@ tags:
 - name: solicitud_cotizacion_nucleo_basico
   description: |
     SolicitudCotizacionNucleoBasicoController operations for SolicitudCotizacionNucleoBasico
+- name: rel_hist_mst_det_cotizacion
+  description: |
+    RelHistMstDetCotizacionController operations for RelHistMstDetCotizacion
+- name: rel_hist_mst_det_solicitud_cotizacion
+  description: |
+    RelHistMstDetSolicitudCotizacionController operations for RelHistMstDetSolicitudCotizacion

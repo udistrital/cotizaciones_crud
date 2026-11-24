@@ -188,179 +188,6 @@
                 }
             }
         },
-        "/cargue_masivo_error/": {
-            "get": {
-                "tags": [
-                    "cargue_masivo_error"
-                ],
-                "description": "get CargueMasivoError\n\u003cbr\u003e",
-                "operationId": "CargueMasivoErrorController.Get All",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "query",
-                        "description": "Filter. e.g. col1:v1,col2:v2 ...",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "fields",
-                        "description": "Fields returned. e.g. col1,col2 ...",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "sortby",
-                        "description": "Sorted-by fields. e.g. col1,col2 ...",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "order",
-                        "description": "Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "limit",
-                        "description": "Limit the size of result set. Must be an integer",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "offset",
-                        "description": "Start position of result set. Must be an integer",
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.CargueMasivoError"
-                        }
-                    },
-                    "404": {
-                        "description": "not found resource"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "cargue_masivo_error"
-                ],
-                "description": "create CargueMasivoError\n\u003cbr\u003e",
-                "operationId": "CargueMasivoErrorController.Post",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for CargueMasivoError content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CargueMasivoError"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "{int} models.CargueMasivoError"
-                    },
-                    "400": {
-                        "description": "the request contains incorrect syntax"
-                    }
-                }
-            }
-        },
-        "/cargue_masivo_error/{id}": {
-            "get": {
-                "tags": [
-                    "cargue_masivo_error"
-                ],
-                "description": "get CargueMasivoError by id\n\u003cbr\u003e",
-                "operationId": "CargueMasivoErrorController.Get One",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "The key for staticblock",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.CargueMasivoError"
-                        }
-                    },
-                    "404": {
-                        "description": "not found resource"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "cargue_masivo_error"
-                ],
-                "description": "update the CargueMasivoError\n\u003cbr\u003e",
-                "operationId": "CargueMasivoErrorController.Put",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "The id you want to update",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for CargueMasivoError content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CargueMasivoError"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.CargueMasivoError"
-                        }
-                    },
-                    "400": {
-                        "description": "the request contains incorrect syntax"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "cargue_masivo_error"
-                ],
-                "description": "delete the CargueMasivoError\n\u003cbr\u003e",
-                "operationId": "CargueMasivoErrorController.Delete",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "The id you want to delete",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} delete success!"
-                    },
-                    "404": {
-                        "description": "not found resource"
-                    }
-                }
-            }
-        },
         "/decision_solicitante/": {
             "get": {
                 "tags": [
@@ -515,352 +342,6 @@
                 ],
                 "description": "delete the DecisionSolicitante\n\u003cbr\u003e",
                 "operationId": "DecisionSolicitanteController.Delete",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "The id you want to delete",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} delete success!"
-                    },
-                    "404": {
-                        "description": "not found resource"
-                    }
-                }
-            }
-        },
-        "/det_cotizacion/": {
-            "get": {
-                "tags": [
-                    "det_cotizacion"
-                ],
-                "description": "get DetCotizacion\n\u003cbr\u003e",
-                "operationId": "DetCotizacionController.Get All",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "query",
-                        "description": "Filter. e.g. col1:v1,col2:v2 ...",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "fields",
-                        "description": "Fields returned. e.g. col1,col2 ...",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "sortby",
-                        "description": "Sorted-by fields. e.g. col1,col2 ...",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "order",
-                        "description": "Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "limit",
-                        "description": "Limit the size of result set. Must be an integer",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "offset",
-                        "description": "Start position of result set. Must be an integer",
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.DetCotizacion"
-                        }
-                    },
-                    "404": {
-                        "description": "not found resource"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "det_cotizacion"
-                ],
-                "description": "create DetCotizacion\n\u003cbr\u003e",
-                "operationId": "DetCotizacionController.Post",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for DetCotizacion content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.DetCotizacion"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "{int} models.DetCotizacion"
-                    },
-                    "400": {
-                        "description": "the request contains incorrect syntax"
-                    }
-                }
-            }
-        },
-        "/det_cotizacion/{id}": {
-            "get": {
-                "tags": [
-                    "det_cotizacion"
-                ],
-                "description": "get DetCotizacion by id\n\u003cbr\u003e",
-                "operationId": "DetCotizacionController.Get One",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "The key for staticblock",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.DetCotizacion"
-                        }
-                    },
-                    "404": {
-                        "description": "not found resource"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "det_cotizacion"
-                ],
-                "description": "update the DetCotizacion\n\u003cbr\u003e",
-                "operationId": "DetCotizacionController.Put",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "The id you want to update",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for DetCotizacion content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.DetCotizacion"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.DetCotizacion"
-                        }
-                    },
-                    "400": {
-                        "description": "the request contains incorrect syntax"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "det_cotizacion"
-                ],
-                "description": "delete the DetCotizacion\n\u003cbr\u003e",
-                "operationId": "DetCotizacionController.Delete",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "The id you want to delete",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} delete success!"
-                    },
-                    "404": {
-                        "description": "not found resource"
-                    }
-                }
-            }
-        },
-        "/det_solicitud_cotizacion/": {
-            "get": {
-                "tags": [
-                    "det_solicitud_cotizacion"
-                ],
-                "description": "get DetSolicitudCotizacion\n\u003cbr\u003e",
-                "operationId": "DetSolicitudCotizacionController.Get All",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "query",
-                        "description": "Filter. e.g. col1:v1,col2:v2 ...",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "fields",
-                        "description": "Fields returned. e.g. col1,col2 ...",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "sortby",
-                        "description": "Sorted-by fields. e.g. col1,col2 ...",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "order",
-                        "description": "Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "limit",
-                        "description": "Limit the size of result set. Must be an integer",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "offset",
-                        "description": "Start position of result set. Must be an integer",
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.DetSolicitudCotizacion"
-                        }
-                    },
-                    "404": {
-                        "description": "not found resource"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "det_solicitud_cotizacion"
-                ],
-                "description": "create DetSolicitudCotizacion\n\u003cbr\u003e",
-                "operationId": "DetSolicitudCotizacionController.Post",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for DetSolicitudCotizacion content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.DetSolicitudCotizacion"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "{int} models.DetSolicitudCotizacion"
-                    },
-                    "400": {
-                        "description": "the request contains incorrect syntax"
-                    }
-                }
-            }
-        },
-        "/det_solicitud_cotizacion/{id}": {
-            "get": {
-                "tags": [
-                    "det_solicitud_cotizacion"
-                ],
-                "description": "get DetSolicitudCotizacion by id\n\u003cbr\u003e",
-                "operationId": "DetSolicitudCotizacionController.Get One",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "The key for staticblock",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.DetSolicitudCotizacion"
-                        }
-                    },
-                    "404": {
-                        "description": "not found resource"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "det_solicitud_cotizacion"
-                ],
-                "description": "update the DetSolicitudCotizacion\n\u003cbr\u003e",
-                "operationId": "DetSolicitudCotizacionController.Put",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "The id you want to update",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for DetSolicitudCotizacion content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.DetSolicitudCotizacion"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.DetSolicitudCotizacion"
-                        }
-                    },
-                    "400": {
-                        "description": "the request contains incorrect syntax"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "det_solicitud_cotizacion"
-                ],
-                "description": "delete the DetSolicitudCotizacion\n\u003cbr\u003e",
-                "operationId": "DetSolicitudCotizacionController.Delete",
                 "parameters": [
                     {
                         "in": "path",
@@ -2437,6 +1918,352 @@
                 }
             }
         },
+        "/rel_hist_mst_det_cotizacion/": {
+            "get": {
+                "tags": [
+                    "rel_hist_mst_det_cotizacion"
+                ],
+                "description": "get RelHistMstDetCotizacion\n\u003cbr\u003e",
+                "operationId": "RelHistMstDetCotizacionController.Get All",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "query",
+                        "description": "Filter. e.g. col1:v1,col2:v2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "fields",
+                        "description": "Fields returned. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortby",
+                        "description": "Sorted-by fields. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "order",
+                        "description": "Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "Limit the size of result set. Must be an integer",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "description": "Start position of result set. Must be an integer",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.RelHistMstDetCotizacion"
+                        }
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "rel_hist_mst_det_cotizacion"
+                ],
+                "description": "create RelHistMstDetCotizacion\n\u003cbr\u003e",
+                "operationId": "RelHistMstDetCotizacionController.Post",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for RelHistMstDetCotizacion content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RelHistMstDetCotizacion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{int} models.RelHistMstDetCotizacion"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            }
+        },
+        "/rel_hist_mst_det_cotizacion/{id}": {
+            "get": {
+                "tags": [
+                    "rel_hist_mst_det_cotizacion"
+                ],
+                "description": "get RelHistMstDetCotizacion by id\n\u003cbr\u003e",
+                "operationId": "RelHistMstDetCotizacionController.Get One",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.RelHistMstDetCotizacion"
+                        }
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "rel_hist_mst_det_cotizacion"
+                ],
+                "description": "update the RelHistMstDetCotizacion\n\u003cbr\u003e",
+                "operationId": "RelHistMstDetCotizacionController.Put",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for RelHistMstDetCotizacion content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RelHistMstDetCotizacion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.RelHistMstDetCotizacion"
+                        }
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "rel_hist_mst_det_cotizacion"
+                ],
+                "description": "delete the RelHistMstDetCotizacion\n\u003cbr\u003e",
+                "operationId": "RelHistMstDetCotizacionController.Delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/rel_hist_mst_det_solicitud_cotizacion/": {
+            "get": {
+                "tags": [
+                    "rel_hist_mst_det_solicitud_cotizacion"
+                ],
+                "description": "get RelHistMstDetSolicitudCotizacion\n\u003cbr\u003e",
+                "operationId": "RelHistMstDetSolicitudCotizacionController.Get All",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "query",
+                        "description": "Filter. e.g. col1:v1,col2:v2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "fields",
+                        "description": "Fields returned. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortby",
+                        "description": "Sorted-by fields. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "order",
+                        "description": "Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "Limit the size of result set. Must be an integer",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "description": "Start position of result set. Must be an integer",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.RelHistMstDetSolicitudCotizacion"
+                        }
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "rel_hist_mst_det_solicitud_cotizacion"
+                ],
+                "description": "create RelHistMstDetSolicitudCotizacion\n\u003cbr\u003e",
+                "operationId": "RelHistMstDetSolicitudCotizacionController.Post",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for RelHistMstDetSolicitudCotizacion content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RelHistMstDetSolicitudCotizacion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{int} models.RelHistMstDetSolicitudCotizacion"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            }
+        },
+        "/rel_hist_mst_det_solicitud_cotizacion/{id}": {
+            "get": {
+                "tags": [
+                    "rel_hist_mst_det_solicitud_cotizacion"
+                ],
+                "description": "get RelHistMstDetSolicitudCotizacion by id\n\u003cbr\u003e",
+                "operationId": "RelHistMstDetSolicitudCotizacionController.Get One",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.RelHistMstDetSolicitudCotizacion"
+                        }
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "rel_hist_mst_det_solicitud_cotizacion"
+                ],
+                "description": "update the RelHistMstDetSolicitudCotizacion\n\u003cbr\u003e",
+                "operationId": "RelHistMstDetSolicitudCotizacionController.Put",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for RelHistMstDetSolicitudCotizacion content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RelHistMstDetSolicitudCotizacion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.RelHistMstDetSolicitudCotizacion"
+                        }
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "rel_hist_mst_det_solicitud_cotizacion"
+                ],
+                "description": "delete the RelHistMstDetSolicitudCotizacion\n\u003cbr\u003e",
+                "operationId": "RelHistMstDetSolicitudCotizacionController.Delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
         "/rel_solicitud_cotizacion_proveedor/": {
             "get": {
                 "tags": [
@@ -3676,54 +3503,27 @@
                     "type": "string",
                     "format": "datetime"
                 },
+                "HistMstSolicitudCotizacionId": {
+                    "$ref": "#/definitions/models.HistMstSolicitudCotizacion"
+                },
                 "Id": {
                     "type": "integer",
                     "format": "int64"
-                },
-                "MstSolicitudCotizacionId": {
-                    "$ref": "#/definitions/models.MstSolicitudCotizacion"
                 },
                 "Rechazados": {
                     "type": "integer",
                     "format": "int64"
                 },
+                "Respuesta": {
+                    "type": "string"
+                },
                 "TotalRegistros": {
                     "type": "integer",
                     "format": "int64"
                 },
-                "UsuarioModificacionId": {
+                "UsuarioCreacionId": {
                     "type": "integer",
                     "format": "int64"
-                }
-            }
-        },
-        "models.CargueMasivoError": {
-            "title": "CargueMasivoError",
-            "type": "object",
-            "properties": {
-                "Activo": {
-                    "type": "boolean"
-                },
-                "CargueMasivoId": {
-                    "$ref": "#/definitions/models.CargueMasivo"
-                },
-                "DetalleError": {
-                    "type": "string"
-                },
-                "FechaCreacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
-                "FechaModificacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
-                "Id": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "Registro": {
-                    "type": "string"
                 },
                 "UsuarioModificacionId": {
                     "type": "integer",
@@ -3760,64 +3560,9 @@
                     "type": "integer",
                     "format": "int64"
                 },
-                "UsuarioModificacionId": {
+                "UsuarioCreacionId": {
                     "type": "integer",
                     "format": "int64"
-                }
-            }
-        },
-        "models.DetCotizacion": {
-            "title": "DetCotizacion",
-            "type": "object",
-            "properties": {
-                "Activo": {
-                    "type": "boolean"
-                },
-                "DetSolicitudCotizacion": {
-                    "$ref": "#/definitions/models.DetSolicitudCotizacion"
-                },
-                "FechaCreacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
-                "FechaModificacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
-                "Id": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "MstCotizacionId": {
-                    "$ref": "#/definitions/models.MstCotizacion"
-                },
-                "UsuarioModificacionId": {
-                    "type": "integer",
-                    "format": "int64"
-                }
-            }
-        },
-        "models.DetSolicitudCotizacion": {
-            "title": "DetSolicitudCotizacion",
-            "type": "object",
-            "properties": {
-                "Activo": {
-                    "type": "boolean"
-                },
-                "FechaCreacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
-                "FechaModificacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
-                "Id": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "SolicitudId": {
-                    "$ref": "#/definitions/models.MstSolicitudCotizacion"
                 },
                 "UsuarioModificacionId": {
                     "type": "integer",
@@ -3858,6 +3603,10 @@
                     "type": "integer",
                     "format": "int64"
                 },
+                "UsuarioCreacionId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
                 "UsuarioModificacionId": {
                     "type": "integer",
                     "format": "int64"
@@ -3872,7 +3621,12 @@
                     "type": "boolean"
                 },
                 "DetCotizacionId": {
-                    "$ref": "#/definitions/models.DetCotizacion"
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "DetSolicitudCotizacionId": {
+                    "type": "integer",
+                    "format": "int64"
                 },
                 "FechaCreacion": {
                     "type": "string",
@@ -3885,9 +3639,6 @@
                 "FichaTecnica": {
                     "type": "string"
                 },
-                "HistMstCotizacionId": {
-                    "$ref": "#/definitions/models.HistMstCotizacion"
-                },
                 "Id": {
                     "type": "integer",
                     "format": "int64"
@@ -3895,6 +3646,16 @@
                 "Iva": {
                     "type": "number",
                     "format": "double"
+                },
+                "MstCotizacionId": {
+                    "$ref": "#/definitions/models.MstCotizacion"
+                },
+                "RegistroActual": {
+                    "type": "boolean"
+                },
+                "UsuarioCreacionId": {
+                    "type": "integer",
+                    "format": "int64"
                 },
                 "UsuarioModificacionId": {
                     "type": "integer",
@@ -3921,7 +3682,8 @@
                     "type": "string"
                 },
                 "DetSolicitudCotizacionId": {
-                    "$ref": "#/definitions/models.DetSolicitudCotizacion"
+                    "type": "integer",
+                    "format": "int64"
                 },
                 "FechaCreacion": {
                     "type": "string",
@@ -3931,21 +3693,31 @@
                     "type": "string",
                     "format": "datetime"
                 },
-                "HistMstSolicitudCotizacionId": {
-                    "$ref": "#/definitions/models.HistMstSolicitudCotizacion"
-                },
                 "Id": {
                     "type": "integer",
                     "format": "int64"
                 },
+                "MstSolicitudCotizacionId": {
+                    "$ref": "#/definitions/models.MstSolicitudCotizacion"
+                },
                 "Nombre": {
                     "type": "string"
+                },
+                "RegistroActual": {
+                    "type": "boolean"
                 },
                 "TipoBienServicioId": {
                     "type": "integer",
                     "format": "int64"
                 },
+                "TipoRegistro": {
+                    "type": "string"
+                },
                 "UnidadMedidaId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "UsuarioCreacionId": {
                     "type": "integer",
                     "format": "int64"
                 },
@@ -3997,8 +3769,15 @@
                 "Observaciones": {
                     "type": "string"
                 },
+                "RegistroActual": {
+                    "type": "boolean"
+                },
                 "SoporteCotizacion": {
                     "type": "string"
+                },
+                "UsuarioCreacionId": {
+                    "type": "integer",
+                    "format": "int64"
                 },
                 "UsuarioModificacionId": {
                     "type": "integer",
@@ -4094,6 +3873,9 @@
                 "PlazoEjecucion": {
                     "type": "string"
                 },
+                "RegistroActual": {
+                    "type": "boolean"
+                },
                 "Requisitos": {
                     "type": "string"
                 },
@@ -4113,6 +3895,10 @@
                     "type": "string"
                 },
                 "UnidadEjecutoraId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "UsuarioCreacionId": {
                     "type": "integer",
                     "format": "int64"
                 },
@@ -4159,6 +3945,10 @@
                     "type": "integer",
                     "format": "int64"
                 },
+                "UsuarioCreacionId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
                 "UsuarioModificacionId": {
                     "type": "integer",
                     "format": "int64"
@@ -4187,6 +3977,10 @@
                 "RelSolicitudCotizacionProveedorId": {
                     "$ref": "#/definitions/models.RelSolicitudCotizacionProveedor"
                 },
+                "UsuarioCreacionId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
                 "UsuarioModificacionId": {
                     "type": "integer",
                     "format": "int64"
@@ -4209,6 +4003,10 @@
                     "format": "datetime"
                 },
                 "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "UsuarioCreacionId": {
                     "type": "integer",
                     "format": "int64"
                 },
@@ -4241,14 +4039,85 @@
                     "type": "integer",
                     "format": "int64"
                 },
-                "MstSolicitudCotizacionId": {
-                    "$ref": "#/definitions/models.MstSolicitudCotizacion"
-                },
                 "ProveedorNotificadoId": {
                     "type": "integer",
                     "format": "int64"
                 },
                 "TerceroNotificaId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "UsuarioCreacionId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "UsuarioModificacionId": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "models.RelHistMstDetCotizacion": {
+            "title": "RelHistMstDetCotizacion",
+            "type": "object",
+            "properties": {
+                "Activo": {
+                    "type": "boolean"
+                },
+                "DetalleId": {
+                    "$ref": "#/definitions/models.HistDetCotizacion"
+                },
+                "FechaCreacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "FechaModificacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "MaestroId": {
+                    "$ref": "#/definitions/models.HistMstCotizacion"
+                },
+                "UsuarioCreacionId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "UsuarioModificacionId": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "models.RelHistMstDetSolicitudCotizacion": {
+            "title": "RelHistMstDetSolicitudCotizacion",
+            "type": "object",
+            "properties": {
+                "Activo": {
+                    "type": "boolean"
+                },
+                "DetalleId": {
+                    "$ref": "#/definitions/models.HistDetSolicitudCotizacion"
+                },
+                "FechaCreacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "FechaModificacion": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "MaestroId": {
+                    "$ref": "#/definitions/models.HistMstSolicitudCotizacion"
+                },
+                "UsuarioCreacionId": {
                     "type": "integer",
                     "format": "int64"
                 },
@@ -4287,6 +4156,10 @@
                     "type": "integer",
                     "format": "int64"
                 },
+                "UsuarioCreacionId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
                 "UsuarioModificacionId": {
                     "type": "integer",
                     "format": "int64"
@@ -4319,6 +4192,10 @@
                 "MstSolicitudCotizacionId": {
                     "$ref": "#/definitions/models.MstSolicitudCotizacion"
                 },
+                "UsuarioCreacionId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
                 "UsuarioModificacionId": {
                     "type": "integer",
                     "format": "int64"
@@ -4350,6 +4227,10 @@
                 "MstSolicitudCotizacionId": {
                     "$ref": "#/definitions/models.MstSolicitudCotizacion"
                 },
+                "UsuarioCreacionId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
                 "UsuarioModificacionId": {
                     "type": "integer",
                     "format": "int64"
@@ -4379,6 +4260,10 @@
                     "$ref": "#/definitions/models.MstSolicitudCotizacion"
                 },
                 "NucleoBasicoId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "UsuarioCreacionId": {
                     "type": "integer",
                     "format": "int64"
                 },
@@ -4417,6 +4302,10 @@
                 "Texto": {
                     "type": "string"
                 },
+                "UsuarioCreacionId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
                 "UsuarioModificacionId": {
                     "type": "integer",
                     "format": "int64"
@@ -4451,6 +4340,10 @@
                 "Texto": {
                     "type": "string"
                 },
+                "UsuarioCreacionId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
                 "UsuarioModificacionId": {
                     "type": "integer",
                     "format": "int64"
@@ -4482,6 +4375,10 @@
                 "Observaciones": {
                     "type": "string"
                 },
+                "UsuarioCreacionId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
                 "UsuarioModificacionId": {
                     "type": "integer",
                     "format": "int64"
@@ -4501,18 +4398,6 @@
         {
             "name": "mst_solicitud_cotizacion",
             "description": "MstSolicitudCotizacionController operations for MstSolicitudCotizacion\n"
-        },
-        {
-            "name": "cargue_masivo_error",
-            "description": "CargueMasivoErrorController operations for CargueMasivoError\n"
-        },
-        {
-            "name": "det_cotizacion",
-            "description": "DetCotizacionController operations for DetCotizacion\n"
-        },
-        {
-            "name": "det_solicitud_cotizacion",
-            "description": "DetSolicitudCotizacionController operations for DetSolicitudCotizacion\n"
         },
         {
             "name": "forma_pago",
@@ -4573,6 +4458,14 @@
         {
             "name": "solicitud_cotizacion_nucleo_basico",
             "description": "SolicitudCotizacionNucleoBasicoController operations for SolicitudCotizacionNucleoBasico\n"
+        },
+        {
+            "name": "rel_hist_mst_det_cotizacion",
+            "description": "RelHistMstDetCotizacionController operations for RelHistMstDetCotizacion\n"
+        },
+        {
+            "name": "rel_hist_mst_det_solicitud_cotizacion",
+            "description": "RelHistMstDetSolicitudCotizacionController operations for RelHistMstDetSolicitudCotizacion\n"
         }
     ]
 }
