@@ -11,18 +11,21 @@ import (
 )
 
 type HistDetSolicitudCotizacion struct {
-	Id                           int                         `orm:"column(id);pk;auto"`
-	DetSolicitudCotizacionId     *DetSolicitudCotizacion     `orm:"column(det_solicitud_cotizacion_id);rel(fk);null"`
-	HistMstSolicitudCotizacionId *HistMstSolicitudCotizacion `orm:"column(hist_mst_solicitud_cotizacion_id);rel(fk)"`
-	Nombre                       string                      `orm:"column(nombre)"`
-	Descripcion                  string                      `orm:"column(descripcion)"`
-	TipoBienServicioId           int                         `orm:"column(tipo_bien_servicio_id)"`
-	UnidadMedidaId               int                         `orm:"column(unidad_medida_id)"`
-	Cantidad                     float64                     `orm:"column(cantidad)"`
-	Activo                       bool                        `orm:"column(activo)"`
-	FechaCreacion                time.Time                   `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion            time.Time                   `orm:"column(fecha_modificacion);type(timestamp without time zone);null"`
-	UsuarioModificacionId        int                         `orm:"column(usuario_modificacion_id);null"`
+	Id                       int                     `orm:"column(id);pk;auto"`
+	DetSolicitudCotizacionId int                     `orm:"column(det_solicitud_cotizacion_id)"`
+	MstSolicitudCotizacionId *MstSolicitudCotizacion `orm:"column(mst_solicitud_cotizacion_id);rel(fk)"`
+	Nombre                   string                  `orm:"column(nombre)"`
+	Descripcion              string                  `orm:"column(descripcion)"`
+	TipoBienServicioId       int                     `orm:"column(tipo_bien_servicio_id)"`
+	UnidadMedidaId           int                     `orm:"column(unidad_medida_id)"`
+	Cantidad                 float64                 `orm:"column(cantidad)"`
+	RegistroActual           bool                    `orm:"column(registro_actual)"`
+	TipoRegistro             string                  `orm:"column(tipo_registro)"`
+	Activo                   bool                    `orm:"column(activo)"`
+	FechaCreacion            time.Time               `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	UsuarioCreacionId        int                     `orm:"column(usuario_creacion_id);null"`
+	FechaModificacion        time.Time               `orm:"column(fecha_modificacion);type(timestamp without time zone);null"`
+	UsuarioModificacionId    int                     `orm:"column(usuario_modificacion_id);null"`
 }
 
 func (t *HistDetSolicitudCotizacion) TableName() string {
@@ -138,7 +141,7 @@ func GetAllHistDetSolicitudCotizacion(query map[string]string, fields []string, 
 
 // UpdateHistDetSolicitudCotizacion updates HistDetSolicitudCotizacion by Id and returns error if
 // the record to be updated doesn't exist
-// columnas limits the updated columns; by default all except Id and FechaCreacion
+// columnas limits the updated columns; by default all except Id, FechaCreacion and UsuarioCreacionId
 func UpdateHistDetSolicitudCotizacionById(m *HistDetSolicitudCotizacion, columnas ...string) (err error) {
 	o := orm.NewOrm()
 	v := HistDetSolicitudCotizacion{Id: m.Id}
@@ -146,9 +149,7 @@ func UpdateHistDetSolicitudCotizacionById(m *HistDetSolicitudCotizacion, columna
 	if err = o.Read(&v); err == nil {
 		var num int64
 		if len(columnas) == 0 {
-			columnas = []string{"DetSolicitudCotizacionId", "HistMstSolicitudCotizacionId", "Nombre",
-				"Descripcion", "TipoBienServicioId", "UnidadMedidaId", "Cantidad", "Activo",
-				"FechaModificacion", "UsuarioModificacionId"}
+			columnas = []string{"DetSolicitudCotizacionId", "MstSolicitudCotizacionId", "Nombre", "Descripcion", "TipoBienServicioId", "UnidadMedidaId", "Cantidad", "RegistroActual", "TipoRegistro", "Activo", "FechaModificacion", "UsuarioModificacionId"}
 		}
 		if num, err = o.Update(m, columnas...); err == nil {
 			fmt.Println("Number of records updated in database:", num)

@@ -38,8 +38,10 @@ type HistMstSolicitudCotizacion struct {
 	TipoContratoId           int                     `orm:"column(tipo_contrato_id);null"`
 	CriterioSeleccion        string                  `orm:"column(criterio_seleccion);null"`
 	PlazoEjecucion           string                  `orm:"column(plazo_ejecucion);null"`
+	RegistroActual           bool                    `orm:"column(registro_actual)"`
 	Activo                   bool                    `orm:"column(activo)"`
 	FechaCreacion            time.Time               `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	UsuarioCreacionId        int                     `orm:"column(usuario_creacion_id);null"`
 	FechaModificacion        time.Time               `orm:"column(fecha_modificacion);type(timestamp without time zone);null"`
 	UsuarioModificacionId    int                     `orm:"column(usuario_modificacion_id);null"`
 }
@@ -157,7 +159,7 @@ func GetAllHistMstSolicitudCotizacion(query map[string]string, fields []string, 
 
 // UpdateHistMstSolicitudCotizacion updates HistMstSolicitudCotizacion by Id and returns error if
 // the record to be updated doesn't exist
-// columnas limits the updated columns; by default all except Id and FechaCreacion
+// columnas limits the updated columns; by default all except Id, FechaCreacion and UsuarioCreacionId
 func UpdateHistMstSolicitudCotizacionById(m *HistMstSolicitudCotizacion, columnas ...string) (err error) {
 	o := orm.NewOrm()
 	v := HistMstSolicitudCotizacion{Id: m.Id}
@@ -170,7 +172,7 @@ func UpdateHistMstSolicitudCotizacionById(m *HistMstSolicitudCotizacion, columna
 				"FechaApertura", "FechaCierre", "Objetivo", "Requisitos", "Observaciones",
 				"OrdenadorGastoId", "DependenciaSolicitanteId", "JustificacionSeleccion", "MedioPagoId",
 				"PlanAccionId", "ResponsableTerceroId", "MetodoSeleccionId", "NumeroNecesidad",
-				"DependenciaDestinoId", "TipoContratoId", "CriterioSeleccion", "PlazoEjecucion",
+				"DependenciaDestinoId", "TipoContratoId", "CriterioSeleccion", "PlazoEjecucion", "RegistroActual",
 				"Activo", "FechaModificacion", "UsuarioModificacionId"}
 		}
 		if num, err = o.Update(m, columnas...); err == nil {

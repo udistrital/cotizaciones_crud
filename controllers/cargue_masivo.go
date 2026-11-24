@@ -39,6 +39,11 @@ func (c *CargueMasivoController) Post() {
 		// El Id lo asigna la base de datos (serial): se ignora el enviado por el cliente
 		v.Id = 0
 		v.Activo = true
+		// usuario_creacion_id es obligatorio en el POST; no lo asigna el servidor
+		if v.UsuarioCreacionId <= 0 {
+			c.Data["message"] = "Error service POST: usuario_creacion_id is required"
+			c.Abort("400")
+		}
 		v.FechaCreacion = time_bogota.Tiempo_bogota()
 		v.FechaModificacion = time_bogota.Tiempo_bogota()
 		if _, err := models.AddCargueMasivo(&v); err == nil {
@@ -167,6 +172,14 @@ func (c *CargueMasivoController) Put() {
 		if v.Id == 0 {
 			v.Id = id
 		}
+		// usuario_creacion_id no se modifica en PUT: se conserva el valor almacenado
+		actual, errActual := models.GetCargueMasivoById(id)
+		if errActual != nil {
+			beeLogger.Log.Error(errActual.Error())
+			c.Data["message"] = "Error service Put: The request contains an incorrect parameter or no record exists"
+			c.Abort("404")
+		}
+		v.UsuarioCreacionId = actual.UsuarioCreacionId
 		v.FechaModificacion = time_bogota.Tiempo_bogota()
 		if err := models.UpdateCargueMasivoById(&v); err == nil {
 			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Update successful", "Data": v}

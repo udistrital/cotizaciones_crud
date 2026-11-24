@@ -16,6 +16,7 @@ type SolicitudCotizacionEspecificacionTecnica struct {
 	Enlace                   string                  `orm:"column(enlace);type(uuid)"`
 	Activo                   bool                    `orm:"column(activo)"`
 	FechaCreacion            time.Time               `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	UsuarioCreacionId        int                     `orm:"column(usuario_creacion_id);null"`
 	FechaModificacion        time.Time               `orm:"column(fecha_modificacion);type(timestamp without time zone);null"`
 	UsuarioModificacionId    int                     `orm:"column(usuario_modificacion_id);null"`
 }
@@ -133,7 +134,7 @@ func GetAllSolicitudCotizacionEspecificacionTecnica(query map[string]string, fie
 
 // UpdateSolicitudCotizacionEspecificacionTecnica updates SolicitudCotizacionEspecificacionTecnica by Id and returns error if
 // the record to be updated doesn't exist
-// columnas limits the updated columns; by default all except Id and FechaCreacion
+// columnas limits the updated columns; by default all except Id, FechaCreacion and UsuarioCreacionId
 func UpdateSolicitudCotizacionEspecificacionTecnicaById(m *SolicitudCotizacionEspecificacionTecnica, columnas ...string) (err error) {
 	o := orm.NewOrm()
 	v := SolicitudCotizacionEspecificacionTecnica{Id: m.Id}

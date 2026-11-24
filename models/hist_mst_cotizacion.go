@@ -20,8 +20,10 @@ type HistMstCotizacion struct {
 	Observaciones         string         `orm:"column(observaciones);null"`
 	FechaVencimiento      time.Time      `orm:"column(fecha_vencimiento);type(timestamp without time zone)"`
 	SoporteCotizacion     string         `orm:"column(soporte_cotizacion);type(uuid)"`
+	RegistroActual        bool           `orm:"column(registro_actual)"`
 	Activo                bool           `orm:"column(activo)"`
 	FechaCreacion         time.Time      `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	UsuarioCreacionId     int            `orm:"column(usuario_creacion_id);null"`
 	FechaModificacion     time.Time      `orm:"column(fecha_modificacion);type(timestamp without time zone);null"`
 	UsuarioModificacionId int            `orm:"column(usuario_modificacion_id);null"`
 }
@@ -139,7 +141,7 @@ func GetAllHistMstCotizacion(query map[string]string, fields []string, sortby []
 
 // UpdateHistMstCotizacion updates HistMstCotizacion by Id and returns error if
 // the record to be updated doesn't exist
-// columnas limits the updated columns; by default all except Id and FechaCreacion
+// columnas limits the updated columns; by default all except Id, FechaCreacion and UsuarioCreacionId
 func UpdateHistMstCotizacionById(m *HistMstCotizacion, columnas ...string) (err error) {
 	o := orm.NewOrm()
 	v := HistMstCotizacion{Id: m.Id}
@@ -148,7 +150,7 @@ func UpdateHistMstCotizacionById(m *HistMstCotizacion, columnas ...string) (err 
 		var num int64
 		if len(columnas) == 0 {
 			columnas = []string{"MstCotizacionId", "FechaEnvio", "Descripcion", "InformacionEntrega",
-				"Descuentos", "Observaciones", "FechaVencimiento", "SoporteCotizacion", "Activo",
+				"Descuentos", "Observaciones", "FechaVencimiento", "SoporteCotizacion", "RegistroActual", "Activo",
 				"FechaModificacion", "UsuarioModificacionId"}
 		}
 		if num, err = o.Update(m, columnas...); err == nil {

@@ -12,13 +12,13 @@ import (
 	beego "github.com/beego/beego/v2/server/web"
 )
 
-// DetCotizacionController operations for DetCotizacion
-type DetCotizacionController struct {
+// RelHistMstDetCotizacionController operations for RelHistMstDetCotizacion
+type RelHistMstDetCotizacionController struct {
 	beego.Controller
 }
 
 // URLMapping ...
-func (c *DetCotizacionController) URLMapping() {
+func (c *RelHistMstDetCotizacionController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
@@ -28,20 +28,25 @@ func (c *DetCotizacionController) URLMapping() {
 
 // Post ...
 // @Title Post
-// @Description create DetCotizacion
-// @Param	body		body 	models.DetCotizacion	true		"body for DetCotizacion content"
-// @Success 201 {int} models.DetCotizacion
+// @Description create RelHistMstDetCotizacion
+// @Param	body		body 	models.RelHistMstDetCotizacion	true		"body for RelHistMstDetCotizacion content"
+// @Success 201 {int} models.RelHistMstDetCotizacion
 // @Failure 400 the request contains incorrect syntax
 // @router / [post]
-func (c *DetCotizacionController) Post() {
-	var v models.DetCotizacion
+func (c *RelHistMstDetCotizacionController) Post() {
+	var v models.RelHistMstDetCotizacion
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		// El Id lo asigna la base de datos (serial): se ignora el enviado por el cliente
 		v.Id = 0
 		v.Activo = true
+		// usuario_creacion_id es obligatorio en el POST; no lo asigna el servidor
+		if v.UsuarioCreacionId <= 0 {
+			c.Data["message"] = "Error service POST: usuario_creacion_id is required"
+			c.Abort("400")
+		}
 		v.FechaCreacion = time_bogota.Tiempo_bogota()
 		v.FechaModificacion = time_bogota.Tiempo_bogota()
-		if _, err := models.AddDetCotizacion(&v); err == nil {
+		if _, err := models.AddRelHistMstDetCotizacion(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "201", "Message": "Registration successful", "Data": v}
 		} else {
@@ -59,15 +64,15 @@ func (c *DetCotizacionController) Post() {
 
 // GetOne ...
 // @Title Get One
-// @Description get DetCotizacion by id
+// @Description get RelHistMstDetCotizacion by id
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.DetCotizacion
+// @Success 200 {object} models.RelHistMstDetCotizacion
 // @Failure 404 not found resource
 // @router /:id [get]
-func (c *DetCotizacionController) GetOne() {
+func (c *RelHistMstDetCotizacionController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetDetCotizacionById(id)
+	v, err := models.GetRelHistMstDetCotizacionById(id)
 	if err != nil {
 		beeLogger.Log.Error(err.Error())
 		c.Data["message"] = "Error service GetOne: The request contains an incorrect parameter or no record exists"
@@ -80,17 +85,17 @@ func (c *DetCotizacionController) GetOne() {
 
 // GetAll ...
 // @Title Get All
-// @Description get DetCotizacion
+// @Description get RelHistMstDetCotizacion
 // @Param	query	query	string	false	"Filter. e.g. col1:v1,col2:v2 ..."
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
 // @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.DetCotizacion
+// @Success 200 {object} models.RelHistMstDetCotizacion
 // @Failure 404 not found resource
 // @router / [get]
-func (c *DetCotizacionController) GetAll() {
+func (c *RelHistMstDetCotizacionController) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -133,7 +138,7 @@ func (c *DetCotizacionController) GetAll() {
 		}
 	}
 
-	l, total, err := models.GetAllDetCotizacion(query, fields, sortby, order, offset, limit)
+	l, total, err := models.GetAllRelHistMstDetCotizacion(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		beeLogger.Log.Error(err.Error())
 		c.Data["message"] = "Error service GetAll: The request contains an incorrect parameter or no record exists"
@@ -149,16 +154,16 @@ func (c *DetCotizacionController) GetAll() {
 
 // Put ...
 // @Title Put
-// @Description update the DetCotizacion
+// @Description update the RelHistMstDetCotizacion
 // @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.DetCotizacion	true		"body for DetCotizacion content"
-// @Success 200 {object} models.DetCotizacion
+// @Param	body		body 	models.RelHistMstDetCotizacion	true		"body for RelHistMstDetCotizacion content"
+// @Success 200 {object} models.RelHistMstDetCotizacion
 // @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
-func (c *DetCotizacionController) Put() {
+func (c *RelHistMstDetCotizacionController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.DetCotizacion{Id: id}
+	v := models.RelHistMstDetCotizacion{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if v.Id != id {
 			c.Data["message"] = "Error service Put: The id cannot be modified"
@@ -167,8 +172,16 @@ func (c *DetCotizacionController) Put() {
 		if v.Id == 0 {
 			v.Id = id
 		}
+		// usuario_creacion_id no se modifica en PUT: se conserva el valor almacenado
+		actual, errActual := models.GetRelHistMstDetCotizacionById(id)
+		if errActual != nil {
+			beeLogger.Log.Error(errActual.Error())
+			c.Data["message"] = "Error service Put: The request contains an incorrect parameter or no record exists"
+			c.Abort("404")
+		}
+		v.UsuarioCreacionId = actual.UsuarioCreacionId
 		v.FechaModificacion = time_bogota.Tiempo_bogota()
-		if err := models.UpdateDetCotizacionById(&v); err == nil {
+		if err := models.UpdateRelHistMstDetCotizacionById(&v); err == nil {
 			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Update successful", "Data": v}
 		} else {
 			beeLogger.Log.Error(err.Error())
@@ -185,15 +198,15 @@ func (c *DetCotizacionController) Put() {
 
 // Delete ...
 // @Title Delete
-// @Description delete the DetCotizacion
+// @Description delete the RelHistMstDetCotizacion
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 404 not found resource
 // @router /:id [delete]
-func (c *DetCotizacionController) Delete() {
+func (c *RelHistMstDetCotizacionController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetDetCotizacionById(id)
+	v, err := models.GetRelHistMstDetCotizacionById(id)
 	if err != nil {
 		beeLogger.Log.Error(err.Error())
 		c.Data["message"] = "Error service Delete: The request contains an incorrect parameter or no record exists"
@@ -202,7 +215,7 @@ func (c *DetCotizacionController) Delete() {
 	v.Activo = false
 	v.FechaModificacion = time_bogota.Tiempo_bogota()
 	// Borrado lógico: solo cambian activo y fecha_modificacion
-	if err := models.UpdateDetCotizacionById(v, "Activo", "FechaModificacion"); err == nil {
+	if err := models.UpdateRelHistMstDetCotizacionById(v, "Activo", "FechaModificacion"); err == nil {
 		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Update successful", "Data": v}
 	} else {
 		beeLogger.Log.Error(err.Error())

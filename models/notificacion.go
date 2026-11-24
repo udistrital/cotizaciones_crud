@@ -11,15 +11,15 @@ import (
 )
 
 type Notificacion struct {
-	Id                       int                     `orm:"column(id);pk;auto"`
-	MstSolicitudCotizacionId *MstSolicitudCotizacion `orm:"column(mst_solicitud_cotizacion_id);rel(fk)"`
-	ProveedorNotificadoId    int                     `orm:"column(proveedor_notificado_id)"`
-	TerceroNotificaId        int                     `orm:"column(tercero_notifica_id)"`
-	EstadoEnvioId            int                     `orm:"column(estado_envio_id)"`
-	Activo                   bool                    `orm:"column(activo)"`
-	FechaCreacion            time.Time               `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion        time.Time               `orm:"column(fecha_modificacion);type(timestamp without time zone);null"`
-	UsuarioModificacionId    int                     `orm:"column(usuario_modificacion_id);null"`
+	Id                    int       `orm:"column(id);pk;auto"`
+	ProveedorNotificadoId int       `orm:"column(proveedor_notificado_id)"`
+	TerceroNotificaId     int       `orm:"column(tercero_notifica_id)"`
+	EstadoEnvioId         int       `orm:"column(estado_envio_id)"`
+	Activo                bool      `orm:"column(activo)"`
+	FechaCreacion         time.Time `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	UsuarioCreacionId     int       `orm:"column(usuario_creacion_id);null"`
+	FechaModificacion     time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);null"`
+	UsuarioModificacionId int       `orm:"column(usuario_modificacion_id);null"`
 }
 
 func (t *Notificacion) TableName() string {
@@ -135,7 +135,7 @@ func GetAllNotificacion(query map[string]string, fields []string, sortby []strin
 
 // UpdateNotificacion updates Notificacion by Id and returns error if
 // the record to be updated doesn't exist
-// columnas limits the updated columns; by default all except Id and FechaCreacion
+// columnas limits the updated columns; by default all except Id, FechaCreacion and UsuarioCreacionId
 func UpdateNotificacionById(m *Notificacion, columnas ...string) (err error) {
 	o := orm.NewOrm()
 	v := Notificacion{Id: m.Id}
@@ -143,7 +143,7 @@ func UpdateNotificacionById(m *Notificacion, columnas ...string) (err error) {
 	if err = o.Read(&v); err == nil {
 		var num int64
 		if len(columnas) == 0 {
-			columnas = []string{"MstSolicitudCotizacionId", "ProveedorNotificadoId", "TerceroNotificaId",
+			columnas = []string{"ProveedorNotificadoId", "TerceroNotificaId",
 				"EstadoEnvioId", "Activo", "FechaModificacion", "UsuarioModificacionId"}
 		}
 		if num, err = o.Update(m, columnas...); err == nil {

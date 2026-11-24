@@ -16,6 +16,7 @@ type SolicitudCotizacionObservacionProveedorRespuesta struct {
 	Texto                 string                                   `orm:"column(texto)"`
 	Activo                bool                                     `orm:"column(activo)"`
 	FechaCreacion         time.Time                                `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	UsuarioCreacionId     int                                      `orm:"column(usuario_creacion_id);null"`
 	FechaModificacion     time.Time                                `orm:"column(fecha_modificacion);type(timestamp without time zone);null"`
 	UsuarioModificacionId int                                      `orm:"column(usuario_modificacion_id);null"`
 }
@@ -133,7 +134,7 @@ func GetAllSolicitudCotizacionObservacionProveedorRespuesta(query map[string]str
 
 // UpdateSolicitudCotizacionObservacionProveedorRespuesta updates SolicitudCotizacionObservacionProveedorRespuesta by Id and returns error if
 // the record to be updated doesn't exist
-// columnas limits the updated columns; by default all except Id and FechaCreacion
+// columnas limits the updated columns; by default all except Id, FechaCreacion and UsuarioCreacionId
 func UpdateSolicitudCotizacionObservacionProveedorRespuestaById(m *SolicitudCotizacionObservacionProveedorRespuesta, columnas ...string) (err error) {
 	o := orm.NewOrm()
 	v := SolicitudCotizacionObservacionProveedorRespuesta{Id: m.Id}

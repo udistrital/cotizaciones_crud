@@ -12,13 +12,13 @@ import (
 	beego "github.com/beego/beego/v2/server/web"
 )
 
-// DetSolicitudCotizacionController operations for DetSolicitudCotizacion
-type DetSolicitudCotizacionController struct {
+// RelHistMstDetSolicitudCotizacionController operations for RelHistMstDetSolicitudCotizacion
+type RelHistMstDetSolicitudCotizacionController struct {
 	beego.Controller
 }
 
 // URLMapping ...
-func (c *DetSolicitudCotizacionController) URLMapping() {
+func (c *RelHistMstDetSolicitudCotizacionController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
@@ -28,20 +28,25 @@ func (c *DetSolicitudCotizacionController) URLMapping() {
 
 // Post ...
 // @Title Post
-// @Description create DetSolicitudCotizacion
-// @Param	body		body 	models.DetSolicitudCotizacion	true		"body for DetSolicitudCotizacion content"
-// @Success 201 {int} models.DetSolicitudCotizacion
+// @Description create RelHistMstDetSolicitudCotizacion
+// @Param	body		body 	models.RelHistMstDetSolicitudCotizacion	true		"body for RelHistMstDetSolicitudCotizacion content"
+// @Success 201 {int} models.RelHistMstDetSolicitudCotizacion
 // @Failure 400 the request contains incorrect syntax
 // @router / [post]
-func (c *DetSolicitudCotizacionController) Post() {
-	var v models.DetSolicitudCotizacion
+func (c *RelHistMstDetSolicitudCotizacionController) Post() {
+	var v models.RelHistMstDetSolicitudCotizacion
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		// El Id lo asigna la base de datos (serial): se ignora el enviado por el cliente
 		v.Id = 0
 		v.Activo = true
+		// usuario_creacion_id es obligatorio en el POST; no lo asigna el servidor
+		if v.UsuarioCreacionId <= 0 {
+			c.Data["message"] = "Error service POST: usuario_creacion_id is required"
+			c.Abort("400")
+		}
 		v.FechaCreacion = time_bogota.Tiempo_bogota()
 		v.FechaModificacion = time_bogota.Tiempo_bogota()
-		if _, err := models.AddDetSolicitudCotizacion(&v); err == nil {
+		if _, err := models.AddRelHistMstDetSolicitudCotizacion(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "201", "Message": "Registration successful", "Data": v}
 		} else {
@@ -59,15 +64,15 @@ func (c *DetSolicitudCotizacionController) Post() {
 
 // GetOne ...
 // @Title Get One
-// @Description get DetSolicitudCotizacion by id
+// @Description get RelHistMstDetSolicitudCotizacion by id
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.DetSolicitudCotizacion
+// @Success 200 {object} models.RelHistMstDetSolicitudCotizacion
 // @Failure 404 not found resource
 // @router /:id [get]
-func (c *DetSolicitudCotizacionController) GetOne() {
+func (c *RelHistMstDetSolicitudCotizacionController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetDetSolicitudCotizacionById(id)
+	v, err := models.GetRelHistMstDetSolicitudCotizacionById(id)
 	if err != nil {
 		beeLogger.Log.Error(err.Error())
 		c.Data["message"] = "Error service GetOne: The request contains an incorrect parameter or no record exists"
@@ -80,17 +85,17 @@ func (c *DetSolicitudCotizacionController) GetOne() {
 
 // GetAll ...
 // @Title Get All
-// @Description get DetSolicitudCotizacion
+// @Description get RelHistMstDetSolicitudCotizacion
 // @Param	query	query	string	false	"Filter. e.g. col1:v1,col2:v2 ..."
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
 // @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.DetSolicitudCotizacion
+// @Success 200 {object} models.RelHistMstDetSolicitudCotizacion
 // @Failure 404 not found resource
 // @router / [get]
-func (c *DetSolicitudCotizacionController) GetAll() {
+func (c *RelHistMstDetSolicitudCotizacionController) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -133,7 +138,7 @@ func (c *DetSolicitudCotizacionController) GetAll() {
 		}
 	}
 
-	l, total, err := models.GetAllDetSolicitudCotizacion(query, fields, sortby, order, offset, limit)
+	l, total, err := models.GetAllRelHistMstDetSolicitudCotizacion(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		beeLogger.Log.Error(err.Error())
 		c.Data["message"] = "Error service GetAll: The request contains an incorrect parameter or no record exists"
@@ -149,16 +154,16 @@ func (c *DetSolicitudCotizacionController) GetAll() {
 
 // Put ...
 // @Title Put
-// @Description update the DetSolicitudCotizacion
+// @Description update the RelHistMstDetSolicitudCotizacion
 // @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.DetSolicitudCotizacion	true		"body for DetSolicitudCotizacion content"
-// @Success 200 {object} models.DetSolicitudCotizacion
+// @Param	body		body 	models.RelHistMstDetSolicitudCotizacion	true		"body for RelHistMstDetSolicitudCotizacion content"
+// @Success 200 {object} models.RelHistMstDetSolicitudCotizacion
 // @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
-func (c *DetSolicitudCotizacionController) Put() {
+func (c *RelHistMstDetSolicitudCotizacionController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.DetSolicitudCotizacion{Id: id}
+	v := models.RelHistMstDetSolicitudCotizacion{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if v.Id != id {
 			c.Data["message"] = "Error service Put: The id cannot be modified"
@@ -167,8 +172,16 @@ func (c *DetSolicitudCotizacionController) Put() {
 		if v.Id == 0 {
 			v.Id = id
 		}
+		// usuario_creacion_id no se modifica en PUT: se conserva el valor almacenado
+		actual, errActual := models.GetRelHistMstDetSolicitudCotizacionById(id)
+		if errActual != nil {
+			beeLogger.Log.Error(errActual.Error())
+			c.Data["message"] = "Error service Put: The request contains an incorrect parameter or no record exists"
+			c.Abort("404")
+		}
+		v.UsuarioCreacionId = actual.UsuarioCreacionId
 		v.FechaModificacion = time_bogota.Tiempo_bogota()
-		if err := models.UpdateDetSolicitudCotizacionById(&v); err == nil {
+		if err := models.UpdateRelHistMstDetSolicitudCotizacionById(&v); err == nil {
 			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Update successful", "Data": v}
 		} else {
 			beeLogger.Log.Error(err.Error())
@@ -185,15 +198,15 @@ func (c *DetSolicitudCotizacionController) Put() {
 
 // Delete ...
 // @Title Delete
-// @Description delete the DetSolicitudCotizacion
+// @Description delete the RelHistMstDetSolicitudCotizacion
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 404 not found resource
 // @router /:id [delete]
-func (c *DetSolicitudCotizacionController) Delete() {
+func (c *RelHistMstDetSolicitudCotizacionController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetDetSolicitudCotizacionById(id)
+	v, err := models.GetRelHistMstDetSolicitudCotizacionById(id)
 	if err != nil {
 		beeLogger.Log.Error(err.Error())
 		c.Data["message"] = "Error service Delete: The request contains an incorrect parameter or no record exists"
@@ -202,7 +215,7 @@ func (c *DetSolicitudCotizacionController) Delete() {
 	v.Activo = false
 	v.FechaModificacion = time_bogota.Tiempo_bogota()
 	// Borrado lógico: solo cambian activo y fecha_modificacion
-	if err := models.UpdateDetSolicitudCotizacionById(v, "Activo", "FechaModificacion"); err == nil {
+	if err := models.UpdateRelHistMstDetSolicitudCotizacionById(v, "Activo", "FechaModificacion"); err == nil {
 		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Update successful", "Data": v}
 	} else {
 		beeLogger.Log.Error(err.Error())

@@ -13,13 +13,15 @@ import (
 type CargueMasivo struct {
 	Id                           int                         `orm:"column(id);pk;auto"`
 	HistMstSolicitudCotizacionId *HistMstSolicitudCotizacion `orm:"column(hist_mst_solicitud_cotizacion_id);rel(fk)"`
-	EnlacePlantilla              string                      `orm:"column(enlace_plantilla);type(uuid)"`
+	EnlacePlantilla              string                      `orm:"column(enlace_plantilla);null"`
 	CargadoPorTerceroId          int                         `orm:"column(cargado_por_tercero_id)"`
 	TotalRegistros               int                         `orm:"column(total_registros);null"`
 	Aceptados                    int                         `orm:"column(aceptados);null"`
 	Rechazados                   int                         `orm:"column(rechazados);null"`
+	Respuesta                    string                      `orm:"column(respuesta);type(json);null"`
 	Activo                       bool                        `orm:"column(activo)"`
 	FechaCreacion                time.Time                   `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	UsuarioCreacionId            int                         `orm:"column(usuario_creacion_id);null"`
 	FechaModificacion            time.Time                   `orm:"column(fecha_modificacion);type(timestamp without time zone);null"`
 	UsuarioModificacionId        int                         `orm:"column(usuario_modificacion_id);null"`
 }
@@ -137,7 +139,7 @@ func GetAllCargueMasivo(query map[string]string, fields []string, sortby []strin
 
 // UpdateCargueMasivo updates CargueMasivo by Id and returns error if
 // the record to be updated doesn't exist
-// columnas limits the updated columns; by default all except Id and FechaCreacion
+// columnas limits the updated columns; by default all except Id, FechaCreacion and UsuarioCreacionId
 func UpdateCargueMasivoById(m *CargueMasivo, columnas ...string) (err error) {
 	o := orm.NewOrm()
 	v := CargueMasivo{Id: m.Id}
@@ -146,7 +148,7 @@ func UpdateCargueMasivoById(m *CargueMasivo, columnas ...string) (err error) {
 		var num int64
 		if len(columnas) == 0 {
 			columnas = []string{"HistMstSolicitudCotizacionId", "EnlacePlantilla", "CargadoPorTerceroId",
-				"TotalRegistros", "Aceptados", "Rechazados", "Activo", "FechaModificacion",
+				"TotalRegistros", "Aceptados", "Rechazados", "Respuesta", "Activo", "FechaModificacion",
 				"UsuarioModificacionId"}
 		}
 		if num, err = o.Update(m, columnas...); err == nil {

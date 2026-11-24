@@ -34,24 +34,6 @@ func init() {
 			),
 		),
 
-		beego.NSNamespace("/cargue_masivo_error",
-			beego.NSInclude(
-				&controllers.CargueMasivoErrorController{},
-			),
-		),
-
-		beego.NSNamespace("/det_cotizacion",
-			beego.NSInclude(
-				&controllers.DetCotizacionController{},
-			),
-		),
-
-		beego.NSNamespace("/det_solicitud_cotizacion",
-			beego.NSInclude(
-				&controllers.DetSolicitudCotizacionController{},
-			),
-		),
-
 		beego.NSNamespace("/forma_pago",
 			beego.NSInclude(
 				&controllers.FormaPagoController{},
@@ -139,6 +121,17 @@ func init() {
 		beego.NSNamespace("/solicitud_cotizacion_nucleo_basico",
 			beego.NSInclude(
 				&controllers.SolicitudCotizacionNucleoBasicoController{},
+			),
+		),
+		beego.NSNamespace("/rel_hist_mst_det_cotizacion",
+			beego.NSInclude(
+				&controllers.RelHistMstDetCotizacionController{},
+			),
+		),
+
+		beego.NSNamespace("/rel_hist_mst_det_solicitud_cotizacion",
+			beego.NSInclude(
+				&controllers.RelHistMstDetSolicitudCotizacionController{},
 			),
 		),
 	)

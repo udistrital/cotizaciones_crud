@@ -10,50 +10,52 @@ import (
 	"github.com/beego/beego/v2/client/orm"
 )
 
-type DetSolicitudCotizacion struct {
-	Id                    int                     `orm:"column(id);pk;auto"`
-	SolicitudId           *MstSolicitudCotizacion `orm:"column(solicitud_id);rel(fk)"`
-	Activo                bool                    `orm:"column(activo)"`
-	FechaCreacion         time.Time               `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion     time.Time               `orm:"column(fecha_modificacion);type(timestamp without time zone);null"`
-	UsuarioModificacionId int                     `orm:"column(usuario_modificacion_id);null"`
+type RelHistMstDetSolicitudCotizacion struct {
+	Id                    int                         `orm:"column(id);pk;auto"`
+	MaestroId             *HistMstSolicitudCotizacion `orm:"column(maestro_id);rel(fk)"`
+	DetalleId             *HistDetSolicitudCotizacion `orm:"column(detalle_id);rel(fk)"`
+	Activo                bool                        `orm:"column(activo)"`
+	FechaCreacion         time.Time                   `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	UsuarioCreacionId     int                         `orm:"column(usuario_creacion_id);null"`
+	FechaModificacion     time.Time                   `orm:"column(fecha_modificacion);type(timestamp without time zone);null"`
+	UsuarioModificacionId int                         `orm:"column(usuario_modificacion_id);null"`
 }
 
-func (t *DetSolicitudCotizacion) TableName() string {
-	return "det_solicitud_cotizacion"
+func (t *RelHistMstDetSolicitudCotizacion) TableName() string {
+	return "rel_hist_mst_det_solicitud_cotizacion"
 }
 
 func init() {
-	orm.RegisterModel(new(DetSolicitudCotizacion))
+	orm.RegisterModel(new(RelHistMstDetSolicitudCotizacion))
 }
 
-// AddDetSolicitudCotizacion insert a new DetSolicitudCotizacion into database and returns
+// AddRelHistMstDetSolicitudCotizacion insert a new RelHistMstDetSolicitudCotizacion into database and returns
 // last inserted Id on success.
-func AddDetSolicitudCotizacion(m *DetSolicitudCotizacion) (id int64, err error) {
+func AddRelHistMstDetSolicitudCotizacion(m *RelHistMstDetSolicitudCotizacion) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
 }
 
-// GetDetSolicitudCotizacionById retrieves DetSolicitudCotizacion by Id. Returns error if
+// GetRelHistMstDetSolicitudCotizacionById retrieves RelHistMstDetSolicitudCotizacion by Id. Returns error if
 // Id doesn't exist
-func GetDetSolicitudCotizacionById(id int) (v *DetSolicitudCotizacion, err error) {
+func GetRelHistMstDetSolicitudCotizacionById(id int) (v *RelHistMstDetSolicitudCotizacion, err error) {
 	o := orm.NewOrm()
-	v = &DetSolicitudCotizacion{}
-	// RelatedSel expande las FK, igual que en GetAllDetSolicitudCotizacion
-	if err = o.QueryTable(new(DetSolicitudCotizacion)).Filter("Id", id).RelatedSel().One(v); err == nil {
+	v = &RelHistMstDetSolicitudCotizacion{}
+	// RelatedSel expande las FK, igual que en GetAllRelHistMstDetSolicitudCotizacion
+	if err = o.QueryTable(new(RelHistMstDetSolicitudCotizacion)).Filter("Id", id).RelatedSel().One(v); err == nil {
 		return v, nil
 	}
 	return nil, err
 }
 
-// GetAllDetSolicitudCotizacion retrieves all DetSolicitudCotizacion matches certain condition. Returns empty list if
+// GetAllRelHistMstDetSolicitudCotizacion retrieves all RelHistMstDetSolicitudCotizacion matches certain condition. Returns empty list if
 // no records exist
 // Total is the number of records matching the query filters, ignoring offset and limit.
-func GetAllDetSolicitudCotizacion(query map[string]string, fields []string, sortby []string, order []string,
+func GetAllRelHistMstDetSolicitudCotizacion(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, total int64, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(DetSolicitudCotizacion)).RelatedSel()
+	qs := o.QueryTable(new(RelHistMstDetSolicitudCotizacion)).RelatedSel()
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -107,7 +109,7 @@ func GetAllDetSolicitudCotizacion(query map[string]string, fields []string, sort
 	if err != nil {
 		return nil, 0, err
 	}
-	var l []DetSolicitudCotizacion
+	var l []RelHistMstDetSolicitudCotizacion
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -130,17 +132,17 @@ func GetAllDetSolicitudCotizacion(query map[string]string, fields []string, sort
 	return nil, 0, err
 }
 
-// UpdateDetSolicitudCotizacion updates DetSolicitudCotizacion by Id and returns error if
+// UpdateRelHistMstDetSolicitudCotizacion updates RelHistMstDetSolicitudCotizacion by Id and returns error if
 // the record to be updated doesn't exist
-// columnas limits the updated columns; by default all except Id and FechaCreacion
-func UpdateDetSolicitudCotizacionById(m *DetSolicitudCotizacion, columnas ...string) (err error) {
+// columnas limits the updated columns; by default all except Id, FechaCreacion and UsuarioCreacionId
+func UpdateRelHistMstDetSolicitudCotizacionById(m *RelHistMstDetSolicitudCotizacion, columnas ...string) (err error) {
 	o := orm.NewOrm()
-	v := DetSolicitudCotizacion{Id: m.Id}
+	v := RelHistMstDetSolicitudCotizacion{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
 		if len(columnas) == 0 {
-			columnas = []string{"SolicitudId", "Activo", "FechaModificacion", "UsuarioModificacionId"}
+			columnas = []string{"MaestroId", "DetalleId", "Activo", "FechaModificacion", "UsuarioModificacionId"}
 		}
 		if num, err = o.Update(m, columnas...); err == nil {
 			fmt.Println("Number of records updated in database:", num)
@@ -149,15 +151,15 @@ func UpdateDetSolicitudCotizacionById(m *DetSolicitudCotizacion, columnas ...str
 	return
 }
 
-// DeleteDetSolicitudCotizacion deletes DetSolicitudCotizacion by Id and returns error if
+// DeleteRelHistMstDetSolicitudCotizacion deletes RelHistMstDetSolicitudCotizacion by Id and returns error if
 // the record to be deleted doesn't exist
-func DeleteDetSolicitudCotizacion(id int) (err error) {
+func DeleteRelHistMstDetSolicitudCotizacion(id int) (err error) {
 	o := orm.NewOrm()
-	v := DetSolicitudCotizacion{Id: id}
+	v := RelHistMstDetSolicitudCotizacion{Id: id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Delete(&DetSolicitudCotizacion{Id: id}); err == nil {
+		if num, err = o.Delete(&RelHistMstDetSolicitudCotizacion{Id: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}
