@@ -11,7 +11,7 @@
 //   - tests/helpers/registros_gen.go: registros de ejemplo válidos por modelo. Los
 //     escalares puntero usan Ptr(valor).
 //   - tests/helpers/punteros_gen.go: función genérica Ptr[T].
-//   - tests/controllers/<controlador>_test.go: pruebas de cada controlador. Por cada
+//   - tests/integracion/<controlador>_test.go: pruebas de cada controlador. Por cada
 //     escalar puntero (campo opcional no-FK) incluye dos pruebas de opcionalidad: el
 //     campo omitido del payload y el campo enviado como null. En ambos casos GetOne
 //     devuelve null y la columna queda NULL en la base de datos.
