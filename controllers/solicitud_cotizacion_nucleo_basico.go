@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	"strconv"
 	"strings"
 
@@ -141,8 +142,13 @@ func (c *SolicitudCotizacionNucleoBasicoController) GetAll() {
 	l, total, err := models.GetAllSolicitudCotizacionNucleoBasico(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		beeLogger.Log.Error(err.Error())
-		c.Data["message"] = "Error service GetAll: The request contains an incorrect parameter or no record exists"
-		c.Abort("404")
+		if errors.Is(err, models.ErrSortInvalido) {
+			c.Data["message"] = "Error service GetAll: The request contains an invalid sortby or order parameter"
+			c.Abort("400")
+		} else {
+			c.Data["message"] = "Error service GetAll: The request contains an incorrect parameter or no record exists"
+			c.Abort("404")
+		}
 	} else {
 		if l == nil {
 			l = []interface{}{}

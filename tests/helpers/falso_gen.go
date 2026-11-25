@@ -38,14 +38,36 @@ const nombreFalso = "cotizaciones_falso"
 
 var (
 	ultima          Sentencia
-	filaSiguiente   map[string]interface{}
+	filasSiguientes []map[string]interface{}
 	falsoRegistrado bool
 )
 
-// DefinirFila fija los valores de la siguiente fila que devuelve el controlador falso,
-// por nombre de columna. nil es NULL. Las columnas no indicadas devuelven 1.
+// DefinirFila fija la única fila que devuelve el controlador falso, por nombre de
+// columna. nil es NULL. Las columnas no indicadas devuelven 1.
 func DefinirFila(valores map[string]interface{}) {
-	filaSiguiente = valores
+	filasSiguientes = []map[string]interface{}{valores}
+}
+
+// DefinirFilas fija las filas que devuelve el controlador falso, en el orden indicado.
+// Sin argumentos, la consulta no devuelve filas. El COUNT(*) devuelve la cantidad de
+// filas definidas, como lo haría la base de datos sin LIMIT ni OFFSET.
+func DefinirFilas(filas ...map[string]interface{}) {
+	filasSiguientes = append([]map[string]interface{}{}, filas...)
+}
+
+// LimpiarSentencia borra la última sentencia SQL registrada, para que una prueba pueda
+// comprobar que una petición no ejecutó ninguna consulta.
+func LimpiarSentencia() {
+	ultima = Sentencia{}
+}
+
+// filasDefinidas retorna las filas que entrega la consulta. Sin definición, la
+// consulta devuelve una fila con los valores por omisión.
+func filasDefinidas() []map[string]interface{} {
+	if filasSiguientes == nil {
+		return []map[string]interface{}{nil}
+	}
+	return filasSiguientes
 }
 
 // ConectarFalso registra el alias default del ORM con una base de datos que no se
@@ -247,6 +269,9 @@ func (falsoConexion) ExecContext(_ context.Context, q string, a []driver.NamedVa
 
 func (falsoConexion) QueryContext(_ context.Context, q string, a []driver.NamedValue) (driver.Rows, error) {
 	registrar(q, a)
+	if strings.HasPrefix(q, "SELECT COUNT(*)") {
+		return &falsoFilas{nombres: []string{"count"}, filas: []map[string]interface{}{{"count": int64(len(filasDefinidas()))}}}, nil
+	}
 	nombres := []string{"id"}
 	if i := strings.Index(q, " FROM "); strings.HasPrefix(q, "SELECT ") && i > 0 {
 		nombres = nil
@@ -255,7 +280,7 @@ func (falsoConexion) QueryContext(_ context.Context, q string, a []driver.NamedV
 			nombres = append(nombres, strings.Trim(partes[len(partes)-1], "\""))
 		}
 	}
-	return &falsoFilas{nombres: nombres, valores: filaSiguiente}, nil
+	return &falsoFilas{nombres: nombres, filas: filasDefinidas()}, nil
 }
 
 func registrar(q string, a []driver.NamedValue) {
@@ -271,24 +296,25 @@ type falsoResultado struct{}
 func (falsoResultado) LastInsertId() (int64, error) { return 1, nil }
 func (falsoResultado) RowsAffected() (int64, error) { return 1, nil }
 
-// falsoFilas entrega una única fila. Las columnas que no están en valores devuelven
-// 1; las que sí, el valor indicado (nil es NULL).
+// falsoFilas entrega las filas indicadas en orden. En cada fila, las columnas que no
+// están en el mapa devuelven 1; las que sí, el valor indicado (nil es NULL).
 type falsoFilas struct {
-	nombres   []string
-	valores   map[string]interface{}
-	entregada bool
+	nombres []string
+	filas   []map[string]interface{}
+	i       int
 }
 
 func (f *falsoFilas) Columns() []string { return f.nombres }
 func (*falsoFilas) Close() error        { return nil }
 func (f *falsoFilas) Next(d []driver.Value) error {
-	if f.entregada {
+	if f.i >= len(f.filas) {
 		return io.EOF
 	}
-	f.entregada = true
+	fila := f.filas[f.i]
+	f.i++
 	for i, n := range f.nombres {
 		d[i] = int64(1)
-		if v, ok := f.valores[n]; ok {
+		if v, ok := fila[n]; ok {
 			d[i] = v
 		}
 	}

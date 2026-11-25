@@ -139,6 +139,17 @@ func ProbarGetAll(t *testing.T, ruta, tabla string, id int) map[string]interface
 		t.Error("Se esperaba solo el campo Id con fields=Id y se obtuvo", l)
 	}
 
+	// Sin order, sortby ordena ascendente igual que order=asc
+	sinOrder, _ := ConsultarPagina(t, ruta, "sortby=Id&limit=1")
+	if len(sinOrder) != 1 {
+		t.Fatal("Se esperaba 1 registro con sortby=Id sin order y se obtuvo", len(sinOrder))
+	}
+	VerificarIgual(t, "sortby sin order ordena como asc", sinOrder[0]["Id"], asc[0]["Id"])
+
+	// Un campo de sortby inexistente o un order distinto de asc y desc son solicitudes inválidas
+	ProbarSortInvalido(t, ruta, "sortby=campo_falso&order=asc")
+	ProbarSortInvalido(t, ruta, "sortby=Id&order=ascending")
+
 	// Filtros inválidos: HTTP 400 con la estructura institucional
 	VerificarFiltroInvalido(t, ruta+"/?query=Id")
 	VerificarFiltroInvalido(t, fmt.Sprintf("%s/?query=Id:%d,Activo", ruta, id))
