@@ -8,8 +8,17 @@
 //
 // y genera:
 //
-//   - tests/helpers/registros_gen.go: registros de ejemplo válidos por modelo
-//   - tests/controllers/<controlador>_test.go: pruebas de cada controlador
+//   - tests/helpers/registros_gen.go: registros de ejemplo válidos por modelo. Los
+//     escalares puntero usan Ptr(valor).
+//   - tests/helpers/punteros_gen.go: función genérica Ptr[T].
+//   - tests/controllers/<controlador>_test.go: pruebas de cada controlador. Por cada
+//     escalar puntero (campo opcional no-FK) incluye dos pruebas de opcionalidad: el
+//     campo omitido del payload y el campo enviado como null. En ambos casos GetOne
+//     devuelve null y la columna queda NULL en la base de datos.
+//
+// Un escalar es opcional cuando su tipo en el modelo es puntero (*string, *int, etc.).
+// El migrador scripts/migrar_opcionales produce esos tipos. Este generador no lee
+// ignorar.conf.
 //
 // Uso (desde la raíz del proyecto):
 //
@@ -20,7 +29,6 @@ import (
 	"bytes"
 	"fmt"
 	"go/ast"
-	"go/format"
 	"go/parser"
 	"go/token"
 	"os"
@@ -34,14 +42,13 @@ import (
 )
 
 const (
-	archivoSQL      = "database/agora_cotizaciones.sql"
-	archivoRouter   = "routers/router.go"
-	dirModelos      = "models"
-	dirControllers  = "controllers"
-	dirPruebas      = "tests/controllers"
-	archivoRegistro = "tests/helpers/registros_gen.go"
-	uuidEjemplo     = "3f2b6c1e-8a4d-4f5e-9b7a-1c2d3e4f5a6b"
-	cabecera        = "// Código generado por scripts/generar_pruebas. NO EDITAR.\n// Para regenerar: go run ./scripts/generar_pruebas\n\n"
+	archivoSQL     = "database/agora_cotizaciones.sql"
+	archivoRouter  = "routers/router.go"
+	dirModelos     = "models"
+	dirControllers = "controllers"
+	dirPruebas     = "tests/integracion"
+	uuidEjemplo    = "3f2b6c1e-8a4d-4f5e-9b7a-1c2d3e4f5a6b"
+	cabecera       = "// Código generado por scripts/generar_pruebas. NO EDITAR.\n// Para regenerar: go run ./scripts/generar_pruebas\n\n"
 )
 
 // Campos administrados por el servicio: no se incluyen en los datos de ejemplo.
@@ -70,6 +77,8 @@ type Campo struct {
 	UUID      bool   // etiqueta orm type(uuid)
 	Ejemplo   string // literal Go del valor de ejemplo
 	Requerido bool   // llave foránea obligatoria
+	Puntero   bool   // escalar declarado como puntero (campo opcional no-FK)
+	Externo   string // literal de ejemplo para paquetes de prueba fuera de helpers; referencias a otros modelos usan Id 1
 }
 
 // Entidad describe un modelo, su tabla y su controlador.
@@ -85,6 +94,7 @@ type Entidad struct {
 	Relaciones    []Campo
 	RelacionesReq []Campo
 	RelacionesOpc []Campo
+	EscalaresOpc  []Campo // escalares puntero (opcionales no-FK) con Ejemplo ya envuelto en Ptr
 }
 
 func main() {
@@ -113,10 +123,11 @@ func main() {
 	}
 	sort.Slice(lista, func(i, j int) bool { return lista[i].Nombre < lista[j].Nombre })
 
-	salirSiError(escribir(archivoRegistro, plantillaRegistros, lista))
+	salirSiError(generarHelpers(lista))
 	for _, e := range lista {
 		salirSiError(escribir(filepath.Join(dirPruebas, e.Archivo+"_test.go"), plantillaPruebas, e))
 	}
+	salirSiError(generarCapas(lista))
 	fmt.Printf("Pruebas generadas para %d controladores en %s\n", len(lista), dirPruebas)
 }
 
@@ -233,6 +244,7 @@ func leerModelos(dir string) ([]*Entidad, error) {
 					if tieneOpcion(tag, "rel(fk)") {
 						c.Relacion = strings.TrimPrefix(c.Tipo, "*")
 					}
+					c.Puntero = strings.HasPrefix(c.Tipo, "*") && c.Relacion == ""
 					e.Campos = append(e.Campos, c)
 				}
 				entidades = append(entidades, e)
@@ -260,6 +272,8 @@ func completar(e *Entidad, t *tablaSQL, porTabla map[string]*Entidad) {
 		} else if c.Relacion != "" && c.Nulo == col.NotNull {
 			advertir("%s.%s: el modelo indica null=%v pero en el SQL NOT NULL=%v", e.Nombre, c.Nombre, c.Nulo, col.NotNull)
 		}
+		// base es el tipo sin el asterisco: los punteros escalares usan el mismo valor de ejemplo que su tipo base
+		base := strings.TrimPrefix(c.Tipo, "*")
 		switch {
 		case camposServicio[c.Nombre]:
 		case c.Relacion != "":
@@ -271,24 +285,37 @@ func completar(e *Entidad, t *tablaSQL, porTabla map[string]*Entidad) {
 			} else {
 				e.RelacionesOpc = append(e.RelacionesOpc, *c)
 			}
-		case c.Tipo == "string" && c.UUID:
+		case base == "string" && c.UUID:
 			c.Ejemplo = strconv.Quote(uuidEjemplo)
-		case c.Tipo == "string" && (col.Tipo == "json" || col.Tipo == "jsonb"):
+		case base == "string" && (col.Tipo == "json" || col.Tipo == "jsonb"):
 			c.Ejemplo = strconv.Quote(`{"prueba": true}`)
-		case c.Tipo == "string":
+		case base == "string":
 			c.Ejemplo = strconv.Quote(recortar("Prueba", col.Longitud))
-		case c.Tipo == "int":
+		case base == "int":
 			c.Ejemplo = "1"
-		case c.Tipo == "int16":
-			c.Ejemplo = "2026"
-		case c.Tipo == "time.Time":
+		case base == "int16":
+			c.Ejemplo = "int16(2026)"
+		case base == "time.Time":
 			c.Ejemplo = "time.Date(2026, 1, 15, 0, 0, 0, 0, time.UTC)"
-		case c.Tipo == "float64":
+		case base == "float64":
 			c.Ejemplo = "1.5"
-		case c.Tipo == "bool":
+		case base == "bool":
 			c.Ejemplo = "true"
 		default:
 			advertir("%s.%s: tipo %s sin valor de ejemplo", e.Nombre, c.Nombre, c.Tipo)
+		}
+		// Literal de ejemplo para paquetes fuera de helpers: las referencias a otros
+		// modelos usan Id 1 y no consultan la base de datos.
+		c.Externo = c.Ejemplo
+		if c.Relacion != "" {
+			c.Externo = fmt.Sprintf("&models.%s{Id: 1}", c.Relacion)
+		}
+		// Escalar puntero (campo opcional no-FK): el ejemplo se envuelve con Ptr y se
+		// prueba su opcionalidad. Los campos con Ejemplo vacío (servicio) no aplican.
+		if c.Puntero && c.Ejemplo != "" {
+			c.Externo = "helpers.Ptr(" + c.Ejemplo + ")"
+			c.Ejemplo = "Ptr(" + c.Ejemplo + ")"
+			e.EscalaresOpc = append(e.EscalaresOpc, *c)
 		}
 	}
 	// Campo para la prueba de PUT: primer texto editable o, si no hay, primer entero
@@ -356,15 +383,14 @@ func tipoTexto(e ast.Expr) string {
 }
 
 // escribir ejecuta la plantilla, agrega los imports usados y formatea el código.
-func escribir(ruta string, plantilla *template.Template, datos interface{}) error {
+// escribir ejecuta la plantilla, agrega los imports usados y los extras indicados, y
+// formatea el código. El paquete se toma del nombre de la carpeta de ruta.
+func escribir(ruta string, plantilla *template.Template, datos interface{}, extras ...string) error {
 	var cuerpo bytes.Buffer
 	if err := plantilla.Execute(&cuerpo, datos); err != nil {
 		return err
 	}
-	paquete := "controllers"
-	if strings.Contains(ruta, "helpers") {
-		paquete = "helpers"
-	}
+	paquete := filepath.Base(filepath.Dir(ruta))
 	imports := []string{}
 	for _, imp := range [][2]string{
 		{"fmt.", `"fmt"`},
@@ -378,6 +404,7 @@ func escribir(ruta string, plantilla *template.Template, datos interface{}) erro
 			imports = append(imports, imp[1])
 		}
 	}
+	imports = append(imports, extras...)
 	// Imports de la biblioteca estándar primero y luego los del proyecto
 	var estandar, proyecto []string
 	for _, imp := range imports {
@@ -387,16 +414,12 @@ func escribir(ruta string, plantilla *template.Template, datos interface{}) erro
 			estandar = append(estandar, imp)
 		}
 	}
-	codigo := cabecera + "package " + paquete + "\n\nimport (\n" + strings.Join(estandar, "\n") + "\n\n" +
-		strings.Join(proyecto, "\n") + "\n)\n" + cuerpo.String()
-	formateado, err := format.Source([]byte(codigo))
-	if err != nil {
-		return fmt.Errorf("%s: %v\n%s", ruta, err, codigo)
+	codigo := cabecera + "package " + paquete + "\n\n"
+	if len(estandar)+len(proyecto) > 0 {
+		codigo += "import (\n" + strings.Join(estandar, "\n") + "\n\n" + strings.Join(proyecto, "\n") + "\n)\n"
 	}
-	if err := os.MkdirAll(filepath.Dir(ruta), 0o755); err != nil {
-		return err
-	}
-	return os.WriteFile(ruta, formateado, 0o644)
+	codigo += cuerpo.String()
+	return escribirBytes(ruta, []byte(codigo))
 }
 
 func advertir(formato string, args ...interface{}) {
@@ -409,39 +432,6 @@ func salirSiError(err error) {
 		os.Exit(1)
 	}
 }
-
-var plantillaRegistros = template.Must(template.New("registros").Parse(`
-// Las funciones Nuevo<Modelo> retornan un registro de ejemplo válido sin
-// guardar (creando en la base de datos sus llaves foráneas). Las funciones
-// Crear<Modelo> lo guardan directamente con el modelo y programan su
-// eliminación al terminar la prueba.
-{{range .}}
-
-func Nuevo{{.Nombre}}(t *testing.T) *models.{{.Nombre}} {
-	t.Helper()
-	return &models.{{.Nombre}}{
-		{{- if .IdCompartido}}
-		Id: Crear{{.IdCompartido}}(t).Id, // relación 1:1: comparte el Id de {{.IdCompartido}}
-		{{- end}}
-		{{- range .Campos}}{{if .Ejemplo}}
-		{{.Nombre}}: {{.Ejemplo}},
-		{{- end}}{{end}}
-	}
-}
-
-func Crear{{.Nombre}}(t *testing.T) *models.{{.Nombre}} {
-	t.Helper()
-	v := Nuevo{{.Nombre}}(t)
-	v.Activo = true
-	v.FechaCreacion = time.Now()
-	v.FechaModificacion = time.Now()
-	if _, err := models.Add{{.Nombre}}(v); err != nil {
-		t.Fatal("No se pudo crear {{.Nombre}}:", err)
-	}
-	EliminarAlFinal(t, "{{.Tabla}}", v.Id)
-	return v
-}
-{{end}}`))
 
 var plantillaPruebas = template.Must(template.New("pruebas").Parse(`
 // Pruebas del controlador {{.Nombre}}Controller ({{.Ruta}}).
@@ -574,6 +564,38 @@ func Test{{$.Nombre}}{{.Nombre}}Opcional(t *testing.T) {
 	helpers.ProbarPut(t, ruta{{$.Nombre}}, tabla{{$.Nombre}}, id, "{{$.CampoPut.Nombre}}", {{$.ValorPut}}, "{{$.CampoPut.Columna}}")
 	helpers.ProbarDelete(t, ruta{{$.Nombre}}, tabla{{$.Nombre}}, id)
 	t.Log("Test{{$.Nombre}}{{.Nombre}}Opcional Finalizado Correctamente (OK)")
+}
+{{- end}}
+{{- range .EscalaresOpc}}
+
+// El campo {{.Nombre}} es opcional: si se omite del payload, o se envía null, el
+// servicio lo devuelve como null y la base de datos lo guarda como NULL.
+func Test{{$.Nombre}}{{.Nombre}}OpcionalOmitido(t *testing.T) {
+	helpers.RequerirBaseDatos(t)
+	cuerpo := cuerpoPost{{$.Nombre}}(t)
+	delete(cuerpo, "{{.Nombre}}")
+	id := helpers.CrearPorPost(t, ruta{{$.Nombre}}, tabla{{$.Nombre}}, cuerpo)
+	if dato := helpers.ProbarGetOne(t, ruta{{$.Nombre}}, id); dato["{{.Nombre}}"] != nil {
+		t.Error("Se esperaba {{.Nombre}} nulo al omitirlo y se obtuvo", dato["{{.Nombre}}"])
+	}
+	if valor := helpers.Fila(t, tabla{{$.Nombre}}, id)["{{.Columna}}"]; valor != nil {
+		t.Error("Se esperaba {{.Columna}} NULL en la base de datos al omitir {{.Nombre}} y se obtuvo", valor)
+	}
+	t.Log("Test{{$.Nombre}}{{.Nombre}}OpcionalOmitido Finalizado Correctamente (OK)")
+}
+
+func Test{{$.Nombre}}{{.Nombre}}OpcionalNulo(t *testing.T) {
+	helpers.RequerirBaseDatos(t)
+	cuerpo := cuerpoPost{{$.Nombre}}(t)
+	cuerpo["{{.Nombre}}"] = nil
+	id := helpers.CrearPorPost(t, ruta{{$.Nombre}}, tabla{{$.Nombre}}, cuerpo)
+	if dato := helpers.ProbarGetOne(t, ruta{{$.Nombre}}, id); dato["{{.Nombre}}"] != nil {
+		t.Error("Se esperaba {{.Nombre}} nulo al enviar null y se obtuvo", dato["{{.Nombre}}"])
+	}
+	if valor := helpers.Fila(t, tabla{{$.Nombre}}, id)["{{.Columna}}"]; valor != nil {
+		t.Error("Se esperaba {{.Columna}} NULL en la base de datos al enviar null y se obtuvo", valor)
+	}
+	t.Log("Test{{$.Nombre}}{{.Nombre}}OpcionalNulo Finalizado Correctamente (OK)")
 }
 {{- end}}
 `))
