@@ -12,10 +12,10 @@ import (
 
 type SolicitudCotizacionObservacionProveedor struct {
 	Id                                int                              `orm:"column(id);pk;auto"`
-	Texto                             string                           `orm:"column(texto);null"`
+	Texto                             *string                          `orm:"column(texto);null"`
 	RelSolicitudCotizacionProveedorId *RelSolicitudCotizacionProveedor `orm:"column(rel_solicitud_cotizacion_proveedor_id);rel(fk)"`
 	VistoSolicitante                  bool                             `orm:"column(visto_solicitante)"`
-	FechaVistoSolicitante             time.Time                        `orm:"column(fecha_visto_solicitante);type(timestamp without time zone);null"`
+	FechaVistoSolicitante             *time.Time                       `orm:"column(fecha_visto_solicitante);type(timestamp without time zone);null"`
 	Activo                            bool                             `orm:"column(activo)"`
 	FechaCreacion                     time.Time                        `orm:"column(fecha_creacion);type(timestamp without time zone)"`
 	UsuarioCreacionId                 int                              `orm:"column(usuario_creacion_id);null"`

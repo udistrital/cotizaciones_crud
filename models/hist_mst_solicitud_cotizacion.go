@@ -13,9 +13,9 @@ import (
 type HistMstSolicitudCotizacion struct {
 	Id                       int                     `orm:"column(id);pk;auto"`
 	MstSolicitudCotizacionId *MstSolicitudCotizacion `orm:"column(mst_solicitud_cotizacion_id);rel(fk)"`
-	NumeroSolicitud          string                  `orm:"column(numero_solicitud);null"`
-	Vigencia                 int16                   `orm:"column(vigencia);null"`
-	Consecutivo              int                     `orm:"column(consecutivo);null"`
+	NumeroSolicitud          *string                 `orm:"column(numero_solicitud);null"`
+	Vigencia                 *int16                  `orm:"column(vigencia);null"`
+	Consecutivo              *int                    `orm:"column(consecutivo);null"`
 	FechaProcesamiento       time.Time               `orm:"column(fecha_procesamiento);type(timestamp without time zone)"`
 	EstadoId                 int                     `orm:"column(estado_id)"`
 	UnidadEjecutoraId        int                     `orm:"column(unidad_ejecutora_id)"`
@@ -30,14 +30,14 @@ type HistMstSolicitudCotizacion struct {
 	DependenciaSolicitanteId int                     `orm:"column(dependencia_solicitante_id)"`
 	JustificacionSeleccion   string                  `orm:"column(justificacion_seleccion)"`
 	MedioPagoId              int                     `orm:"column(medio_pago_id)"`
-	PlanAccionId             int                     `orm:"column(plan_accion_id);null"`
+	PlanAccionId             *int                    `orm:"column(plan_accion_id);null"`
 	ResponsableTerceroId     int                     `orm:"column(responsable_tercero_id)"`
-	MetodoSeleccionId        int                     `orm:"column(metodo_seleccion_id);null"`
-	NumeroNecesidad          float64                 `orm:"column(numero_necesidad);null"`
+	MetodoSeleccionId        *int                    `orm:"column(metodo_seleccion_id);null"`
+	NumeroNecesidad          *float64                `orm:"column(numero_necesidad);null"`
 	DependenciaDestinoId     int                     `orm:"column(dependencia_destino_id)"`
-	TipoContratoId           int                     `orm:"column(tipo_contrato_id);null"`
-	CriterioSeleccion        string                  `orm:"column(criterio_seleccion);null"`
-	PlazoEjecucion           string                  `orm:"column(plazo_ejecucion);null"`
+	TipoContratoId           *int                    `orm:"column(tipo_contrato_id);null"`
+	CriterioSeleccion        *string                 `orm:"column(criterio_seleccion);null"`
+	PlazoEjecucion           *string                 `orm:"column(plazo_ejecucion);null"`
 	RegistroActual           bool                    `orm:"column(registro_actual)"`
 	Activo                   bool                    `orm:"column(activo)"`
 	FechaCreacion            time.Time               `orm:"column(fecha_creacion);type(timestamp without time zone)"`

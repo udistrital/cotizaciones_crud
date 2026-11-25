@@ -1,5 +1,8 @@
+// Código generado por scripts/generar_pruebas. NO EDITAR.
+// Para regenerar: go run ./scripts/generar_pruebas
+
 // Package helpers contiene utilidades compartidas por las pruebas unitarias
-// de los controladores.
+// y de integración.
 package helpers
 
 import (

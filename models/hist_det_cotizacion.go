@@ -15,7 +15,7 @@ type HistDetCotizacion struct {
 	DetCotizacionId          int            `orm:"column(det_cotizacion_id)"`
 	MstCotizacionId          *MstCotizacion `orm:"column(mst_cotizacion_id);rel(fk)"`
 	DetSolicitudCotizacionId int            `orm:"column(det_solicitud_cotizacion_id)"`
-	ValorUnitario            float64        `orm:"column(valor_unitario);null"`
+	ValorUnitario            *float64       `orm:"column(valor_unitario);null"`
 	Iva                      float64        `orm:"column(iva)"`
 	FichaTecnica             string         `orm:"column(ficha_tecnica)"`
 	RegistroActual           bool           `orm:"column(registro_actual)"`

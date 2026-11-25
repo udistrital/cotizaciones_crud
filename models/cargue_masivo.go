@@ -13,12 +13,12 @@ import (
 type CargueMasivo struct {
 	Id                           int                         `orm:"column(id);pk;auto"`
 	HistMstSolicitudCotizacionId *HistMstSolicitudCotizacion `orm:"column(hist_mst_solicitud_cotizacion_id);rel(fk)"`
-	EnlacePlantilla              string                      `orm:"column(enlace_plantilla);null"`
+	EnlacePlantilla              *string                     `orm:"column(enlace_plantilla);null"`
 	CargadoPorTerceroId          int                         `orm:"column(cargado_por_tercero_id)"`
-	TotalRegistros               int                         `orm:"column(total_registros);null"`
-	Aceptados                    int                         `orm:"column(aceptados);null"`
-	Rechazados                   int                         `orm:"column(rechazados);null"`
-	Respuesta                    string                      `orm:"column(respuesta);type(json);null"`
+	TotalRegistros               *int                        `orm:"column(total_registros);null"`
+	Aceptados                    *int                        `orm:"column(aceptados);null"`
+	Rechazados                   *int                        `orm:"column(rechazados);null"`
+	Respuesta                    *string                     `orm:"column(respuesta);type(json);null"`
 	Activo                       bool                        `orm:"column(activo)"`
 	FechaCreacion                time.Time                   `orm:"column(fecha_creacion);type(timestamp without time zone)"`
 	UsuarioCreacionId            int                         `orm:"column(usuario_creacion_id);null"`

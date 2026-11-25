@@ -14,10 +14,10 @@ type HistMstCotizacion struct {
 	Id                    int            `orm:"column(id);pk;auto"`
 	MstCotizacionId       *MstCotizacion `orm:"column(mst_cotizacion_id);rel(fk);null"`
 	FechaEnvio            time.Time      `orm:"column(fecha_envio);type(timestamp without time zone)"`
-	Descripcion           string         `orm:"column(descripcion);null"`
-	InformacionEntrega    string         `orm:"column(informacion_entrega);null"`
-	Descuentos            string         `orm:"column(descuentos);null"`
-	Observaciones         string         `orm:"column(observaciones);null"`
+	Descripcion           *string        `orm:"column(descripcion);null"`
+	InformacionEntrega    *string        `orm:"column(informacion_entrega);null"`
+	Descuentos            *string        `orm:"column(descuentos);null"`
+	Observaciones         *string        `orm:"column(observaciones);null"`
 	FechaVencimiento      time.Time      `orm:"column(fecha_vencimiento);type(timestamp without time zone)"`
 	SoporteCotizacion     string         `orm:"column(soporte_cotizacion);type(uuid)"`
 	RegistroActual        bool           `orm:"column(registro_actual)"`

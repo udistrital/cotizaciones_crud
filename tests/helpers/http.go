@@ -1,3 +1,6 @@
+// Código generado por scripts/generar_pruebas. NO EDITAR.
+// Para regenerar: go run ./scripts/generar_pruebas
+
 package helpers
 
 import (

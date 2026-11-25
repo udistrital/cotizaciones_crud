@@ -90,15 +90,16 @@ El script se ejecuta únicamente cuando se crea el volumen de PostgreSQL. Para r
 
 ### Ejecución Pruebas
 
-Pruebas unitarias de controladores (`tests/controllers`), según el [lineamiento de pruebas unitarias de la OAS](https://github.com/udistrital/lineamientos_oas/tree/master/pruebas_unitarias_api_beego). Se ejecutan contra la base de datos PostgreSQL configurada en las variables `COTIZACIONES_CRUD_PG*`; cada prueba crea sus propios registros y los elimina al terminar.
+- Purebas unitarias de modelos (`tests/unitarias/models`).
+- Pruebas unitarias de controladores (`tests/unitarias/controllers`).
+- Pruebas de integración (`tests/integracion`) con base de datos simulada, según el [lineamiento de pruebas unitarias de la OAS](https://github.com/udistrital/lineamientos_oas/tree/master/pruebas_unitarias_api_beego). Se ejecutan contra la base de datos PostgreSQL configurada en las variables `COTIZACIONES_CRUD_PG*`; cada prueba crea sus propios registros y los elimina al terminar.
 
 ```shell
 # Cargar las variables de conexión
-set -a; source environment.env; set +a
+set -a; source .env; set +a
 
 # Ejecutar las pruebas
-cd tests
-go test ./... -v
+go test ./tests/... -v
 
 # Limpiar la caché de pruebas
 go clean -testcache
