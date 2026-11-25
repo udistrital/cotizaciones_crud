@@ -44,6 +44,15 @@ func generarCapas(lista []*Entidad) error {
 			return err
 		}
 	}
+	// Pruebas de GetAll por capa para todas las entidades: sortby, order, limit, offset y total
+	for _, e := range lista {
+		if err := escribir(filepath.Join(dirUnitControladores, e.Archivo+"_orden_test.go"), plantillaOrdenControlador, e); err != nil {
+			return err
+		}
+		if err := escribir(filepath.Join(dirUnitModelos, e.Archivo+"_orden_test.go"), plantillaOrdenModelo, e); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -321,3 +330,92 @@ func Test{{$.Nombre}}{{$f.Nombre}}Update(t *testing.T) {
 	})
 }
 {{end}}`))
+
+// plantillaOrdenModelo emite, para cada entidad, las pruebas de la capa de modelo del
+// ordenamiento de GetAll: sortby sin order ascendente, order desc, campo inexistente,
+// order inválido, y limit/offset/total. Verifican la sentencia SQL capturada y el error
+// devuelto, sin base de datos.
+var plantillaOrdenModelo = template.Must(template.New("ordenModelo").Parse(`
+// Pruebas de la capa de modelo del ordenamiento de GetAll{{.Nombre}}, sin base de datos.
+
+func Test{{.Nombre}}GetAllOrdenSinOrderEsAsc(t *testing.T) {
+	helpers.LimpiarSentencia()
+	helpers.DefinirFilas(map[string]interface{}{"id": 1}, map[string]interface{}{"id": 2})
+	if _, _, err := models.GetAll{{.Nombre}}(nil, nil, []string{"Id"}, nil, 0, 10); err != nil {
+		t.Fatal("Se esperaba sortby sin order sin error y se obtuvo:", err)
+	}
+	helpers.VerificarSQL(t, "ORDER BY T0.\"id\" ASC")
+}
+
+func Test{{.Nombre}}GetAllOrdenDesc(t *testing.T) {
+	helpers.LimpiarSentencia()
+	if _, _, err := models.GetAll{{.Nombre}}(nil, nil, []string{"Id"}, []string{"desc"}, 0, 10); err != nil {
+		t.Fatal("Se esperaba order desc sin error y se obtuvo:", err)
+	}
+	helpers.VerificarSQL(t, "ORDER BY T0.\"id\" DESC")
+}
+
+func Test{{.Nombre}}GetAllOrdenCampoInexistente(t *testing.T) {
+	helpers.LimpiarSentencia()
+	err := helpers.LlamarSinPanico(t, func() error {
+		_, _, err := models.GetAll{{.Nombre}}(nil, nil, []string{"campo_falso"}, []string{"asc"}, 0, 10)
+		return err
+	})
+	helpers.VerificarErrorSortInvalido(t, err, "campo_falso")
+	helpers.VerificarSinConsulta(t)
+}
+
+func Test{{.Nombre}}GetAllOrdenOrderInvalido(t *testing.T) {
+	helpers.LimpiarSentencia()
+	_, _, err := models.GetAll{{.Nombre}}(nil, nil, []string{"Id"}, []string{"ascending"}, 0, 10)
+	helpers.VerificarErrorSortInvalido(t, err, "")
+	helpers.VerificarSinConsulta(t)
+}
+
+func Test{{.Nombre}}GetAllPaginacionYTotal(t *testing.T) {
+	helpers.LimpiarSentencia()
+	helpers.DefinirFilas(map[string]interface{}{"id": 1}, map[string]interface{}{"id": 2}, map[string]interface{}{"id": 3})
+	_, total, err := models.GetAll{{.Nombre}}(nil, nil, []string{"Id"}, []string{"asc"}, 1, 1)
+	if err != nil {
+		t.Fatal("Se esperaba limit y offset sin error y se obtuvo:", err)
+	}
+	helpers.VerificarIgual(t, "Total con limit=1 y offset=1", total, int64(3))
+	helpers.VerificarSQL(t, "LIMIT 1 OFFSET 1")
+}
+`))
+
+// plantillaOrdenControlador emite, para cada entidad, las pruebas de la capa de
+// controlador del GetAll: sortby sin order responde 200 ascendente, order desc, campo
+// inexistente y order inválido responden 400 sin consultar la base, y limit/offset/total.
+var plantillaOrdenControlador = template.Must(template.New("ordenControlador").Parse(`
+// Pruebas de la capa de controlador del GetAll de {{.Nombre}}Controller ({{.Ruta}}), sin base de datos.
+
+const rutaOrden{{.Nombre}} = "{{.Ruta}}"
+
+func Test{{.Nombre}}GetAllOrdenSortbySinOrderEsAsc(t *testing.T) {
+	helpers.DefinirFilas(map[string]interface{}{"id": 1}, map[string]interface{}{"id": 2}, map[string]interface{}{"id": 3})
+	lista, total := helpers.ConsultarOrdenado(t, rutaOrden{{.Nombre}}, "sortby=Id", "ORDER BY T0.\"id\" ASC")
+	helpers.VerificarIgual(t, "Registros devueltos", len(lista), 3)
+	helpers.VerificarIgual(t, "Total", total, 3)
+}
+
+func Test{{.Nombre}}GetAllOrdenOrderDesc(t *testing.T) {
+	helpers.DefinirFilas(map[string]interface{}{"id": 3}, map[string]interface{}{"id": 2}, map[string]interface{}{"id": 1})
+	helpers.ConsultarOrdenado(t, rutaOrden{{.Nombre}}, "sortby=Id&order=desc", "ORDER BY T0.\"id\" DESC")
+}
+
+func Test{{.Nombre}}GetAllOrdenCampoInexistente(t *testing.T) {
+	helpers.ProbarSortInvalido(t, rutaOrden{{.Nombre}}, "sortby=campo_falso&order=asc")
+	helpers.ProbarSortInvalido(t, rutaOrden{{.Nombre}}, "sortby=campo_falso")
+}
+
+func Test{{.Nombre}}GetAllOrdenOrderInvalido(t *testing.T) {
+	helpers.ProbarSortInvalido(t, rutaOrden{{.Nombre}}, "sortby=Id&order=ascending")
+}
+
+func Test{{.Nombre}}GetAllPaginacionYTotal(t *testing.T) {
+	helpers.DefinirFilas(map[string]interface{}{"id": 1}, map[string]interface{}{"id": 2}, map[string]interface{}{"id": 3})
+	_, total := helpers.ConsultarOrdenado(t, rutaOrden{{.Nombre}}, "sortby=Id&order=asc&limit=1&offset=1", "LIMIT 1 OFFSET 1")
+	helpers.VerificarIgual(t, "Total con limit=1 y offset=1", total, 3)
+}
+`))

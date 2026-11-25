@@ -7,6 +7,17 @@ Generador de pruebas del API. Lee el código fuente del proyecto como texto y pr
 go run ./scripts/generar_pruebas
 ```
 
+## Requisito previo
+
+Las pruebas de ordenamiento de `GetAll` usan `models.ErrSortInvalido`, que define `scripts/corregir_sort`. Ejecute ese script antes de generar las pruebas:
+
+```shell
+go run ./scripts/corregir_sort
+go run ./scripts/generar_pruebas
+```
+
+Si el modelo no tiene `ErrSortInvalido`, `tests/helpers` no compila.
+
 ## Qué lee
 
 | Fuente | Qué extrae |
@@ -39,9 +50,9 @@ El generador emite tres capas, cada una en su carpeta, más una capa de helpers 
 
 | Capa | Carpeta | Base de datos | Qué prueba |
 | -- | -- | -- | -- |
-| Integración | `tests/integracion` | PostgreSQL real (variables `COTIZACIONES_CRUD_PG*`) | El ciclo CRUD completo de cada controlador contra una base de datos real. |
-| Unitaria de controlador | `tests/unitarias/controladores` | Falsa (en memoria) | El POST/GET/PUT de cada controlador con campos opcionales, sin servidor de base de datos. |
-| Unitaria de modelo | `tests/unitarias/modelos` | Falsa (en memoria) | El SQL que `models.Add`/`Update`/`Get` envía y lee para cada campo opcional. |
+| Integración | `tests/integracion` | PostgreSQL real (variables `COTIZACIONES_CRUD_PG*`) | El ciclo CRUD completo de cada controlador contra una base de datos real, incluido el ordenamiento de `GetAll`. |
+| Unitaria de controlador | `tests/unitarias/controladores` | Falsa (en memoria) | El POST/GET/PUT con campos opcionales y el ordenamiento del `GetAll` de cada controlador, sin servidor de base de datos. |
+| Unitaria de modelo | `tests/unitarias/modelos` | Falsa (en memoria) | El SQL que `models.Add`/`Update`/`Get` envía y lee para cada campo opcional, y el SQL y los errores del ordenamiento de `GetAll<E>`. |
 | Helpers | `tests/helpers` | — | Utilidades compartidas por todas las capas. |
 
 Cada carpeta recibe un `main_gen_test.go` con su `TestMain`:
@@ -50,7 +61,7 @@ Cada carpeta recibe un `main_gen_test.go` con su `TestMain`:
 - **Unitaria de controlador:** llama a `ConectarFalso()` (base de datos falsa) y configura beego con las rutas.
 - **Unitaria de modelo:** solo `ConectarFalso()`; no necesita beego ni rutas.
 
-> Nota: la capa de integración solo se genera para entidades con controlador y ruta. Las capas unitarias (controlador y modelo) solo se generan para entidades que tienen al menos un campo escalar opcional.
+> Nota: la capa de integración se genera para entidades con controlador y ruta. Las pruebas de opcionales de las capas unitarias (controlador y modelo) se generan solo para entidades con al menos un campo escalar opcional. Las pruebas de ordenamiento (`*_orden_test.go`) se generan para **todas** las entidades con controlador y ruta.
 
 ## Helpers
 
@@ -104,7 +115,7 @@ Pruebas CRUD de alto nivel usadas por la capa de integración.
 | `ConsultarGetAll(t, ruta, params)` | Ejecuta GetAll y devuelve la lista. |
 | `ConsultarPagina(t, ruta, params)` | Ejecuta GetAll y devuelve lista y `Total`. |
 | `ContieneId(lista, id)` | Indica si la lista contiene un objeto con ese Id. |
-| `ProbarGetAll(t, ruta, tabla, id)` | Prueba el GetAll completo: filtro por Id, lista vacía, `Total`, `limit`/`offset`, `order` asc/desc, `fields` y 400 ante filtros inválidos. |
+| `ProbarGetAll(t, ruta, tabla, id)` | Prueba el GetAll completo: filtro por Id, lista vacía, `Total`, `limit`/`offset`, `order` asc/desc, `fields`, `sortby` sin `order` (igual que asc), y 400 ante `sortby` inexistente, `order` inválido o filtros mal formados. |
 | `VerificarFKExpandida(t, dato, campo, relacionado)` | Comprueba que la llave foránea venga expandida con los datos del relacionado (anidados solo por Id). |
 | `ProbarPut(t, ruta, tabla, id, campo, valor, columna)` | Prueba el PUT: actualiza el campo, conserva `fecha_creacion`/`usuario_creacion_id`, actualiza `fecha_modificacion`, y 400/404 ante Id distinto, JSON inválido o Id inexistente. |
 | `ProbarDelete(t, ruta, tabla, id)` | Prueba el borrado lógico: 200, `activo=false`, `fecha_modificacion` actualizada, demás columnas intactas, registro aún consultable y 404 ante Id inexistente. |
@@ -118,7 +129,9 @@ Controlador (driver) falso de `database/sql`: registra cada sentencia SQL con su
 | `Sentencia` | Una sentencia SQL recibida, con su texto y argumentos. |
 | `CampoOpcional` | Describe un campo opcional: nombre en el modelo/JSON, nombre de columna y valor esperado (`nil` = NULL). |
 | `ConectarFalso()` | Registra el alias `default` del ORM con el driver falso. |
-| `DefinirFila(valores)` | Fija la fila que devolverá la siguiente consulta (por columna; `nil` es NULL). |
+| `DefinirFila(valores)` | Fija la única fila que devolverá la siguiente consulta (por columna; `nil` es NULL). |
+| `DefinirFilas(filas...)` | Fija varias filas, en orden. Sin argumentos la consulta no devuelve filas. El `SELECT COUNT(*)` devuelve la cantidad de filas definidas, como `Total`. El falso no aplica `ORDER BY`, `LIMIT` ni `OFFSET`: el orden se verifica sobre el SQL capturado. |
+| `LimpiarSentencia()` | Borra la última sentencia registrada, para comprobar que una petición no consultó la base. |
 | `UltimaSentencia()` | Última sentencia SQL recibida. |
 | `ValorColumna(s, columna)` | Valor que un INSERT o UPDATE envía para esa columna. |
 | `Desreferenciar(p)` | Valor apuntado por `p`, o `nil` si es `nil`. |
@@ -127,6 +140,19 @@ Controlador (driver) falso de `database/sql`: registra cada sentencia SQL con su
 | `ProbarPostOpcionales(t, ruta, cuerpo, campos)` | POST por el falso: verifica 201, el valor que llega a la "base" y el que devuelve la respuesta. |
 | `ProbarGetOpcionales(t, ruta, campos)` | Fija una fila con esos valores, hace GET del registro 1 y verifica la respuesta. |
 | `ProbarPutOpcionales(t, ruta, cuerpo, campos)` | PUT por el falso al registro 1: verifica 200, el valor del UPDATE y el de la respuesta. |
+
+### `orden_gen.go` (generado)
+
+Verificadores del ordenamiento de `GetAll`. Los usan las pruebas `*_orden_test.go` de las capas unitarias de controlador y de modelo.
+
+| Helper | Qué hace |
+| -- | -- |
+| `VerificarSQL(t, fragmento)` | Comprueba que la última sentencia SQL contenga el fragmento (por ejemplo `ORDER BY T0."id" ASC` o `LIMIT 1 OFFSET 1`). |
+| `VerificarSinConsulta(t)` | Comprueba que la petición no ejecutó ninguna sentencia SQL: la validación debe rechazarla antes de consultar la base. En la capa de integración no tiene efecto, porque el falso no está registrado. |
+| `ConsultarOrdenado(t, ruta, params, fragmento)` | Ejecuta GetAll, verifica 200 y que el SQL contenga el fragmento. Devuelve la lista y el `Total`. |
+| `ProbarSortInvalido(t, ruta, params)` | Verifica 400 con la estructura institucional, `Data` nulo y que no se consultó la base. |
+| `LlamarSinPanico(t, f)` | Ejecuta `f` y marca la prueba como fallida si provoca un pánico. Devuelve el error de `f`. |
+| `VerificarErrorSortInvalido(t, err, campo)` | Comprueba que `err` envuelva `models.ErrSortInvalido` y, si `campo` no está vacío, que el mensaje lo nombre. |
 
 ### `punteros_gen.go` (generado)
 
@@ -153,7 +179,7 @@ Un archivo por controlador. Prueban el ciclo CRUD completo contra PostgreSQL. To
 | -- | -- | -- | -- |
 | `Test<E>Post` | Creación. Con Id autoincremental: dos POST dan Ids crecientes y se ignora el Id enviado. En relación 1:1: el Id es obligatorio y debe existir. Las llaves foráneas obligatorias no pueden ir nulas. El servicio asigna `Activo=true` y las fechas. JSON inválido → 400. | Cuerpo válido con `Activo=false`, fechas de cliente e Id inexistente. | 201 y registro con campos administrados correctos; 400 ante cuerpos inválidos o FK obligatoria nula. |
 | `Test<E>GetOne` | Consulta por Id, con llaves foráneas expandidas. Id inexistente/no numérico → 404. | Id de un registro creado. | 200 con el objeto y sus FK expandidas; 404 para Id inexistente. |
-| `Test<E>GetAll` | Filtro por Id y por cada FK, lista vacía sin resultados, `Total`, paginación (`limit`/`offset`), orden asc/desc, `fields` y 400 ante filtros inválidos. | Registro creado y parámetros `query`/`sortby`/`order`/`limit`/`offset`/`fields`. | Listas y `Total` coherentes con cada filtro; FK expandidas; 400 ante filtros mal formados. |
+| `Test<E>GetAll` | Filtro por Id y por cada FK, lista vacía sin resultados, `Total`, paginación (`limit`/`offset`), orden asc/desc, `sortby` sin `order` (igual que asc), `fields` y 400 ante `sortby` inexistente, `order` inválido o filtros mal formados. | Registro creado y parámetros `query`/`sortby`/`order`/`limit`/`offset`/`fields`. | Listas y `Total` coherentes con cada filtro; FK expandidas; 400 ante parámetros mal formados. |
 | `Test<E>Put` | Actualiza un campo (primer texto editable; si no hay, primer entero; último recurso `UsuarioModificacionId`). Conserva creación, actualiza modificación, 400/404 ante Id distinto o inexistente. | Registro creado + nuevo valor del campo. | 200 y columna actualizada; `fecha_creacion`/`usuario_creacion_id` intactos; 400/404 en los casos de error. |
 | `Test<E>Delete` | Borrado lógico. | Id de un registro creado. | 200, `activo=false`, `fecha_modificacion` actualizada, resto intacto, aún consultable; 404 ante Id inexistente. |
 | `Test<E><FK>Opcional` | Por cada FK **opcional**: el registro sin esa FK se puede crear, consultar (GetOne/GetAll), actualizar y borrar. | Cuerpo con la FK en `null`. | El registro se crea y la FK sale `null`; CRUD completo funciona. |
@@ -187,12 +213,44 @@ Un archivo por entidad **con campos opcionales**. Verifican directamente el SQL 
 
 En las tres, el campo bajo prueba se omite, se pone en `nil` o se asigna su valor, manteniendo el resto de los campos con sus ejemplos. La verificación usa `VerificarColumnaEnviada` (para INSERT/UPDATE) o `VerificarValorLeido` (para GET).
 
+## Pruebas de ordenamiento (`GetAll`)
+
+Para **todas** las entidades con controlador y ruta se generan dos archivos más: uno por capa unitaria, con el nombre `<archivo>_orden_test.go`. Verifican el comportamiento de `sortby`, `order`, `limit`, `offset` y `Total` en cada capa, para saber en cuál está un fallo.
+
+### Unitaria de modelo — `tests/unitarias/modelos/<entidad>_orden_test.go`
+
+Llaman a `models.GetAll<E>` directamente y verifican la sentencia SQL capturada y el error devuelto.
+
+| Prueba | Entrada | Salida esperada |
+| -- | -- | -- |
+| `Test<E>GetAllOrdenSinOrderEsAsc` | `sortby=Id`, sin `order`. | Sin error; SQL con `ORDER BY T0."id" ASC`. |
+| `Test<E>GetAllOrdenDesc` | `sortby=Id`, `order=desc`. | Sin error; SQL con `ORDER BY T0."id" DESC`. |
+| `Test<E>GetAllOrdenCampoInexistente` | `sortby=campo_falso`. | Error que envuelve `ErrSortInvalido` y nombra el campo; sin pánico; sin consulta. |
+| `Test<E>GetAllOrdenOrderInvalido` | `order=ascending`. | Error que envuelve `ErrSortInvalido`; sin consulta. |
+| `Test<E>GetAllPaginacionYTotal` | `limit=1`, `offset=1`, 3 filas definidas. | `Total` igual a 3 (no a la página); SQL con `LIMIT 1 OFFSET 1`. |
+
+### Unitaria de controlador — `tests/unitarias/controladores/<entidad>_orden_test.go`
+
+Envían la petición HTTP al router con la base falsa.
+
+| Prueba | Entrada | Salida esperada |
+| -- | -- | -- |
+| `Test<E>GetAllOrdenSortbySinOrderEsAsc` | `sortby=Id`, 3 filas. | 200; SQL con `ORDER BY T0."id" ASC`; 3 registros y `Total` 3. |
+| `Test<E>GetAllOrdenOrderDesc` | `sortby=Id&order=desc`. | 200; SQL con `ORDER BY T0."id" DESC`. |
+| `Test<E>GetAllOrdenCampoInexistente` | `sortby=campo_falso` (con y sin `order`). | 400 institucional, `Data` nulo, sin consulta. |
+| `Test<E>GetAllOrdenOrderInvalido` | `sortby=Id&order=ascending`. | 400 institucional, `Data` nulo, sin consulta. |
+| `Test<E>GetAllPaginacionYTotal` | `sortby=Id&order=asc&limit=1&offset=1`. | 200; SQL con `LIMIT 1 OFFSET 1`; `Total` 3. |
+
+### Integración
+
+El helper `ProbarGetAll`, usado por `Test<E>GetAll`, también verifica `sortby` sin `order` contra el orden ascendente real de la base, y los casos 400 de campo inexistente y `order` inválido.
+
 ## Resumen del flujo
 
 1. `leerSQL`, `leerRutas`, `leerControllers`, `leerModelos` cargan las cuatro fuentes.
 2. `completar` cruza cada modelo con su tabla SQL, fija los valores de ejemplo, el campo de PUT y clasifica relaciones (obligatorias/opcionales) y escalares opcionales.
-3. `generarHelpers` escribe `tests/helpers` (copiados + generados).
+3. `generarHelpers` escribe `tests/helpers` (copiados + generados, incluido `orden_gen.go`).
 4. Por cada entidad se escribe su prueba de integración en `tests/integracion`.
-5. `generarCapas` escribe los `TestMain` de cada carpeta y, para las entidades con campos opcionales, las pruebas unitarias de controlador y de modelo.
+5. `generarCapas` escribe los `TestMain` de cada carpeta; las pruebas unitarias de controlador y de modelo para las entidades con campos opcionales; y las pruebas `*_orden_test.go` para todas las entidades.
 
 Todos los archivos generados llevan la cabecera `NO EDITAR` y se regeneran con `go run ./scripts/generar_pruebas`.

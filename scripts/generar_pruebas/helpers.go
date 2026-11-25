@@ -21,6 +21,7 @@ const (
 	archivoBaseDatos      = "tests/helpers/basedatos.go"
 	archivoHTTP           = "tests/helpers/http.go"
 	archivoVerificaciones = "tests/helpers/verificaciones.go"
+	archivoOrden          = "tests/helpers/orden_gen.go"
 )
 
 // generarHelpers escribe todos los archivos de tests/helpers a partir de sus fuentes.
@@ -32,6 +33,9 @@ func generarHelpers(lista []*Entidad) error {
 		return err
 	}
 	if err := escribirCrudo(archivoVerificaciones, fuenteVerificaciones); err != nil {
+		return err
+	}
+	if err := escribirCrudo(archivoOrden, fuenteOrden); err != nil {
 		return err
 	}
 	if err := escribir(archivoPunteros, plantillaPunteros, nil); err != nil {
@@ -484,6 +488,17 @@ func ProbarGetAll(t *testing.T, ruta, tabla string, id int) map[string]interface
 		t.Error("Se esperaba solo el campo Id con fields=Id y se obtuvo", l)
 	}
 
+	// Sin order, sortby ordena ascendente igual que order=asc
+	sinOrder, _ := ConsultarPagina(t, ruta, "sortby=Id&limit=1")
+	if len(sinOrder) != 1 {
+		t.Fatal("Se esperaba 1 registro con sortby=Id sin order y se obtuvo", len(sinOrder))
+	}
+	VerificarIgual(t, "sortby sin order ordena como asc", sinOrder[0]["Id"], asc[0]["Id"])
+
+	// Un campo de sortby inexistente o un order distinto de asc y desc son solicitudes inválidas
+	ProbarSortInvalido(t, ruta, "sortby=campo_falso&order=asc")
+	ProbarSortInvalido(t, ruta, "sortby=Id&order=ascending")
+
 	// Filtros inválidos: HTTP 400 con la estructura institucional
 	VerificarFiltroInvalido(t, ruta+"/?query=Id")
 	VerificarFiltroInvalido(t, fmt.Sprintf("%s/?query=Id:%d,Activo", ruta, id))
@@ -578,6 +593,90 @@ func ProbarDelete(t *testing.T, ruta, tabla string, id int) {
 }
 `
 
+const fuenteOrden = `package helpers
+
+import (
+	"errors"
+	"net/http"
+	"strings"
+	"testing"
+
+	"github.com/udistrital/cotizaciones_crud/models"
+)
+
+// VerificarSQL comprueba que la última sentencia SQL que recibió el controlador falso
+// contenga el fragmento indicado, por ejemplo el ORDER BY o el LIMIT esperados.
+func VerificarSQL(t *testing.T, fragmento string) {
+	t.Helper()
+	if sql := UltimaSentencia().SQL; !strings.Contains(sql, fragmento) {
+		t.Errorf("Se esperaba %q en la sentencia SQL y se obtuvo: %s", fragmento, sql)
+	}
+}
+
+// VerificarSinConsulta comprueba que la petición no ejecutó ninguna sentencia SQL.
+// Una validación de parámetros debe rechazar la petición antes de consultar la base.
+func VerificarSinConsulta(t *testing.T) {
+	t.Helper()
+	if sql := UltimaSentencia().SQL; sql != "" {
+		t.Errorf("Se esperaba que la validación rechazara la petición sin consultar la base y se ejecutó: %s", sql)
+	}
+}
+
+// ConsultarOrdenado ejecuta GetAll con los parámetros indicados, verifica la respuesta
+// 200 y que la sentencia SQL contenga el fragmento. Retorna la lista y el Total.
+func ConsultarOrdenado(t *testing.T, ruta, parametros, fragmento string) ([]map[string]interface{}, int) {
+	t.Helper()
+	LimpiarSentencia()
+	lista, total := ConsultarPagina(t, ruta, parametros)
+	VerificarSQL(t, fragmento)
+	return lista, total
+}
+
+// ProbarSortInvalido verifica que GetAll rechace la petición con 400 institucional
+// (Data nulo) y sin consultar la base de datos. Sirve para campos de sortby
+// inexistentes y para order distinto de asc o desc.
+func ProbarSortInvalido(t *testing.T, ruta, parametros string) {
+	t.Helper()
+	LimpiarSentencia()
+	r := VerificarError(t, Peticion(http.MethodGet, ruta+"/?"+parametros, ""), http.StatusBadRequest)
+	if r.Data != nil {
+		t.Error("Se esperaba Data nulo y se obtuvo", r.Data)
+	}
+	VerificarSinConsulta(t)
+}
+
+// LlamarSinPanico ejecuta f y reporta la prueba como fallida si provoca un pánico. Retorna
+// el error que devuelve f.
+func LlamarSinPanico(t *testing.T, f func() error) error {
+	t.Helper()
+	var err error
+	func() {
+		defer func() {
+			if r := recover(); r != nil {
+				t.Fatalf("Se esperaba un error y la función provocó un pánico: %v", r)
+			}
+		}()
+		err = f()
+	}()
+	return err
+}
+
+// VerificarErrorSortInvalido comprueba que err envuelva models.ErrSortInvalido y, si campo
+// no está vacío, que el mensaje lo nombre.
+func VerificarErrorSortInvalido(t *testing.T, err error, campo string) {
+	t.Helper()
+	if err == nil {
+		t.Fatal("Se esperaba un error de ordenamiento y se obtuvo nil")
+	}
+	if !errors.Is(err, models.ErrSortInvalido) {
+		t.Errorf("Se esperaba un error que envuelva ErrSortInvalido y se obtuvo: %v", err)
+	}
+	if campo != "" && !strings.Contains(err.Error(), campo) {
+		t.Errorf("Se esperaba que el error nombre %q y se obtuvo: %v", campo, err)
+	}
+}
+`
+
 // plantillaFalso emite el controlador falso de base de datos. Registra cada sentencia
 // SQL con sus argumentos y responde con una fila cuyo id es 1. Permite pruebas sin
 // servidor de base de datos.
@@ -600,14 +699,36 @@ const nombreFalso = "cotizaciones_falso"
 
 var (
 	ultima          Sentencia
-	filaSiguiente   map[string]interface{}
+	filasSiguientes []map[string]interface{}
 	falsoRegistrado bool
 )
 
-// DefinirFila fija los valores de la siguiente fila que devuelve el controlador falso,
-// por nombre de columna. nil es NULL. Las columnas no indicadas devuelven 1.
+// DefinirFila fija la única fila que devuelve el controlador falso, por nombre de
+// columna. nil es NULL. Las columnas no indicadas devuelven 1.
 func DefinirFila(valores map[string]interface{}) {
-	filaSiguiente = valores
+	filasSiguientes = []map[string]interface{}{valores}
+}
+
+// DefinirFilas fija las filas que devuelve el controlador falso, en el orden indicado.
+// Sin argumentos, la consulta no devuelve filas. El COUNT(*) devuelve la cantidad de
+// filas definidas, como lo haría la base de datos sin LIMIT ni OFFSET.
+func DefinirFilas(filas ...map[string]interface{}) {
+	filasSiguientes = append([]map[string]interface{}{}, filas...)
+}
+
+// LimpiarSentencia borra la última sentencia SQL registrada, para que una prueba pueda
+// comprobar que una petición no ejecutó ninguna consulta.
+func LimpiarSentencia() {
+	ultima = Sentencia{}
+}
+
+// filasDefinidas retorna las filas que entrega la consulta. Sin definición, la
+// consulta devuelve una fila con los valores por omisión.
+func filasDefinidas() []map[string]interface{} {
+	if filasSiguientes == nil {
+		return []map[string]interface{}{nil}
+	}
+	return filasSiguientes
 }
 
 // ConectarFalso registra el alias default del ORM con una base de datos que no se
@@ -809,6 +930,9 @@ func (falsoConexion) ExecContext(_ context.Context, q string, a []driver.NamedVa
 
 func (falsoConexion) QueryContext(_ context.Context, q string, a []driver.NamedValue) (driver.Rows, error) {
 	registrar(q, a)
+	if strings.HasPrefix(q, "SELECT COUNT(*)") {
+		return &falsoFilas{nombres: []string{"count"}, filas: []map[string]interface{}{ {"count": int64(len(filasDefinidas()))} }}, nil
+	}
 	nombres := []string{"id"}
 	if i := strings.Index(q, " FROM "); strings.HasPrefix(q, "SELECT ") && i > 0 {
 		nombres = nil
@@ -817,7 +941,7 @@ func (falsoConexion) QueryContext(_ context.Context, q string, a []driver.NamedV
 			nombres = append(nombres, strings.Trim(partes[len(partes)-1], "\""))
 		}
 	}
-	return &falsoFilas{nombres: nombres, valores: filaSiguiente}, nil
+	return &falsoFilas{nombres: nombres, filas: filasDefinidas()}, nil
 }
 
 func registrar(q string, a []driver.NamedValue) {
@@ -833,24 +957,25 @@ type falsoResultado struct{}
 func (falsoResultado) LastInsertId() (int64, error) { return 1, nil }
 func (falsoResultado) RowsAffected() (int64, error) { return 1, nil }
 
-// falsoFilas entrega una única fila. Las columnas que no están en valores devuelven
-// 1; las que sí, el valor indicado (nil es NULL).
+// falsoFilas entrega las filas indicadas en orden. En cada fila, las columnas que no
+// están en el mapa devuelven 1; las que sí, el valor indicado (nil es NULL).
 type falsoFilas struct {
-	nombres   []string
-	valores   map[string]interface{}
-	entregada bool
+	nombres []string
+	filas   []map[string]interface{}
+	i       int
 }
 
 func (f *falsoFilas) Columns() []string { return f.nombres }
 func (*falsoFilas) Close() error        { return nil }
 func (f *falsoFilas) Next(d []driver.Value) error {
-	if f.entregada {
+	if f.i >= len(f.filas) {
 		return io.EOF
 	}
-	f.entregada = true
+	fila := f.filas[f.i]
+	f.i++
 	for i, n := range f.nombres {
 		d[i] = int64(1)
-		if v, ok := f.valores[n]; ok {
+		if v, ok := fila[n]; ok {
 			d[i] = v
 		}
 	}
