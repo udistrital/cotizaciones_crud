@@ -79,6 +79,7 @@ func (c *HistMstSolicitudCotizacionController) Post() {
 			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "201", "Message": "Registration successful", "Data": v}
 		} else {
 			beeLogger.Log.Error(err.Error())
+			abortarSiBaseNoDisponible(&c.Controller, "POST", err)
 			c.Data["message"] = "Error service POST: The request contains an incorrect data type or an invalid parameter"
 			c.Abort("400")
 		}
@@ -109,6 +110,7 @@ func (c *HistMstSolicitudCotizacionController) GetOne() {
 	v, err := models.GetHistMstSolicitudCotizacionById(id)
 	if err != nil {
 		beeLogger.Log.Error(err.Error())
+		abortarSiBaseNoDisponible(&c.Controller, "GetOne", err)
 		c.Data["message"] = "Error service GetOne: The request contains an incorrect parameter or no record exists"
 		c.Abort("404")
 	} else {
@@ -175,6 +177,7 @@ func (c *HistMstSolicitudCotizacionController) GetAll() {
 	l, total, err := models.GetAllHistMstSolicitudCotizacion(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		beeLogger.Log.Error(err.Error())
+		abortarSiBaseNoDisponible(&c.Controller, "GetAll", err)
 		if errors.Is(err, models.ErrSortInvalido) {
 			c.Data["message"] = "Error service GetAll: The request contains an invalid sortby or order parameter"
 			c.Abort("400")
@@ -226,6 +229,7 @@ func (c *HistMstSolicitudCotizacionController) Put() {
 		actual, errActual := models.GetHistMstSolicitudCotizacionById(id)
 		if errActual != nil {
 			beeLogger.Log.Error(errActual.Error())
+			abortarSiBaseNoDisponible(&c.Controller, "Put", errActual)
 			c.Data["message"] = "Error service Put: The request contains an incorrect parameter or no record exists"
 			c.Abort("404")
 		}
@@ -235,6 +239,7 @@ func (c *HistMstSolicitudCotizacionController) Put() {
 			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Update successful", "Data": v}
 		} else {
 			beeLogger.Log.Error(err.Error())
+			abortarSiBaseNoDisponible(&c.Controller, "Put", err)
 			c.Data["message"] = "Error service Put: The request contains an incorrect data type or an invalid parameter"
 			c.Abort("400")
 		}
@@ -265,6 +270,7 @@ func (c *HistMstSolicitudCotizacionController) Delete() {
 	v, err := models.GetHistMstSolicitudCotizacionById(id)
 	if err != nil {
 		beeLogger.Log.Error(err.Error())
+		abortarSiBaseNoDisponible(&c.Controller, "Delete", err)
 		c.Data["message"] = "Error service Delete: The request contains an incorrect parameter or no record exists"
 		c.Abort("404")
 	}
@@ -275,7 +281,8 @@ func (c *HistMstSolicitudCotizacionController) Delete() {
 		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Update successful", "Data": v}
 	} else {
 		beeLogger.Log.Error(err.Error())
-		c.Data["message"] = "Error service Put: The request contains an incorrect data type or an invalid parameter"
+		abortarSiBaseNoDisponible(&c.Controller, "Delete", err)
+		c.Data["message"] = "Error service Delete: The request contains an incorrect data type or an invalid parameter"
 		c.Abort("400")
 	}
 	c.ServeJSON()
