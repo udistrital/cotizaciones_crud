@@ -72,7 +72,13 @@ func (c *FormaPagoController) Post() {
 // @router /:id [get]
 func (c *FormaPagoController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
+	// El Id de la ruta debe ser numérico: no se convierte en 0 ni se consulta la base
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		beeLogger.Log.Error(err.Error())
+		c.Data["message"] = "Error service GetOne: The request contains an incorrect parameter or no record exists"
+		c.Abort("404")
+	}
 	v, err := models.GetFormaPagoById(id)
 	if err != nil {
 		beeLogger.Log.Error(err.Error())
@@ -168,7 +174,13 @@ func (c *FormaPagoController) GetAll() {
 // @router /:id [put]
 func (c *FormaPagoController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
+	// El Id de la ruta debe ser numérico: no se convierte en 0 ni se consulta la base
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		beeLogger.Log.Error(err.Error())
+		c.Data["message"] = "Error service Put: The request contains an incorrect parameter or no record exists"
+		c.Abort("404")
+	}
 	v := models.FormaPago{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if v.Id != id {
@@ -211,7 +223,13 @@ func (c *FormaPagoController) Put() {
 // @router /:id [delete]
 func (c *FormaPagoController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
+	// El Id de la ruta debe ser numérico: no se convierte en 0 ni se consulta la base
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		beeLogger.Log.Error(err.Error())
+		c.Data["message"] = "Error service Delete: The request contains an incorrect parameter or no record exists"
+		c.Abort("404")
+	}
 	v, err := models.GetFormaPagoById(id)
 	if err != nil {
 		beeLogger.Log.Error(err.Error())

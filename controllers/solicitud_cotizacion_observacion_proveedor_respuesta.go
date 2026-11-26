@@ -72,7 +72,13 @@ func (c *SolicitudCotizacionObservacionProveedorRespuestaController) Post() {
 // @router /:id [get]
 func (c *SolicitudCotizacionObservacionProveedorRespuestaController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
+	// El Id de la ruta debe ser numérico: no se convierte en 0 ni se consulta la base
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		beeLogger.Log.Error(err.Error())
+		c.Data["message"] = "Error service GetOne: The request contains an incorrect parameter or no record exists"
+		c.Abort("404")
+	}
 	v, err := models.GetSolicitudCotizacionObservacionProveedorRespuestaById(id)
 	if err != nil {
 		beeLogger.Log.Error(err.Error())
@@ -168,7 +174,13 @@ func (c *SolicitudCotizacionObservacionProveedorRespuestaController) GetAll() {
 // @router /:id [put]
 func (c *SolicitudCotizacionObservacionProveedorRespuestaController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
+	// El Id de la ruta debe ser numérico: no se convierte en 0 ni se consulta la base
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		beeLogger.Log.Error(err.Error())
+		c.Data["message"] = "Error service Put: The request contains an incorrect parameter or no record exists"
+		c.Abort("404")
+	}
 	v := models.SolicitudCotizacionObservacionProveedorRespuesta{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if v.Id != id {
@@ -211,7 +223,13 @@ func (c *SolicitudCotizacionObservacionProveedorRespuestaController) Put() {
 // @router /:id [delete]
 func (c *SolicitudCotizacionObservacionProveedorRespuestaController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
+	// El Id de la ruta debe ser numérico: no se convierte en 0 ni se consulta la base
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		beeLogger.Log.Error(err.Error())
+		c.Data["message"] = "Error service Delete: The request contains an incorrect parameter or no record exists"
+		c.Abort("404")
+	}
 	v, err := models.GetSolicitudCotizacionObservacionProveedorRespuestaById(id)
 	if err != nil {
 		beeLogger.Log.Error(err.Error())
