@@ -52,6 +52,12 @@ func generarCapas(lista []*Entidad) error {
 		if err := escribir(filepath.Join(dirUnitModelos, e.Archivo+"_orden_test.go"), plantillaOrdenModelo, e); err != nil {
 			return err
 		}
+		// Formato de las columnas date en el JSON: solo el día
+		if len(e.Fechas) > 0 {
+			if err := escribir(filepath.Join(dirUnitControladores, e.Archivo+"_fechas_test.go"), plantillaFechasControlador, e); err != nil {
+				return err
+			}
+		}
 		// Validación del Id de ruta: GetOne, PUT y DELETE rechazan un Id no numérico
 		if err := escribir(filepath.Join(dirUnitControladores, e.Archivo+"_validacion_test.go"), plantillaValidacionControlador, e); err != nil {
 			return err
@@ -513,6 +519,58 @@ func Test{{.Nombre}}PostObligatoriosConCeroOFalse(t *testing.T) {
 	{{- end}}
 	{{- end}}
 	helpers.VerificarExito(t, helpers.Peticion(http.MethodPost, rutaValidacion{{.Nombre}}+"/", helpers.JSON(t, cuerpo)), http.StatusCreated)
+}
+{{- end}}
+`))
+
+// plantillaFechasControlador emite, para cada entidad con columnas date (models.Fecha), las
+// pruebas de la capa de controlador de su formato: al leer salen solo con el día guardado
+// y al escribir se guarda el día enviado (sin correrse por la zona horaria); un formato
+// inválido responde 400.
+var plantillaFechasControlador = template.Must(template.New("fechasControlador").Parse(`
+// Pruebas de la capa de controlador del formato de las columnas date de
+// {{.Nombre}}Controller ({{.Ruta}}), sin base de datos.
+
+// La base devuelve las columnas date como las entrega lib/pq (medianoche marcada como
+// UTC): el JSON trae solo el día guardado.
+func Test{{.Nombre}}GetFechasSoloDia(t *testing.T) {
+	helpers.ProbarGetFechas(t, rutaValidacion{{.Nombre}}, map[string]interface{}{
+	{{- range .Fechas}}
+		"{{.Columna}}": helpers.FechaGuardada,
+	{{- end}}
+	}, map[string]string{
+	{{- range .Fechas}}
+		"{{.Nombre}}": helpers.FechaJSON,
+	{{- end}}
+	})
+}
+{{- range .Fechas}}
+
+// {{.Nombre}} es una columna date: POST acepta solo el día o una fecha y hora RFC 3339 (de la
+// que toma el día escrito), guarda ese día sin correrlo por la zona horaria, lo devuelve
+// solo con el día y rechaza otros formatos.
+func Test{{$.Nombre}}Post{{.Nombre}}SoloDia(t *testing.T) {
+	for enviado, guardado := range map[string]string{
+		"2026-01-15":                "2026-01-15",
+		"2026-01-15T00:00:00Z":      "2026-01-15",
+		"2026-01-15T23:30:00-05:00": "2026-01-15",
+	} {
+		t.Run(enviado, func(t *testing.T) {
+			cuerpo := cuerpoValidacion{{$.Nombre}}(t)
+			cuerpo["{{.Nombre}}"] = enviado
+			helpers.LimpiarSentencia()
+			r := helpers.VerificarExito(t, helpers.Peticion(http.MethodPost, rutaValidacion{{$.Nombre}}+"/", helpers.JSON(t, cuerpo)), http.StatusCreated)
+			helpers.VerificarColumnaEnviada(t, "{{.Columna}}", guardado)
+			helpers.VerificarIgual(t, "Campo {{.Nombre}} en la respuesta", r.Dato(t)["{{.Nombre}}"], guardado)
+		})
+	}
+	for _, invalido := range []string{"15/01/2026", "2026-13-45", "texto"} {
+		t.Run("invalido "+invalido, func(t *testing.T) {
+			cuerpo := cuerpoValidacion{{$.Nombre}}(t)
+			cuerpo["{{.Nombre}}"] = invalido
+			helpers.ProbarPostRechazado(t, rutaValidacion{{$.Nombre}}, cuerpo)
+		})
+	}
 }
 {{- end}}
 `))

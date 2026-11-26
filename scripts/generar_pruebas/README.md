@@ -22,7 +22,7 @@ Si el modelo no tiene `ErrSortInvalido`, `tests/helpers` no compila.
 
 | Fuente | Qué extrae |
 | -- | -- |
-| `models/*.go` | Structs, tipos de campo y etiquetas `orm`: `pk`, `auto`, `rel(fk)`, `null`, `column`, `type(uuid)`. También el `TableName()` de cada modelo. |
+| `models/*.go` | Structs, tipos de campo y etiquetas `orm`: `pk`, `auto`, `rel(fk)`, `null`, `column`, `type(uuid)`. También el `TableName()` de cada modelo; los structs sin `TableName()` (como `Fecha`) no son modelos y se omiten. |
 | `routers/router.go` | La ruta de cada controlador (`NSNamespace` + `NSInclude`), prefijada con `/v1`. |
 | `controllers/*.go` | El archivo de cada controlador, para nombrar su `_test.go`. |
 | `database/agora_cotizaciones.sql` | Columnas, tipo, longitud, `NOT NULL`/`PRIMARY KEY` y llaves foráneas. |
@@ -42,7 +42,7 @@ Si un modelo no tiene controlador ni ruta, se omite.
 - **Llave foránea (`rel(fk)`).** Campo que referencia a otro modelo. Es obligatoria cuando no tiene `null`, opcional cuando sí.
 - **Campos de servicio.** `Id`, `Activo`, `FechaCreacion`, `FechaModificacion`. Los administra el servicio y no se incluyen en los datos de ejemplo.
 - **Relación 1:1.** Cuando la columna `id` de la tabla es a su vez llave foránea a otra tabla, el `Id` no es autoincremental sino el `Id` del padre.
-- **Valores de ejemplo.** Según el tipo: UUID fijo para `type(uuid)`, `{"prueba": true}` para columnas `json`/`jsonb`, `"Prueba"` (recortado a la longitud de la columna) para texto, `1` para `int`, `int16(2026)`, una fecha fija para `time.Time`, `1.5` para `float64`, `true` para `bool`. Las llaves foráneas usan un registro recién creado (en integración) o `{Id: 1}` (en unitarias).
+- **Valores de ejemplo.** Según el tipo: UUID fijo para `type(uuid)`, `{"prueba": true}` para columnas `json`/`jsonb`, `"Prueba"` (recortado a la longitud de la columna) para texto, `1` para `int`, `int16(2026)`, una fecha fija para `time.Time`, `models.NuevaFecha(2026, time.January, 15)` para `models.Fecha` (columnas `date`), `1.5` para `float64`, `true` para `bool`. Las llaves foráneas usan un registro recién creado (en integración) o `{Id: 1}` (en unitarias).
 
 ## Capas de prueba
 
@@ -154,6 +154,17 @@ Controlador (driver) falso de `database/sql`: registra cada sentencia SQL con su
 | `ProbarGetOpcionales(t, ruta, campos)` | Fija una fila con esos valores, hace GET del registro 1 y verifica la respuesta. |
 | `ProbarPutOpcionales(t, ruta, cuerpo, campos)` | PUT por el falso al registro 1: verifica 200, el valor del UPDATE y el de la respuesta. |
 
+### `fechas.go` (copiado)
+
+Verificadores del formato de las columnas `date` (`models.Fecha`) en el JSON.
+
+| Helper | Qué hace |
+| -- | -- |
+| `FechaGuardada`, `FechaJSON` | Columna `date` como la entrega `lib/pq` (medianoche marcada como UTC) y texto esperado en el JSON (`2026-01-15`). |
+| `ProbarGetFechas(t, ruta, fila, esperado)` | Fija una fila en la base falsa, hace GET del registro 1 y compara el texto de cada campo del JSON. |
+| `VerificarFechaJSON(t, dato, campo, fila, columna)` | Campo `date`: solo el día (`2006-01-02`) e igual a la columna. |
+| `ProbarFechasEstables(t, ruta, tabla, id, columnas...)` | Envía dos veces por PUT lo que devuelve GET y comprueba que las columnas no cambien. |
+
 ### `orden_gen.go` (generado)
 
 Verificadores del ordenamiento de `GetAll`. Los usan las pruebas `*_orden_test.go` de las capas unitarias de controlador y de modelo.
@@ -195,6 +206,7 @@ Un archivo por controlador. Prueban el ciclo CRUD completo contra PostgreSQL. To
 | `Test<E>GetAll` | Filtro por Id y por cada FK, lista vacía sin resultados, `Total`, paginación (`limit`/`offset`), orden asc/desc, `sortby` sin `order` (igual que asc), `fields` y 400 ante `sortby` inexistente, `order` inválido o filtros mal formados. | Registro creado y parámetros `query`/`sortby`/`order`/`limit`/`offset`/`fields`. | Listas y `Total` coherentes con cada filtro; FK expandidas; 400 ante parámetros mal formados. |
 | `Test<E>Put` | Actualiza un campo (primer texto editable; si no hay, primer entero; último recurso `UsuarioModificacionId`). Conserva creación, actualiza modificación, 400/404 ante Id distinto o inexistente. | Registro creado + nuevo valor del campo. | 200 y columna actualizada; `fecha_creacion`/`usuario_creacion_id` intactos; 400/404 en los casos de error. |
 | `Test<E>Delete` | Borrado lógico. | Id de un registro creado. | 200, `activo=false`, `fecha_modificacion` actualizada, resto intacto, aún consultable; 404 ante Id inexistente. |
+| `Test<E>Fechas` | Solo entidades con columnas `date`: GET devuelve cada una solo con el día guardado; dos GET + PUT no las cambian. | Registro creado por POST. | `2026-01-15` en el JSON e igual a la columna; columnas intactas tras los PUT. |
 | `Test<E><FK>Inexistente` | Por cada FK (obligatoria u opcional): la FK debe referenciar un registro existente. | Cuerpo de POST y de PUT con la FK `{Id: 999999999}`. | 400 en ambos; no se crea ningún registro y el existente no cambia. |
 | `Test<E><FK>Opcional` | Por cada FK **opcional**: el registro sin esa FK se puede crear, consultar (GetOne/GetAll), actualizar y borrar. | Cuerpo con la FK en `null`. | El registro se crea y la FK sale `null`; CRUD completo funciona. |
 | `Test<E><Campo>OpcionalOmitido` | Por cada escalar opcional: si se **omite** del payload, el servicio lo devuelve `null` y la columna queda `NULL`. | Cuerpo sin ese campo. | GetOne devuelve `null`; la fila en base tiene la columna `NULL`. |
@@ -243,6 +255,17 @@ Para **todas** las entidades con controlador y ruta se genera `tests/unitarias/c
 Los controladores validan los obligatorios con `validarObligatorios` (`controllers/validacion.go`) y la lista `obligatorios<E>` de cada controlador. Al cambiar una columna `NOT NULL` en el SQL, actualice esa lista: el generador produce las pruebas a partir del SQL y fallarán si la lista no coincide.
 
 Las llaves foráneas hacia registros inexistentes solo pueden comprobarse con las restricciones reales de PostgreSQL, por eso se prueban en integración (`Test<E><FK>Inexistente`).
+
+## Pruebas de columnas date
+
+Para las entidades con columnas `date` (campos `models.Fecha`, definido en `models/fecha.go`) se genera `tests/unitarias/controladores/<archivo>_fechas_test.go`. `models.Fecha` es solo el día en el JSON y se guarda y se lee sin conversiones de zona horaria.
+
+| Prueba | Entrada | Salida esperada |
+| -- | -- | -- |
+| `Test<E>GetFechasSoloDia` | La base falsa devuelve cada columna `date` como la entrega `lib/pq`. | El JSON trae `2026-01-15`. |
+| `Test<E>Post<Campo>SoloDia` | POST con `2026-01-15`, `2026-01-15T00:00:00Z` y `2026-01-15T23:30:00-05:00`; y con formatos inválidos. | 201, el INSERT envía `2026-01-15` y la respuesta trae `2026-01-15`; 400 sin consulta ante formatos inválidos. |
+
+Los campos `timestamp` no se prueban aquí: el desplazamiento de 5 horas al leerlos queda pendiente de definir junto con la migración de datos.
 
 ## Pruebas de ordenamiento (`GetAll`)
 

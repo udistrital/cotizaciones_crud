@@ -97,6 +97,7 @@ type Entidad struct {
 	EscalaresOpc  []Campo // escalares puntero (opcionales no-FK) con Ejemplo ya envuelto en Ptr
 	EscalaresReq  []Campo // escalares no-FK cuya columna es NOT NULL en el SQL (obligatorios)
 	CerosReq      bool    // algún escalar obligatorio es numérico o booleano (admite 0 o false)
+	Fechas        []Campo // campos date (models.Fecha): solo el día en el JSON
 }
 
 func main() {
@@ -231,7 +232,8 @@ func leerModelos(dir string) ([]*Entidad, error) {
 			for _, s := range gd.Specs {
 				ts := s.(*ast.TypeSpec)
 				st, ok := ts.Type.(*ast.StructType)
-				if !ok {
+				// Solo los structs con TableName() son modelos (se omiten tipos auxiliares como Fecha)
+				if !ok || tablas[ts.Name.Name] == "" {
 					continue
 				}
 				e := &Entidad{Nombre: ts.Name.Name, Tabla: tablas[ts.Name.Name]}
@@ -299,6 +301,8 @@ func completar(e *Entidad, t *tablaSQL, porTabla map[string]*Entidad) {
 			c.Ejemplo = "int16(2026)"
 		case base == "time.Time":
 			c.Ejemplo = "time.Date(2026, 1, 15, 0, 0, 0, 0, time.UTC)"
+		case base == "Fecha":
+			c.Ejemplo = "models.NuevaFecha(2026, time.January, 15)"
 		case base == "float64":
 			c.Ejemplo = "1.5"
 		case base == "bool":
@@ -318,6 +322,9 @@ func completar(e *Entidad, t *tablaSQL, porTabla map[string]*Entidad) {
 			c.Externo = "helpers.Ptr(" + c.Ejemplo + ")"
 			c.Ejemplo = "Ptr(" + c.Ejemplo + ")"
 			e.EscalaresOpc = append(e.EscalaresOpc, *c)
+		}
+		if base == "Fecha" {
+			e.Fechas = append(e.Fechas, *c)
 		}
 		// Escalar obligatorio: columna NOT NULL que no es llave foránea, puntero ni campo de servicio
 		if existe && col.NotNull && c.Relacion == "" && !c.Puntero && c.Ejemplo != "" {
@@ -554,6 +561,22 @@ func Test{{.Nombre}}Delete(t *testing.T) {
 	helpers.ProbarDelete(t, ruta{{.Nombre}}, tabla{{.Nombre}}, creado.Id)
 	t.Log("Test{{.Nombre}}Delete Finalizado Correctamente (OK)")
 }
+{{- if .Fechas}}
+
+// Columnas date: GET devuelve cada una solo con el día guardado y enviar por PUT lo que
+// devuelve GET no corre el día.
+func Test{{.Nombre}}Fechas(t *testing.T) {
+	helpers.RequerirBaseDatos(t)
+	id := helpers.CrearPorPost(t, ruta{{.Nombre}}, tabla{{.Nombre}}, cuerpoPost{{.Nombre}}(t))
+	dato := helpers.ProbarGetOne(t, ruta{{.Nombre}}, id)
+	fila := helpers.Fila(t, tabla{{.Nombre}}, id)
+{{- range .Fechas}}
+	helpers.VerificarFechaJSON(t, dato, "{{.Nombre}}", fila, "{{.Columna}}")
+{{- end}}
+	helpers.ProbarFechasEstables(t, ruta{{.Nombre}}, tabla{{.Nombre}}, id{{range .Fechas}}, "{{.Columna}}"{{end}})
+	t.Log("Test{{.Nombre}}Fechas Finalizado Correctamente (OK)")
+}
+{{- end}}
 {{- range .Relaciones}}
 
 // La llave foránea {{.Nombre}} debe referenciar un registro existente: POST y PUT

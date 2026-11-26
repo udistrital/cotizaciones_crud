@@ -100,6 +100,19 @@ func TestHistMstSolicitudCotizacionDelete(t *testing.T) {
 	t.Log("TestHistMstSolicitudCotizacionDelete Finalizado Correctamente (OK)")
 }
 
+// Columnas date: GET devuelve cada una solo con el día guardado y enviar por PUT lo que
+// devuelve GET no corre el día.
+func TestHistMstSolicitudCotizacionFechas(t *testing.T) {
+	helpers.RequerirBaseDatos(t)
+	id := helpers.CrearPorPost(t, rutaHistMstSolicitudCotizacion, tablaHistMstSolicitudCotizacion, cuerpoPostHistMstSolicitudCotizacion(t))
+	dato := helpers.ProbarGetOne(t, rutaHistMstSolicitudCotizacion, id)
+	fila := helpers.Fila(t, tablaHistMstSolicitudCotizacion, id)
+	helpers.VerificarFechaJSON(t, dato, "FechaApertura", fila, "fecha_apertura")
+	helpers.VerificarFechaJSON(t, dato, "FechaCierre", fila, "fecha_cierre")
+	helpers.ProbarFechasEstables(t, rutaHistMstSolicitudCotizacion, tablaHistMstSolicitudCotizacion, id, "fecha_apertura", "fecha_cierre")
+	t.Log("TestHistMstSolicitudCotizacionFechas Finalizado Correctamente (OK)")
+}
+
 // La llave foránea MstSolicitudCotizacionId debe referenciar un registro existente: POST y PUT
 // responden 400 y no crean ni modifican registros.
 func TestHistMstSolicitudCotizacionMstSolicitudCotizacionIdInexistente(t *testing.T) {
