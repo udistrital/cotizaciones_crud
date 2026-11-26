@@ -99,3 +99,13 @@ func TestSolicitudCotizacionObservacionProveedorRespuestaDelete(t *testing.T) {
 	helpers.ProbarDelete(t, rutaSolicitudCotizacionObservacionProveedorRespuesta, tablaSolicitudCotizacionObservacionProveedorRespuesta, creado.Id)
 	t.Log("TestSolicitudCotizacionObservacionProveedorRespuestaDelete Finalizado Correctamente (OK)")
 }
+
+// La llave foránea ObservacionId debe referenciar un registro existente: POST y PUT
+// responden 400 y no crean ni modifican registros.
+func TestSolicitudCotizacionObservacionProveedorRespuestaObservacionIdInexistente(t *testing.T) {
+	helpers.RequerirBaseDatos(t)
+	helpers.ProbarPostFKInexistente(t, rutaSolicitudCotizacionObservacionProveedorRespuesta, tablaSolicitudCotizacionObservacionProveedorRespuesta, cuerpoPostSolicitudCotizacionObservacionProveedorRespuesta(t), "ObservacionId")
+	creado := helpers.CrearSolicitudCotizacionObservacionProveedorRespuesta(t)
+	helpers.ProbarPutFKInexistente(t, rutaSolicitudCotizacionObservacionProveedorRespuesta, tablaSolicitudCotizacionObservacionProveedorRespuesta, creado.Id, "ObservacionId")
+	t.Log("TestSolicitudCotizacionObservacionProveedorRespuestaObservacionIdInexistente Finalizado Correctamente (OK)")
+}

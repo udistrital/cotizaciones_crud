@@ -100,6 +100,16 @@ func TestHistDetCotizacionDelete(t *testing.T) {
 	t.Log("TestHistDetCotizacionDelete Finalizado Correctamente (OK)")
 }
 
+// La llave foránea MstCotizacionId debe referenciar un registro existente: POST y PUT
+// responden 400 y no crean ni modifican registros.
+func TestHistDetCotizacionMstCotizacionIdInexistente(t *testing.T) {
+	helpers.RequerirBaseDatos(t)
+	helpers.ProbarPostFKInexistente(t, rutaHistDetCotizacion, tablaHistDetCotizacion, cuerpoPostHistDetCotizacion(t), "MstCotizacionId")
+	creado := helpers.CrearHistDetCotizacion(t)
+	helpers.ProbarPutFKInexistente(t, rutaHistDetCotizacion, tablaHistDetCotizacion, creado.Id, "MstCotizacionId")
+	t.Log("TestHistDetCotizacionMstCotizacionIdInexistente Finalizado Correctamente (OK)")
+}
+
 // El campo ValorUnitario es opcional: si se omite del payload, o se envía null, el
 // servicio lo devuelve como null y la base de datos lo guarda como NULL.
 func TestHistDetCotizacionValorUnitarioOpcionalOmitido(t *testing.T) {

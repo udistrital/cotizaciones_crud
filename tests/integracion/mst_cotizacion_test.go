@@ -94,6 +94,16 @@ func TestMstCotizacionDelete(t *testing.T) {
 	t.Log("TestMstCotizacionDelete Finalizado Correctamente (OK)")
 }
 
+// La llave foránea RelSolicitudCotizacionProveedorId debe referenciar un registro existente: POST y PUT
+// responden 400 y no crean ni modifican registros.
+func TestMstCotizacionRelSolicitudCotizacionProveedorIdInexistente(t *testing.T) {
+	helpers.RequerirBaseDatos(t)
+	helpers.ProbarPostFKInexistente(t, rutaMstCotizacion, tablaMstCotizacion, cuerpoPostMstCotizacion(t), "RelSolicitudCotizacionProveedorId")
+	creado := helpers.CrearMstCotizacion(t)
+	helpers.ProbarPutFKInexistente(t, rutaMstCotizacion, tablaMstCotizacion, creado.Id, "RelSolicitudCotizacionProveedorId")
+	t.Log("TestMstCotizacionRelSolicitudCotizacionProveedorIdInexistente Finalizado Correctamente (OK)")
+}
+
 // La llave foránea RelSolicitudCotizacionProveedorId es opcional (null): el registro sin ella se
 // puede crear, consultar, actualizar y borrar.
 func TestMstCotizacionRelSolicitudCotizacionProveedorIdOpcional(t *testing.T) {

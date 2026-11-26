@@ -121,3 +121,23 @@ func TestRelHistMstDetSolicitudCotizacionDelete(t *testing.T) {
 	helpers.ProbarDelete(t, rutaRelHistMstDetSolicitudCotizacion, tablaRelHistMstDetSolicitudCotizacion, creado.Id)
 	t.Log("TestRelHistMstDetSolicitudCotizacionDelete Finalizado Correctamente (OK)")
 }
+
+// La llave foránea MaestroId debe referenciar un registro existente: POST y PUT
+// responden 400 y no crean ni modifican registros.
+func TestRelHistMstDetSolicitudCotizacionMaestroIdInexistente(t *testing.T) {
+	helpers.RequerirBaseDatos(t)
+	helpers.ProbarPostFKInexistente(t, rutaRelHistMstDetSolicitudCotizacion, tablaRelHistMstDetSolicitudCotizacion, cuerpoPostRelHistMstDetSolicitudCotizacion(t), "MaestroId")
+	creado := helpers.CrearRelHistMstDetSolicitudCotizacion(t)
+	helpers.ProbarPutFKInexistente(t, rutaRelHistMstDetSolicitudCotizacion, tablaRelHistMstDetSolicitudCotizacion, creado.Id, "MaestroId")
+	t.Log("TestRelHistMstDetSolicitudCotizacionMaestroIdInexistente Finalizado Correctamente (OK)")
+}
+
+// La llave foránea DetalleId debe referenciar un registro existente: POST y PUT
+// responden 400 y no crean ni modifican registros.
+func TestRelHistMstDetSolicitudCotizacionDetalleIdInexistente(t *testing.T) {
+	helpers.RequerirBaseDatos(t)
+	helpers.ProbarPostFKInexistente(t, rutaRelHistMstDetSolicitudCotizacion, tablaRelHistMstDetSolicitudCotizacion, cuerpoPostRelHistMstDetSolicitudCotizacion(t), "DetalleId")
+	creado := helpers.CrearRelHistMstDetSolicitudCotizacion(t)
+	helpers.ProbarPutFKInexistente(t, rutaRelHistMstDetSolicitudCotizacion, tablaRelHistMstDetSolicitudCotizacion, creado.Id, "DetalleId")
+	t.Log("TestRelHistMstDetSolicitudCotizacionDetalleIdInexistente Finalizado Correctamente (OK)")
+}

@@ -51,7 +51,7 @@ El generador emite tres capas, cada una en su carpeta, más una capa de helpers 
 | Capa | Carpeta | Base de datos | Qué prueba |
 | -- | -- | -- | -- |
 | Integración | `tests/integracion` | PostgreSQL real (variables `COTIZACIONES_CRUD_PG*`) | El ciclo CRUD completo de cada controlador contra una base de datos real, incluido el ordenamiento de `GetAll`. |
-| Unitaria de controlador | `tests/unitarias/controladores` | Falsa (en memoria) | El POST/GET/PUT con campos opcionales y el ordenamiento del `GetAll` de cada controlador, sin servidor de base de datos. |
+| Unitaria de controlador | `tests/unitarias/controladores` | Falsa (en memoria) | El POST/GET/PUT con campos opcionales, el ordenamiento del `GetAll`, el rechazo de un Id de ruta no numérico y de los campos obligatorios ausentes de cada controlador, sin servidor de base de datos. |
 | Unitaria de modelo | `tests/unitarias/modelos` | Falsa (en memoria) | El SQL que `models.Add`/`Update`/`Get` envía y lee para cada campo opcional, y el SQL y los errores del ordenamiento de `GetAll<E>`. |
 | Helpers | `tests/helpers` | — | Utilidades compartidas por todas las capas. |
 
@@ -61,7 +61,7 @@ Cada carpeta recibe un `main_gen_test.go` con su `TestMain`:
 - **Unitaria de controlador:** llama a `ConectarFalso()` (base de datos falsa) y configura beego con las rutas.
 - **Unitaria de modelo:** solo `ConectarFalso()`; no necesita beego ni rutas.
 
-> Nota: la capa de integración se genera para entidades con controlador y ruta. Las pruebas de opcionales de las capas unitarias (controlador y modelo) se generan solo para entidades con al menos un campo escalar opcional. Las pruebas de ordenamiento (`*_orden_test.go`) se generan para **todas** las entidades con controlador y ruta.
+> Nota: la capa de integración se genera para entidades con controlador y ruta. Las pruebas de opcionales de las capas unitarias (controlador y modelo) se generan solo para entidades con al menos un campo escalar opcional. Las pruebas de ordenamiento (`*_orden_test.go`) y de validación de entradas (`*_validacion_test.go`) se generan para **todas** las entidades con controlador y ruta.
 
 ## Helpers
 
@@ -117,8 +117,21 @@ Pruebas CRUD de alto nivel usadas por la capa de integración.
 | `ContieneId(lista, id)` | Indica si la lista contiene un objeto con ese Id. |
 | `ProbarGetAll(t, ruta, tabla, id)` | Prueba el GetAll completo: filtro por Id, lista vacía, `Total`, `limit`/`offset`, `order` asc/desc, `fields`, `sortby` sin `order` (igual que asc), y 400 ante `sortby` inexistente, `order` inválido o filtros mal formados. |
 | `VerificarFKExpandida(t, dato, campo, relacionado)` | Comprueba que la llave foránea venga expandida con los datos del relacionado (anidados solo por Id). |
-| `ProbarPut(t, ruta, tabla, id, campo, valor, columna)` | Prueba el PUT: actualiza el campo, conserva `fecha_creacion`/`usuario_creacion_id`, actualiza `fecha_modificacion`, y 400/404 ante Id distinto, JSON inválido o Id inexistente. |
-| `ProbarDelete(t, ruta, tabla, id)` | Prueba el borrado lógico: 200, `activo=false`, `fecha_modificacion` actualizada, demás columnas intactas, registro aún consultable y 404 ante Id inexistente. |
+| `ProbarPut(t, ruta, tabla, id, campo, valor, columna)` | Prueba el PUT: actualiza el campo, conserva `fecha_creacion`/`usuario_creacion_id`, actualiza `fecha_modificacion`, y 400/404 ante Id distinto, JSON inválido, Id inexistente o Id no numérico. |
+| `ProbarDelete(t, ruta, tabla, id)` | Prueba el borrado lógico: 200, `activo=false`, `fecha_modificacion` actualizada, demás columnas intactas, registro aún consultable y 404 ante Id inexistente o no numérico. |
+
+### `validacion.go` (copiado)
+
+Verificadores de rechazo de entradas inválidas. Los usan la capa unitaria de controlador (`*_validacion_test.go`) y la de integración.
+
+| Helper | Qué hace |
+| -- | -- |
+| `IdsNoNumericos` | Ids de ruta no enteros usados en las pruebas (`abc`, `12abc`). |
+| `ProbarIdNoNumerico(t, metodo, ruta, cuerpo)` | Por cada Id no numérico (subprueba): 404 institucional y sin consultar la base (el Id no se convierte en 0). En integración la verificación de que no hubo consulta no tiene efecto. |
+| `ProbarPostRechazado(t, ruta, cuerpo)` | POST responde 400 institucional y la validación lo rechaza sin consultar la base. |
+| `ProbarPutRechazado(t, ruta, cuerpo)` | PUT al registro 1 (con `Id: 1` en el cuerpo) responde 400 institucional y la validación lo rechaza sin consultar la base. |
+| `ProbarPostFKInexistente(t, ruta, tabla, cuerpo, campo)` | POST con la FK apuntando a `IdInexistente`: 400 y la tabla conserva la misma cantidad de registros. |
+| `ProbarPutFKInexistente(t, ruta, tabla, id, campo)` | PUT con la FK apuntando a `IdInexistente`: 400 y la fila queda igual. |
 
 ### `falso_gen.go` (generado)
 
@@ -182,6 +195,7 @@ Un archivo por controlador. Prueban el ciclo CRUD completo contra PostgreSQL. To
 | `Test<E>GetAll` | Filtro por Id y por cada FK, lista vacía sin resultados, `Total`, paginación (`limit`/`offset`), orden asc/desc, `sortby` sin `order` (igual que asc), `fields` y 400 ante `sortby` inexistente, `order` inválido o filtros mal formados. | Registro creado y parámetros `query`/`sortby`/`order`/`limit`/`offset`/`fields`. | Listas y `Total` coherentes con cada filtro; FK expandidas; 400 ante parámetros mal formados. |
 | `Test<E>Put` | Actualiza un campo (primer texto editable; si no hay, primer entero; último recurso `UsuarioModificacionId`). Conserva creación, actualiza modificación, 400/404 ante Id distinto o inexistente. | Registro creado + nuevo valor del campo. | 200 y columna actualizada; `fecha_creacion`/`usuario_creacion_id` intactos; 400/404 en los casos de error. |
 | `Test<E>Delete` | Borrado lógico. | Id de un registro creado. | 200, `activo=false`, `fecha_modificacion` actualizada, resto intacto, aún consultable; 404 ante Id inexistente. |
+| `Test<E><FK>Inexistente` | Por cada FK (obligatoria u opcional): la FK debe referenciar un registro existente. | Cuerpo de POST y de PUT con la FK `{Id: 999999999}`. | 400 en ambos; no se crea ningún registro y el existente no cambia. |
 | `Test<E><FK>Opcional` | Por cada FK **opcional**: el registro sin esa FK se puede crear, consultar (GetOne/GetAll), actualizar y borrar. | Cuerpo con la FK en `null`. | El registro se crea y la FK sale `null`; CRUD completo funciona. |
 | `Test<E><Campo>OpcionalOmitido` | Por cada escalar opcional: si se **omite** del payload, el servicio lo devuelve `null` y la columna queda `NULL`. | Cuerpo sin ese campo. | GetOne devuelve `null`; la fila en base tiene la columna `NULL`. |
 | `Test<E><Campo>OpcionalNulo` | Por cada escalar opcional: si se envía `null`, mismo resultado. | Cuerpo con el campo en `null`. | GetOne devuelve `null`; la fila en base tiene la columna `NULL`. |
@@ -212,6 +226,23 @@ Un archivo por entidad **con campos opcionales**. Verifican directamente el SQL 
 | `Test<E><Campo>Update` (sobre `Update<E>ById`) | `omitido`, `null`, `valor` | Valor que el **UPDATE** envía para la columna. | `omitido`/`null` → la columna va `NULL`; `valor` → va el valor. |
 
 En las tres, el campo bajo prueba se omite, se pone en `nil` o se asigna su valor, manteniendo el resto de los campos con sus ejemplos. La verificación usa `VerificarColumnaEnviada` (para INSERT/UPDATE) o `VerificarValorLeido` (para GET).
+
+## Pruebas de validación de entradas
+
+Para **todas** las entidades con controlador y ruta se genera `tests/unitarias/controladores/<archivo>_validacion_test.go`. Envían la petición al router con la base falsa, que devuelve un registro para cualquier Id: si el controlador convirtiera el Id no numérico en 0, la consulta se ejecutaría y respondería 200.
+
+| Prueba | Entrada | Salida esperada |
+| -- | -- | -- |
+| `Test<E>GetOneIdNoNumerico` | GET a `<ruta>/abc` y `<ruta>/12abc`. | 404 institucional, sin consulta. |
+| `Test<E>PutIdNoNumerico` | PUT a `<ruta>/abc` y `<ruta>/12abc` con un cuerpo válido. | 404 institucional, sin consulta. |
+| `Test<E>DeleteIdNoNumerico` | DELETE a `<ruta>/abc` y `<ruta>/12abc`. | 404 institucional, sin consulta. |
+| `Test<E>PostSin<Campo>` | Por cada escalar **obligatorio** (columna `NOT NULL` en el SQL que no es FK, ni puntero, ni campo de servicio): subpruebas `omitido` y `null`; si es texto, también `vacio` (`""`) y `espacios`. | 400 institucional, sin consulta. |
+| `Test<E>PutSin<Campo>` | Las mismas subpruebas en un PUT al registro 1. | 400 institucional, sin consulta. |
+| `Test<E>PostObligatoriosConCeroOFalse` | Solo si hay obligatorios numéricos o booleanos: se envían explícitamente con `0` o `false`. | 201: la validación no rechaza valores cero explícitos. |
+
+Los controladores validan los obligatorios con `validarObligatorios` (`controllers/validacion.go`) y la lista `obligatorios<E>` de cada controlador. Al cambiar una columna `NOT NULL` en el SQL, actualice esa lista: el generador produce las pruebas a partir del SQL y fallarán si la lista no coincide.
+
+Las llaves foráneas hacia registros inexistentes solo pueden comprobarse con las restricciones reales de PostgreSQL, por eso se prueban en integración (`Test<E><FK>Inexistente`).
 
 ## Pruebas de ordenamiento (`GetAll`)
 
@@ -251,6 +282,6 @@ El helper `ProbarGetAll`, usado por `Test<E>GetAll`, también verifica `sortby` 
 2. `completar` cruza cada modelo con su tabla SQL, fija los valores de ejemplo, el campo de PUT y clasifica relaciones (obligatorias/opcionales) y escalares opcionales.
 3. `generarHelpers` escribe `tests/helpers` (copiados + generados, incluido `orden_gen.go`).
 4. Por cada entidad se escribe su prueba de integración en `tests/integracion`.
-5. `generarCapas` escribe los `TestMain` de cada carpeta; las pruebas unitarias de controlador y de modelo para las entidades con campos opcionales; y las pruebas `*_orden_test.go` para todas las entidades.
+5. `generarCapas` escribe los `TestMain` de cada carpeta; las pruebas unitarias de controlador y de modelo para las entidades con campos opcionales; y las pruebas `*_orden_test.go` y `*_validacion_test.go` para todas las entidades.
 
 Todos los archivos generados llevan la cabecera `NO EDITAR` y se regeneran con `go run ./scripts/generar_pruebas`.

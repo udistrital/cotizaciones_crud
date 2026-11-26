@@ -99,3 +99,13 @@ func TestFormaPagoDelete(t *testing.T) {
 	helpers.ProbarDelete(t, rutaFormaPago, tablaFormaPago, creado.Id)
 	t.Log("TestFormaPagoDelete Finalizado Correctamente (OK)")
 }
+
+// La llave foránea MstSolicitudCotizacionId debe referenciar un registro existente: POST y PUT
+// responden 400 y no crean ni modifican registros.
+func TestFormaPagoMstSolicitudCotizacionIdInexistente(t *testing.T) {
+	helpers.RequerirBaseDatos(t)
+	helpers.ProbarPostFKInexistente(t, rutaFormaPago, tablaFormaPago, cuerpoPostFormaPago(t), "MstSolicitudCotizacionId")
+	creado := helpers.CrearFormaPago(t)
+	helpers.ProbarPutFKInexistente(t, rutaFormaPago, tablaFormaPago, creado.Id, "MstSolicitudCotizacionId")
+	t.Log("TestFormaPagoMstSolicitudCotizacionIdInexistente Finalizado Correctamente (OK)")
+}

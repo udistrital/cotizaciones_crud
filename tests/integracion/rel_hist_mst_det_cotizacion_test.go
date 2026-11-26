@@ -121,3 +121,23 @@ func TestRelHistMstDetCotizacionDelete(t *testing.T) {
 	helpers.ProbarDelete(t, rutaRelHistMstDetCotizacion, tablaRelHistMstDetCotizacion, creado.Id)
 	t.Log("TestRelHistMstDetCotizacionDelete Finalizado Correctamente (OK)")
 }
+
+// La llave foránea MaestroId debe referenciar un registro existente: POST y PUT
+// responden 400 y no crean ni modifican registros.
+func TestRelHistMstDetCotizacionMaestroIdInexistente(t *testing.T) {
+	helpers.RequerirBaseDatos(t)
+	helpers.ProbarPostFKInexistente(t, rutaRelHistMstDetCotizacion, tablaRelHistMstDetCotizacion, cuerpoPostRelHistMstDetCotizacion(t), "MaestroId")
+	creado := helpers.CrearRelHistMstDetCotizacion(t)
+	helpers.ProbarPutFKInexistente(t, rutaRelHistMstDetCotizacion, tablaRelHistMstDetCotizacion, creado.Id, "MaestroId")
+	t.Log("TestRelHistMstDetCotizacionMaestroIdInexistente Finalizado Correctamente (OK)")
+}
+
+// La llave foránea DetalleId debe referenciar un registro existente: POST y PUT
+// responden 400 y no crean ni modifican registros.
+func TestRelHistMstDetCotizacionDetalleIdInexistente(t *testing.T) {
+	helpers.RequerirBaseDatos(t)
+	helpers.ProbarPostFKInexistente(t, rutaRelHistMstDetCotizacion, tablaRelHistMstDetCotizacion, cuerpoPostRelHistMstDetCotizacion(t), "DetalleId")
+	creado := helpers.CrearRelHistMstDetCotizacion(t)
+	helpers.ProbarPutFKInexistente(t, rutaRelHistMstDetCotizacion, tablaRelHistMstDetCotizacion, creado.Id, "DetalleId")
+	t.Log("TestRelHistMstDetCotizacionDetalleIdInexistente Finalizado Correctamente (OK)")
+}

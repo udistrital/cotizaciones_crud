@@ -188,7 +188,7 @@ func soloIdAnidados(m map[string]interface{}) map[string]interface{} {
 // ProbarPut verifica el servicio PUT: actualiza el campo indicado, conserva
 // fecha_creacion y usuario_creacion_id (aunque el cliente envíe otro valor)
 // tras dos actualizaciones, actualiza fecha_modificacion, responde 400 ante
-// Id distinto o JSON inválido y 404 ante un Id inexistente.
+// Id distinto o JSON inválido y 404 ante un Id inexistente o no numérico.
 func ProbarPut(t *testing.T, ruta, tabla string, id int, campo string, valor interface{}, columna string) {
 	t.Helper()
 	rutaId := ruta + "/" + strconv.Itoa(id)
@@ -216,12 +216,13 @@ func ProbarPut(t *testing.T, ruta, tabla string, id int, campo string, valor int
 	VerificarError(t, Peticion(http.MethodPut, rutaId, JSON(t, cuerpo)), http.StatusBadRequest)
 	delete(cuerpo, "Id")
 	VerificarError(t, Peticion(http.MethodPut, ruta+"/"+strconv.Itoa(IdInexistente), JSON(t, cuerpo)), http.StatusNotFound)
+	ProbarIdNoNumerico(t, http.MethodPut, ruta, JSON(t, cuerpo))
 	VerificarError(t, Peticion(http.MethodPut, rutaId, `{"Id":"texto"}`), http.StatusBadRequest)
 }
 
 // ProbarDelete verifica el borrado lógico: responde 200, deja activo=false,
 // actualiza fecha_modificacion, no modifica las demás columnas, el registro
-// sigue consultable y un Id inexistente responde 404.
+// sigue consultable y un Id inexistente o no numérico responde 404.
 func ProbarDelete(t *testing.T, ruta, tabla string, id int) {
 	t.Helper()
 	antes := Fila(t, tabla, id)
@@ -241,4 +242,5 @@ func ProbarDelete(t *testing.T, ruta, tabla string, id int) {
 		t.Error("Se esperaba el registro consultable con Activo=false y se obtuvo", dato["Activo"])
 	}
 	VerificarError(t, Peticion(http.MethodDelete, ruta+"/"+strconv.Itoa(IdInexistente), ""), http.StatusNotFound)
+	ProbarIdNoNumerico(t, http.MethodDelete, ruta, "")
 }

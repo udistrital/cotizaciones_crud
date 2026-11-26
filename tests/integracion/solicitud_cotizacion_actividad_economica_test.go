@@ -99,3 +99,13 @@ func TestSolicitudCotizacionActividadEconomicaDelete(t *testing.T) {
 	helpers.ProbarDelete(t, rutaSolicitudCotizacionActividadEconomica, tablaSolicitudCotizacionActividadEconomica, creado.Id)
 	t.Log("TestSolicitudCotizacionActividadEconomicaDelete Finalizado Correctamente (OK)")
 }
+
+// La llave foránea MstSolicitudCotizacionId debe referenciar un registro existente: POST y PUT
+// responden 400 y no crean ni modifican registros.
+func TestSolicitudCotizacionActividadEconomicaMstSolicitudCotizacionIdInexistente(t *testing.T) {
+	helpers.RequerirBaseDatos(t)
+	helpers.ProbarPostFKInexistente(t, rutaSolicitudCotizacionActividadEconomica, tablaSolicitudCotizacionActividadEconomica, cuerpoPostSolicitudCotizacionActividadEconomica(t), "MstSolicitudCotizacionId")
+	creado := helpers.CrearSolicitudCotizacionActividadEconomica(t)
+	helpers.ProbarPutFKInexistente(t, rutaSolicitudCotizacionActividadEconomica, tablaSolicitudCotizacionActividadEconomica, creado.Id, "MstSolicitudCotizacionId")
+	t.Log("TestSolicitudCotizacionActividadEconomicaMstSolicitudCotizacionIdInexistente Finalizado Correctamente (OK)")
+}

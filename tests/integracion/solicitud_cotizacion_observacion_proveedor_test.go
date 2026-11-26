@@ -100,6 +100,16 @@ func TestSolicitudCotizacionObservacionProveedorDelete(t *testing.T) {
 	t.Log("TestSolicitudCotizacionObservacionProveedorDelete Finalizado Correctamente (OK)")
 }
 
+// La llave foránea RelSolicitudCotizacionProveedorId debe referenciar un registro existente: POST y PUT
+// responden 400 y no crean ni modifican registros.
+func TestSolicitudCotizacionObservacionProveedorRelSolicitudCotizacionProveedorIdInexistente(t *testing.T) {
+	helpers.RequerirBaseDatos(t)
+	helpers.ProbarPostFKInexistente(t, rutaSolicitudCotizacionObservacionProveedor, tablaSolicitudCotizacionObservacionProveedor, cuerpoPostSolicitudCotizacionObservacionProveedor(t), "RelSolicitudCotizacionProveedorId")
+	creado := helpers.CrearSolicitudCotizacionObservacionProveedor(t)
+	helpers.ProbarPutFKInexistente(t, rutaSolicitudCotizacionObservacionProveedor, tablaSolicitudCotizacionObservacionProveedor, creado.Id, "RelSolicitudCotizacionProveedorId")
+	t.Log("TestSolicitudCotizacionObservacionProveedorRelSolicitudCotizacionProveedorIdInexistente Finalizado Correctamente (OK)")
+}
+
 // El campo Texto es opcional: si se omite del payload, o se envía null, el
 // servicio lo devuelve como null y la base de datos lo guarda como NULL.
 func TestSolicitudCotizacionObservacionProveedorTextoOpcionalOmitido(t *testing.T) {

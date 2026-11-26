@@ -99,3 +99,13 @@ func TestDecisionSolicitanteDelete(t *testing.T) {
 	helpers.ProbarDelete(t, rutaDecisionSolicitante, tablaDecisionSolicitante, creado.Id)
 	t.Log("TestDecisionSolicitanteDelete Finalizado Correctamente (OK)")
 }
+
+// La llave foránea RelSolicitudCotizacionProveedorId debe referenciar un registro existente: POST y PUT
+// responden 400 y no crean ni modifican registros.
+func TestDecisionSolicitanteRelSolicitudCotizacionProveedorIdInexistente(t *testing.T) {
+	helpers.RequerirBaseDatos(t)
+	helpers.ProbarPostFKInexistente(t, rutaDecisionSolicitante, tablaDecisionSolicitante, cuerpoPostDecisionSolicitante(t), "RelSolicitudCotizacionProveedorId")
+	creado := helpers.CrearDecisionSolicitante(t)
+	helpers.ProbarPutFKInexistente(t, rutaDecisionSolicitante, tablaDecisionSolicitante, creado.Id, "RelSolicitudCotizacionProveedorId")
+	t.Log("TestDecisionSolicitanteRelSolicitudCotizacionProveedorIdInexistente Finalizado Correctamente (OK)")
+}

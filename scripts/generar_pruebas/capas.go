@@ -44,12 +44,16 @@ func generarCapas(lista []*Entidad) error {
 			return err
 		}
 	}
-	// Pruebas de GetAll por capa para todas las entidades: sortby, order, limit, offset y total
+	// Pruebas de GetAll por capa y de validación del Id de ruta para todas las entidades
 	for _, e := range lista {
 		if err := escribir(filepath.Join(dirUnitControladores, e.Archivo+"_orden_test.go"), plantillaOrdenControlador, e); err != nil {
 			return err
 		}
 		if err := escribir(filepath.Join(dirUnitModelos, e.Archivo+"_orden_test.go"), plantillaOrdenModelo, e); err != nil {
+			return err
+		}
+		// Validación del Id de ruta: GetOne, PUT y DELETE rechazan un Id no numérico
+		if err := escribir(filepath.Join(dirUnitControladores, e.Archivo+"_validacion_test.go"), plantillaValidacionControlador, e); err != nil {
 			return err
 		}
 	}
@@ -418,4 +422,97 @@ func Test{{.Nombre}}GetAllPaginacionYTotal(t *testing.T) {
 	_, total := helpers.ConsultarOrdenado(t, rutaOrden{{.Nombre}}, "sortby=Id&order=asc&limit=1&offset=1", "LIMIT 1 OFFSET 1")
 	helpers.VerificarIgual(t, "Total con limit=1 y offset=1", total, 3)
 }
+`))
+
+// plantillaValidacionControlador emite, para cada entidad, las pruebas de la capa de
+// controlador de la validación de entradas: GetOne, PUT y DELETE con un Id no numérico
+// responden 404 sin consultar la base (el Id no se convierte en 0), y POST y PUT sin una
+// columna NOT NULL que no es llave foránea (ausente, null o texto vacío) responden 400
+// sin consultar la base.
+var plantillaValidacionControlador = template.Must(template.New("validacionControlador").Parse(`
+// Pruebas de la capa de controlador de la validación de entradas de
+// {{.Nombre}}Controller ({{.Ruta}}), sin base de datos.
+
+const rutaValidacion{{.Nombre}} = "{{.Ruta}}"
+
+// cuerpoValidacion{{.Nombre}} retorna un cuerpo válido para POST y PUT, con todos los campos de ejemplo.
+func cuerpoValidacion{{.Nombre}}(t *testing.T) map[string]interface{} {
+	t.Helper()
+	return helpers.AMapa(t, &models.{{.Nombre}}{
+	{{- range .Campos}}{{if .Externo}}
+		{{.Nombre}}: {{.Externo}},
+	{{- end}}{{end}}
+	})
+}
+
+// GetOne con un Id de ruta no numérico responde 404 sin consultar la base.
+func Test{{.Nombre}}GetOneIdNoNumerico(t *testing.T) {
+	helpers.ProbarIdNoNumerico(t, http.MethodGet, rutaValidacion{{.Nombre}}, "")
+}
+
+// PUT con un Id de ruta no numérico responde 404 sin consultar la base.
+func Test{{.Nombre}}PutIdNoNumerico(t *testing.T) {
+	helpers.ProbarIdNoNumerico(t, http.MethodPut, rutaValidacion{{.Nombre}}, helpers.JSON(t, cuerpoValidacion{{.Nombre}}(t)))
+}
+
+// DELETE con un Id de ruta no numérico responde 404 sin consultar la base.
+func Test{{.Nombre}}DeleteIdNoNumerico(t *testing.T) {
+	helpers.ProbarIdNoNumerico(t, http.MethodDelete, rutaValidacion{{.Nombre}}, "")
+}
+{{- range .EscalaresReq}}
+
+// La columna {{.Columna}} es NOT NULL: POST sin {{.Nombre}}, con null{{if eq .Tipo "string"}} o vacío{{end}}
+// responde 400 sin insertar (el valor cero de Go no reemplaza al campo ausente).
+func Test{{$.Nombre}}PostSin{{.Nombre}}(t *testing.T) {
+	for nombre, modificar := range map[string]func(map[string]interface{}){
+		"omitido": func(c map[string]interface{}) { delete(c, "{{.Nombre}}") },
+		"null":    func(c map[string]interface{}) { c["{{.Nombre}}"] = nil },
+	{{- if eq .Tipo "string"}}
+		"vacio":    func(c map[string]interface{}) { c["{{.Nombre}}"] = "" },
+		"espacios": func(c map[string]interface{}) { c["{{.Nombre}}"] = "   " },
+	{{- end}}
+	} {
+		t.Run(nombre, func(t *testing.T) {
+			cuerpo := cuerpoValidacion{{$.Nombre}}(t)
+			modificar(cuerpo)
+			helpers.ProbarPostRechazado(t, rutaValidacion{{$.Nombre}}, cuerpo)
+		})
+	}
+}
+
+// La columna {{.Columna}} es NOT NULL: PUT sin {{.Nombre}}, con null{{if eq .Tipo "string"}} o vacío{{end}}
+// responde 400 sin actualizar.
+func Test{{$.Nombre}}PutSin{{.Nombre}}(t *testing.T) {
+	for nombre, modificar := range map[string]func(map[string]interface{}){
+		"omitido": func(c map[string]interface{}) { delete(c, "{{.Nombre}}") },
+		"null":    func(c map[string]interface{}) { c["{{.Nombre}}"] = nil },
+	{{- if eq .Tipo "string"}}
+		"vacio":    func(c map[string]interface{}) { c["{{.Nombre}}"] = "" },
+		"espacios": func(c map[string]interface{}) { c["{{.Nombre}}"] = "   " },
+	{{- end}}
+	} {
+		t.Run(nombre, func(t *testing.T) {
+			cuerpo := cuerpoValidacion{{$.Nombre}}(t)
+			modificar(cuerpo)
+			helpers.ProbarPutRechazado(t, rutaValidacion{{$.Nombre}}, cuerpo)
+		})
+	}
+}
+{{- end}}
+{{- if .CerosReq}}
+
+// Los campos obligatorios numéricos o booleanos enviados explícitamente con 0 o false
+// son válidos: la validación solo rechaza el campo ausente o null.
+func Test{{.Nombre}}PostObligatoriosConCeroOFalse(t *testing.T) {
+	cuerpo := cuerpoValidacion{{.Nombre}}(t)
+	{{- range .EscalaresReq}}
+	{{- if or (eq .Tipo "int") (eq .Tipo "int16") (eq .Tipo "float64")}}
+	cuerpo["{{.Nombre}}"] = 0
+	{{- else if eq .Tipo "bool"}}
+	cuerpo["{{.Nombre}}"] = false
+	{{- end}}
+	{{- end}}
+	helpers.VerificarExito(t, helpers.Peticion(http.MethodPost, rutaValidacion{{.Nombre}}+"/", helpers.JSON(t, cuerpo)), http.StatusCreated)
+}
+{{- end}}
 `))

@@ -22,6 +22,7 @@ const (
 	archivoHTTP           = "tests/helpers/http.go"
 	archivoVerificaciones = "tests/helpers/verificaciones.go"
 	archivoOrden          = "tests/helpers/orden_gen.go"
+	archivoValidacion     = "tests/helpers/validacion.go"
 )
 
 // generarHelpers escribe todos los archivos de tests/helpers a partir de sus fuentes.
@@ -36,6 +37,9 @@ func generarHelpers(lista []*Entidad) error {
 		return err
 	}
 	if err := escribirCrudo(archivoOrden, fuenteOrden); err != nil {
+		return err
+	}
+	if err := escribirCrudo(archivoValidacion, fuenteValidacion); err != nil {
 		return err
 	}
 	if err := escribir(archivoPunteros, plantillaPunteros, nil); err != nil {
@@ -537,7 +541,7 @@ func soloIdAnidados(m map[string]interface{}) map[string]interface{} {
 // ProbarPut verifica el servicio PUT: actualiza el campo indicado, conserva
 // fecha_creacion y usuario_creacion_id (aunque el cliente envíe otro valor)
 // tras dos actualizaciones, actualiza fecha_modificacion, responde 400 ante
-// Id distinto o JSON inválido y 404 ante un Id inexistente.
+// Id distinto o JSON inválido y 404 ante un Id inexistente o no numérico.
 func ProbarPut(t *testing.T, ruta, tabla string, id int, campo string, valor interface{}, columna string) {
 	t.Helper()
 	rutaId := ruta + "/" + strconv.Itoa(id)
@@ -565,12 +569,13 @@ func ProbarPut(t *testing.T, ruta, tabla string, id int, campo string, valor int
 	VerificarError(t, Peticion(http.MethodPut, rutaId, JSON(t, cuerpo)), http.StatusBadRequest)
 	delete(cuerpo, "Id")
 	VerificarError(t, Peticion(http.MethodPut, ruta+"/"+strconv.Itoa(IdInexistente), JSON(t, cuerpo)), http.StatusNotFound)
+	ProbarIdNoNumerico(t, http.MethodPut, ruta, JSON(t, cuerpo))
 	VerificarError(t, Peticion(http.MethodPut, rutaId, ` + "`" + `{"Id":"texto"}` + "`" + `), http.StatusBadRequest)
 }
 
 // ProbarDelete verifica el borrado lógico: responde 200, deja activo=false,
 // actualiza fecha_modificacion, no modifica las demás columnas, el registro
-// sigue consultable y un Id inexistente responde 404.
+// sigue consultable y un Id inexistente o no numérico responde 404.
 func ProbarDelete(t *testing.T, ruta, tabla string, id int) {
 	t.Helper()
 	antes := Fila(t, tabla, id)
@@ -590,6 +595,79 @@ func ProbarDelete(t *testing.T, ruta, tabla string, id int) {
 		t.Error("Se esperaba el registro consultable con Activo=false y se obtuvo", dato["Activo"])
 	}
 	VerificarError(t, Peticion(http.MethodDelete, ruta+"/"+strconv.Itoa(IdInexistente), ""), http.StatusNotFound)
+	ProbarIdNoNumerico(t, http.MethodDelete, ruta, "")
+}
+`
+
+const fuenteValidacion = `package helpers
+
+import (
+	"net/http"
+	"strconv"
+	"testing"
+)
+
+// IdsNoNumericos son identificadores de ruta que no son enteros.
+var IdsNoNumericos = []string{"abc", "12abc"}
+
+// ProbarIdNoNumerico comprueba que la petición (GET, PUT o DELETE) responda 404 ante
+// un Id de ruta que no es numérico y que se rechace sin consultar la base de datos (el
+// Id no debe convertirse en 0). En la capa de integración la verificación de que no
+// hubo consulta no tiene efecto, porque el controlador falso no está registrado.
+func ProbarIdNoNumerico(t *testing.T, metodo, ruta, cuerpo string) {
+	t.Helper()
+	for _, id := range IdsNoNumericos {
+		t.Run(metodo+" "+id, func(t *testing.T) {
+			LimpiarSentencia()
+			DefinirFila(nil)
+			VerificarError(t, Peticion(metodo, ruta+"/"+id, cuerpo), http.StatusNotFound)
+			VerificarSinConsulta(t)
+		})
+	}
+}
+
+// ProbarPostRechazado comprueba que POST responda 400 con la estructura
+// institucional y que la validación rechace el cuerpo sin consultar la base de datos.
+func ProbarPostRechazado(t *testing.T, ruta string, cuerpo interface{}) {
+	t.Helper()
+	LimpiarSentencia()
+	VerificarError(t, Peticion(http.MethodPost, ruta+"/", JSON(t, cuerpo)), http.StatusBadRequest)
+	VerificarSinConsulta(t)
+}
+
+// ProbarPutRechazado comprueba que PUT al registro 1 responda 400 con la estructura
+// institucional y que la validación rechace el cuerpo sin consultar la base de datos. El
+// cuerpo lleva Id 1, igual al de la ruta, para que el rechazo no se deba a un Id distinto.
+func ProbarPutRechazado(t *testing.T, ruta string, cuerpo map[string]interface{}) {
+	t.Helper()
+	cuerpo["Id"] = 1
+	LimpiarSentencia()
+	DefinirFila(nil)
+	VerificarError(t, Peticion(http.MethodPut, ruta+"/1", JSON(t, cuerpo)), http.StatusBadRequest)
+	VerificarSinConsulta(t)
+}
+
+// ProbarPostFKInexistente comprueba que POST responda 400 cuando la llave foránea
+// campo referencia un registro que no existe, y que no se cree ningún registro.
+func ProbarPostFKInexistente(t *testing.T, ruta, tabla string, cuerpo map[string]interface{}, campo string) {
+	t.Helper()
+	cuerpo[campo] = map[string]interface{}{"Id": IdInexistente}
+	antes := Contar(t, tabla)
+	VerificarError(t, Peticion(http.MethodPost, ruta+"/", JSON(t, cuerpo)), http.StatusBadRequest)
+	VerificarIgual(t, "Registros en "+tabla+" tras un POST con "+campo+" inexistente", Contar(t, tabla), antes)
+}
+
+// ProbarPutFKInexistente comprueba que PUT responda 400 cuando la llave foránea
+// campo referencia un registro que no existe, y que el registro no cambie.
+func ProbarPutFKInexistente(t *testing.T, ruta, tabla string, id int, campo string) {
+	t.Helper()
+	antes := Fila(t, tabla, id)
+	cuerpo := ProbarGetOne(t, ruta, id)
+	delete(cuerpo, "FechaCreacion")
+	delete(cuerpo, "FechaModificacion")
+	cuerpo[campo] = map[string]interface{}{"Id": IdInexistente}
+	VerificarError(t, Peticion(http.MethodPut, ruta+"/"+strconv.Itoa(id), JSON(t, cuerpo)), http.StatusBadRequest)
+	VerificarIgual(t, "El registro no cambia tras un PUT con "+campo+" inexistente", Fila(t, tabla, id), antes)
 }
 `
 

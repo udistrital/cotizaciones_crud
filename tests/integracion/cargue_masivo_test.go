@@ -100,6 +100,16 @@ func TestCargueMasivoDelete(t *testing.T) {
 	t.Log("TestCargueMasivoDelete Finalizado Correctamente (OK)")
 }
 
+// La llave foránea HistMstSolicitudCotizacionId debe referenciar un registro existente: POST y PUT
+// responden 400 y no crean ni modifican registros.
+func TestCargueMasivoHistMstSolicitudCotizacionIdInexistente(t *testing.T) {
+	helpers.RequerirBaseDatos(t)
+	helpers.ProbarPostFKInexistente(t, rutaCargueMasivo, tablaCargueMasivo, cuerpoPostCargueMasivo(t), "HistMstSolicitudCotizacionId")
+	creado := helpers.CrearCargueMasivo(t)
+	helpers.ProbarPutFKInexistente(t, rutaCargueMasivo, tablaCargueMasivo, creado.Id, "HistMstSolicitudCotizacionId")
+	t.Log("TestCargueMasivoHistMstSolicitudCotizacionIdInexistente Finalizado Correctamente (OK)")
+}
+
 // El campo EnlacePlantilla es opcional: si se omite del payload, o se envía null, el
 // servicio lo devuelve como null y la base de datos lo guarda como NULL.
 func TestCargueMasivoEnlacePlantillaOpcionalOmitido(t *testing.T) {

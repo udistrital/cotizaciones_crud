@@ -99,3 +99,13 @@ func TestHistMstSolicitudCotizacionEstadoHistDelete(t *testing.T) {
 	helpers.ProbarDelete(t, rutaHistMstSolicitudCotizacionEstadoHist, tablaHistMstSolicitudCotizacionEstadoHist, creado.Id)
 	t.Log("TestHistMstSolicitudCotizacionEstadoHistDelete Finalizado Correctamente (OK)")
 }
+
+// La llave foránea HistMstSolicitudCotizacionId debe referenciar un registro existente: POST y PUT
+// responden 400 y no crean ni modifican registros.
+func TestHistMstSolicitudCotizacionEstadoHistHistMstSolicitudCotizacionIdInexistente(t *testing.T) {
+	helpers.RequerirBaseDatos(t)
+	helpers.ProbarPostFKInexistente(t, rutaHistMstSolicitudCotizacionEstadoHist, tablaHistMstSolicitudCotizacionEstadoHist, cuerpoPostHistMstSolicitudCotizacionEstadoHist(t), "HistMstSolicitudCotizacionId")
+	creado := helpers.CrearHistMstSolicitudCotizacionEstadoHist(t)
+	helpers.ProbarPutFKInexistente(t, rutaHistMstSolicitudCotizacionEstadoHist, tablaHistMstSolicitudCotizacionEstadoHist, creado.Id, "HistMstSolicitudCotizacionId")
+	t.Log("TestHistMstSolicitudCotizacionEstadoHistHistMstSolicitudCotizacionIdInexistente Finalizado Correctamente (OK)")
+}

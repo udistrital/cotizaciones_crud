@@ -94,6 +94,16 @@ func TestHistMstCotizacionDelete(t *testing.T) {
 	t.Log("TestHistMstCotizacionDelete Finalizado Correctamente (OK)")
 }
 
+// La llave foránea MstCotizacionId debe referenciar un registro existente: POST y PUT
+// responden 400 y no crean ni modifican registros.
+func TestHistMstCotizacionMstCotizacionIdInexistente(t *testing.T) {
+	helpers.RequerirBaseDatos(t)
+	helpers.ProbarPostFKInexistente(t, rutaHistMstCotizacion, tablaHistMstCotizacion, cuerpoPostHistMstCotizacion(t), "MstCotizacionId")
+	creado := helpers.CrearHistMstCotizacion(t)
+	helpers.ProbarPutFKInexistente(t, rutaHistMstCotizacion, tablaHistMstCotizacion, creado.Id, "MstCotizacionId")
+	t.Log("TestHistMstCotizacionMstCotizacionIdInexistente Finalizado Correctamente (OK)")
+}
+
 // La llave foránea MstCotizacionId es opcional (null): el registro sin ella se
 // puede crear, consultar, actualizar y borrar.
 func TestHistMstCotizacionMstCotizacionIdOpcional(t *testing.T) {

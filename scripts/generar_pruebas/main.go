@@ -95,6 +95,8 @@ type Entidad struct {
 	RelacionesReq []Campo
 	RelacionesOpc []Campo
 	EscalaresOpc  []Campo // escalares puntero (opcionales no-FK) con Ejemplo ya envuelto en Ptr
+	EscalaresReq  []Campo // escalares no-FK cuya columna es NOT NULL en el SQL (obligatorios)
+	CerosReq      bool    // algún escalar obligatorio es numérico o booleano (admite 0 o false)
 }
 
 func main() {
@@ -316,6 +318,13 @@ func completar(e *Entidad, t *tablaSQL, porTabla map[string]*Entidad) {
 			c.Externo = "helpers.Ptr(" + c.Ejemplo + ")"
 			c.Ejemplo = "Ptr(" + c.Ejemplo + ")"
 			e.EscalaresOpc = append(e.EscalaresOpc, *c)
+		}
+		// Escalar obligatorio: columna NOT NULL que no es llave foránea, puntero ni campo de servicio
+		if existe && col.NotNull && c.Relacion == "" && !c.Puntero && c.Ejemplo != "" {
+			e.EscalaresReq = append(e.EscalaresReq, *c)
+			if c.Tipo == "int" || c.Tipo == "int16" || c.Tipo == "float64" || c.Tipo == "bool" {
+				e.CerosReq = true
+			}
 		}
 	}
 	// Campo para la prueba de PUT: primer texto editable o, si no hay, primer entero
@@ -545,6 +554,18 @@ func Test{{.Nombre}}Delete(t *testing.T) {
 	helpers.ProbarDelete(t, ruta{{.Nombre}}, tabla{{.Nombre}}, creado.Id)
 	t.Log("Test{{.Nombre}}Delete Finalizado Correctamente (OK)")
 }
+{{- range .Relaciones}}
+
+// La llave foránea {{.Nombre}} debe referenciar un registro existente: POST y PUT
+// responden 400 y no crean ni modifican registros.
+func Test{{$.Nombre}}{{.Nombre}}Inexistente(t *testing.T) {
+	helpers.RequerirBaseDatos(t)
+	helpers.ProbarPostFKInexistente(t, ruta{{$.Nombre}}, tabla{{$.Nombre}}, cuerpoPost{{$.Nombre}}(t), "{{.Nombre}}")
+	creado := helpers.Crear{{$.Nombre}}(t)
+	helpers.ProbarPutFKInexistente(t, ruta{{$.Nombre}}, tabla{{$.Nombre}}, creado.Id, "{{.Nombre}}")
+	t.Log("Test{{$.Nombre}}{{.Nombre}}Inexistente Finalizado Correctamente (OK)")
+}
+{{- end}}
 {{- range .RelacionesOpc}}
 
 // La llave foránea {{.Nombre}} es opcional (null): el registro sin ella se

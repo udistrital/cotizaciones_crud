@@ -100,6 +100,16 @@ func TestHistMstSolicitudCotizacionDelete(t *testing.T) {
 	t.Log("TestHistMstSolicitudCotizacionDelete Finalizado Correctamente (OK)")
 }
 
+// La llave foránea MstSolicitudCotizacionId debe referenciar un registro existente: POST y PUT
+// responden 400 y no crean ni modifican registros.
+func TestHistMstSolicitudCotizacionMstSolicitudCotizacionIdInexistente(t *testing.T) {
+	helpers.RequerirBaseDatos(t)
+	helpers.ProbarPostFKInexistente(t, rutaHistMstSolicitudCotizacion, tablaHistMstSolicitudCotizacion, cuerpoPostHistMstSolicitudCotizacion(t), "MstSolicitudCotizacionId")
+	creado := helpers.CrearHistMstSolicitudCotizacion(t)
+	helpers.ProbarPutFKInexistente(t, rutaHistMstSolicitudCotizacion, tablaHistMstSolicitudCotizacion, creado.Id, "MstSolicitudCotizacionId")
+	t.Log("TestHistMstSolicitudCotizacionMstSolicitudCotizacionIdInexistente Finalizado Correctamente (OK)")
+}
+
 // El campo NumeroSolicitud es opcional: si se omite del payload, o se envía null, el
 // servicio lo devuelve como null y la base de datos lo guarda como NULL.
 func TestHistMstSolicitudCotizacionNumeroSolicitudOpcionalOmitido(t *testing.T) {

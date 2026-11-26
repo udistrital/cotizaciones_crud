@@ -99,3 +99,13 @@ func TestValidacionOrdenadorDelete(t *testing.T) {
 	helpers.ProbarDelete(t, rutaValidacionOrdenador, tablaValidacionOrdenador, creado.Id)
 	t.Log("TestValidacionOrdenadorDelete Finalizado Correctamente (OK)")
 }
+
+// La llave foránea MstSolicitudCotizacionId debe referenciar un registro existente: POST y PUT
+// responden 400 y no crean ni modifican registros.
+func TestValidacionOrdenadorMstSolicitudCotizacionIdInexistente(t *testing.T) {
+	helpers.RequerirBaseDatos(t)
+	helpers.ProbarPostFKInexistente(t, rutaValidacionOrdenador, tablaValidacionOrdenador, cuerpoPostValidacionOrdenador(t), "MstSolicitudCotizacionId")
+	creado := helpers.CrearValidacionOrdenador(t)
+	helpers.ProbarPutFKInexistente(t, rutaValidacionOrdenador, tablaValidacionOrdenador, creado.Id, "MstSolicitudCotizacionId")
+	t.Log("TestValidacionOrdenadorMstSolicitudCotizacionIdInexistente Finalizado Correctamente (OK)")
+}
