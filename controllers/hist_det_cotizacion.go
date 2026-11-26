@@ -27,6 +27,16 @@ func (c *HistDetCotizacionController) URLMapping() {
 	c.Mapping("Delete", c.Delete)
 }
 
+// obligatoriosHistDetCotizacion son los campos de columnas NOT NULL que no son llave foránea: en POST y PUT
+// no pueden faltar, ser null ni, si son texto, estar vacíos.
+var obligatoriosHistDetCotizacion = []string{
+	"DetCotizacionId",
+	"DetSolicitudCotizacionId",
+	"Iva",
+	"FichaTecnica",
+	"RegistroActual",
+}
+
 // Post ...
 // @Title Post
 // @Description create HistDetCotizacion
@@ -37,6 +47,11 @@ func (c *HistDetCotizacionController) URLMapping() {
 func (c *HistDetCotizacionController) Post() {
 	var v models.HistDetCotizacion
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+		// Columnas NOT NULL que no son llave foránea: no pueden faltar, ser null ni estar vacías
+		if err := validarObligatorios(c.Ctx.Input.RequestBody, obligatoriosHistDetCotizacion...); err != nil {
+			c.Data["message"] = "Error service POST: " + err.Error()
+			c.Abort("400")
+		}
 		// El Id lo asigna la base de datos (serial): se ignora el enviado por el cliente
 		v.Id = 0
 		v.Activo = true
@@ -183,6 +198,11 @@ func (c *HistDetCotizacionController) Put() {
 	}
 	v := models.HistDetCotizacion{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+		// Columnas NOT NULL que no son llave foránea: no pueden faltar, ser null ni estar vacías
+		if err := validarObligatorios(c.Ctx.Input.RequestBody, obligatoriosHistDetCotizacion...); err != nil {
+			c.Data["message"] = "Error service Put: " + err.Error()
+			c.Abort("400")
+		}
 		if v.Id != id {
 			c.Data["message"] = "Error service Put: The id cannot be modified"
 			c.Abort("400")
