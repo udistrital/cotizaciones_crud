@@ -20,8 +20,8 @@ type HistMstSolicitudCotizacion struct {
 	UnidadEjecutoraId        int                     `orm:"column(unidad_ejecutora_id)"`
 	TipoNecesidadId          int                     `orm:"column(tipo_necesidad_id)"`
 	Titulo                   string                  `orm:"column(titulo)"`
-	FechaApertura            time.Time               `orm:"column(fecha_apertura);type(date)"`
-	FechaCierre              time.Time               `orm:"column(fecha_cierre);type(date)"`
+	FechaApertura            Fecha                   `orm:"column(fecha_apertura);type(date)"`
+	FechaCierre              Fecha                   `orm:"column(fecha_cierre);type(date)"`
 	Objetivo                 string                  `orm:"column(objetivo)"`
 	Requisitos               string                  `orm:"column(requisitos)"`
 	Observaciones            string                  `orm:"column(observaciones)"`

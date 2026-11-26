@@ -3813,11 +3813,11 @@
                 },
                 "FechaApertura": {
                     "type": "string",
-                    "format": "datetime"
+                    "format": "date"
                 },
                 "FechaCierre": {
                     "type": "string",
-                    "format": "datetime"
+                    "format": "date"
                 },
                 "FechaCreacion": {
                     "type": "string",

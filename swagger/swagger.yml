@@ -2758,10 +2758,10 @@ definitions:
         format: int64
       FechaApertura:
         type: string
-        format: datetime
+        format: date
       FechaCierre:
         type: string
-        format: datetime
+        format: date
       FechaCreacion:
         type: string
         format: datetime
