@@ -24,6 +24,7 @@ const (
 	archivoOrden          = "tests/helpers/orden_gen.go"
 	archivoValidacion     = "tests/helpers/validacion.go"
 	archivoFechas         = "tests/helpers/fechas.go"
+	archivoPersistencia   = "tests/helpers/persistencia.go"
 )
 
 // generarHelpers escribe todos los archivos de tests/helpers a partir de sus fuentes.
@@ -44,6 +45,9 @@ func generarHelpers(lista []*Entidad) error {
 		return err
 	}
 	if err := escribirCrudo(archivoFechas, fuenteFechas); err != nil {
+		return err
+	}
+	if err := escribirCrudo(archivoPersistencia, fuentePersistencia); err != nil {
 		return err
 	}
 	if err := escribir(archivoPunteros, plantillaPunteros, nil); err != nil {
@@ -734,6 +738,58 @@ func ProbarFechasEstables(t *testing.T, ruta, tabla string, id int, columnas ...
 }
 `
 
+const fuentePersistencia = `package helpers
+
+import (
+	"net/http"
+	"strings"
+	"testing"
+
+	"github.com/lib/pq"
+)
+
+// Errores de persistencia simulados, como los que devuelve el driver lib/pq.
+var (
+	// ErrBaseNoDisponible: la base de datos no está disponible (SQLSTATE 08006, connection_failure).
+	ErrBaseNoDisponible = &pq.Error{Code: "08006", Message: "connection failure"}
+	// ErrRestriccion: la base rechaza los datos (SQLSTATE 23503, foreign_key_violation).
+	ErrRestriccion = &pq.Error{Code: "23503", Message: "insert or update violates foreign key constraint"}
+)
+
+// ProbarErrorPersistencia simula err en la siguiente sentencia que empiece por prefijo,
+// envía la petición y comprueba la respuesta: el estado indicado con la estructura
+// institucional (Success=false, Data nulo), un mensaje del servicio indicado y sin
+// detalles internos del error de la base de datos. Falla si la petición no llegó a
+// ejecutar la sentencia que debía fallar.
+func ProbarErrorPersistencia(t *testing.T, metodo, ruta, cuerpo, prefijo string, err *pq.Error, estado int, servicio string) {
+	t.Helper()
+	LimpiarSentencia()
+	DefinirFila(nil)
+	SimularError(prefijo, err)
+	w := Peticion(metodo, ruta, cuerpo)
+	pendiente := ErrorSimuladoPendiente()
+	SimularError("", nil)
+	if pendiente {
+		t.Fatalf("La petición no ejecutó ninguna sentencia %s: el error simulado no se aplicó (respuesta %d: %s)", prefijo, w.Code, w.Body.String())
+	}
+	r := VerificarError(t, w, estado)
+	if r.Data != nil {
+		t.Error("Se esperaba Data nulo y se obtuvo", r.Data)
+	}
+	if !strings.Contains(r.Message, "Error service "+servicio+":") {
+		t.Errorf("Se esperaba un mensaje del servicio %s y se obtuvo: %s", servicio, r.Message)
+	}
+	if estado == http.StatusInternalServerError && !strings.Contains(r.Message, "The database is not available") {
+		t.Error("Se esperaba un mensaje de base de datos no disponible y se obtuvo:", r.Message)
+	}
+	for _, interno := range []string{"pq:", err.Message, string(err.Code), "SELECT", "INSERT", "UPDATE"} {
+		if strings.Contains(r.Message, interno) {
+			t.Errorf("El mensaje expone detalles internos de la base de datos (%q): %s", interno, r.Message)
+		}
+	}
+}
+`
+
 const fuenteOrden = `package helpers
 
 import (
@@ -861,6 +917,35 @@ func DefinirFilas(filas ...map[string]interface{}) {
 // comprobar que una petición no ejecutó ninguna consulta.
 func LimpiarSentencia() {
 	ultima = Sentencia{}
+}
+
+// Error simulado: la siguiente sentencia que empiece por prefijoError devuelve errSimulado.
+var (
+	prefijoError string
+	errSimulado  error
+)
+
+// SimularError hace que la siguiente sentencia SQL que empiece por prefijo (INSERT, UPDATE
+// o SELECT) devuelva err, como si fallara la base de datos. Se aplica una sola vez;
+// SimularError("", nil) lo descarta.
+func SimularError(prefijo string, err error) {
+	prefijoError, errSimulado = prefijo, err
+}
+
+// ErrorSimuladoPendiente indica si el error simulado aún no se aplicó (ninguna sentencia
+// empezó por el prefijo indicado).
+func ErrorSimuladoPendiente() bool {
+	return errSimulado != nil
+}
+
+// errorPendiente retorna el error simulado si la sentencia q debe recibirlo, y lo consume.
+func errorPendiente(q string) error {
+	if errSimulado == nil || !strings.HasPrefix(q, prefijoError) {
+		return nil
+	}
+	err := errSimulado
+	prefijoError, errSimulado = "", nil
+	return err
 }
 
 // filasDefinidas retorna las filas que entrega la consulta. Sin definición, la
@@ -1066,11 +1151,17 @@ func (falsoConexion) Begin() (driver.Tx, error) {
 
 func (falsoConexion) ExecContext(_ context.Context, q string, a []driver.NamedValue) (driver.Result, error) {
 	registrar(q, a)
+	if err := errorPendiente(q); err != nil {
+		return nil, err
+	}
 	return falsoResultado{}, nil
 }
 
 func (falsoConexion) QueryContext(_ context.Context, q string, a []driver.NamedValue) (driver.Rows, error) {
 	registrar(q, a)
+	if err := errorPendiente(q); err != nil {
+		return nil, err
+	}
 	if strings.HasPrefix(q, "SELECT COUNT(*)") {
 		return &falsoFilas{nombres: []string{"count"}, filas: []map[string]interface{}{ {"count": int64(len(filasDefinidas()))} }}, nil
 	}

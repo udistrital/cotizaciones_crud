@@ -143,6 +143,8 @@ Controlador (driver) falso de `database/sql`: registra cada sentencia SQL con su
 | `CampoOpcional` | Describe un campo opcional: nombre en el modelo/JSON, nombre de columna y valor esperado (`nil` = NULL). |
 | `ConectarFalso()` | Registra el alias `default` del ORM con el driver falso. |
 | `DefinirFila(valores)` | Fija la única fila que devolverá la siguiente consulta (por columna; `nil` es NULL). |
+| `SimularError(prefijo, err)` | La siguiente sentencia que empiece por `prefijo` (`INSERT`, `UPDATE` o `SELECT`) devuelve `err`, como si fallara la base. Se aplica una sola vez; `SimularError("", nil)` lo descarta. |
+| `ErrorSimuladoPendiente()` | Indica si el error simulado aún no se aplicó. |
 | `DefinirFilas(filas...)` | Fija varias filas, en orden. Sin argumentos la consulta no devuelve filas. El `SELECT COUNT(*)` devuelve la cantidad de filas definidas, como `Total`. El falso no aplica `ORDER BY`, `LIMIT` ni `OFFSET`: el orden se verifica sobre el SQL capturado. |
 | `LimpiarSentencia()` | Borra la última sentencia registrada, para comprobar que una petición no consultó la base. |
 | `UltimaSentencia()` | Última sentencia SQL recibida. |
@@ -164,6 +166,16 @@ Verificadores del formato de las columnas `date` (`models.Fecha`) en el JSON.
 | `ProbarGetFechas(t, ruta, fila, esperado)` | Fija una fila en la base falsa, hace GET del registro 1 y compara el texto de cada campo del JSON. |
 | `VerificarFechaJSON(t, dato, campo, fila, columna)` | Campo `date`: solo el día (`2006-01-02`) e igual a la columna. |
 | `ProbarFechasEstables(t, ruta, tabla, id, columnas...)` | Envía dos veces por PUT lo que devuelve GET y comprueba que las columnas no cambien. |
+
+### `persistencia.go` (copiado)
+
+Errores de persistencia simulados para la capa unitaria de controlador.
+
+| Helper | Qué hace |
+| -- | -- |
+| `ErrBaseNoDisponible` | Error de `lib/pq` con SQLSTATE `08006` (connection_failure): la base no está disponible. |
+| `ErrRestriccion` | Error de `lib/pq` con SQLSTATE `23503` (foreign_key_violation): la base rechaza los datos. |
+| `ProbarErrorPersistencia(t, metodo, ruta, cuerpo, prefijo, err, estado, servicio)` | Simula `err` en la siguiente sentencia que empiece por `prefijo`, envía la petición y comprueba el estado, la estructura institucional (`Success=false`, `Data` nulo), el mensaje del servicio y que no exponga detalles internos (`pq:`, SQL, código o texto del error). Falla si la petición no llegó a la sentencia que debía fallar. |
 
 ### `orden_gen.go` (generado)
 
@@ -267,6 +279,20 @@ Para las entidades con columnas `date` (campos `models.Fecha`, definido en `mode
 
 Los campos `timestamp` no se prueban aquí: el desplazamiento de 5 horas al leerlos queda pendiente de definir junto con la migración de datos.
 
+## Pruebas de errores de persistencia
+
+Para **todas** las entidades con controlador y ruta se genera `tests/unitarias/controladores/<archivo>_persistencia_test.go`. La base falsa falla a propósito (`SimularError`) en cada punto donde el controlador accede a la base. Si la base no está disponible la respuesta es **500** (`The database is not available`); si rechaza los datos, **400**.
+
+| Prueba | Subpruebas (sentencia que falla → estado) |
+| -- | -- |
+| `Test<E>PostErrorPersistencia` | `INSERT` no disponible → 500; `INSERT` restricción → 400 |
+| `Test<E>GetOneErrorPersistencia` | `SELECT` no disponible → 500 |
+| `Test<E>GetAllErrorPersistencia` | `SELECT` no disponible → 500 |
+| `Test<E>PutErrorPersistencia` | lectura previa no disponible → 500; `UPDATE` no disponible → 500; `UPDATE` restricción → 400 |
+| `Test<E>DeleteErrorPersistencia` | lectura previa no disponible → 500; `UPDATE` no disponible → 500; `UPDATE` otro error → 400 con mensaje `Error service Delete` |
+
+La clasificación de los errores está en `controllers/errores.go` (`abortarSiBaseNoDisponible`): responde 500 ante errores de conexión (clases SQLSTATE 08, 53, 57, 58 y XX, errores de red, conexión cerrada o tiempo agotado) y deja los demás como 400/404.
+
 ## Pruebas de ordenamiento (`GetAll`)
 
 Para **todas** las entidades con controlador y ruta se generan dos archivos más: uno por capa unitaria, con el nombre `<archivo>_orden_test.go`. Verifican el comportamiento de `sortby`, `order`, `limit`, `offset` y `Total` en cada capa, para saber en cuál está un fallo.
@@ -305,6 +331,6 @@ El helper `ProbarGetAll`, usado por `Test<E>GetAll`, también verifica `sortby` 
 2. `completar` cruza cada modelo con su tabla SQL, fija los valores de ejemplo, el campo de PUT y clasifica relaciones (obligatorias/opcionales) y escalares opcionales.
 3. `generarHelpers` escribe `tests/helpers` (copiados + generados, incluido `orden_gen.go`).
 4. Por cada entidad se escribe su prueba de integración en `tests/integracion`.
-5. `generarCapas` escribe los `TestMain` de cada carpeta; las pruebas unitarias de controlador y de modelo para las entidades con campos opcionales; y las pruebas `*_orden_test.go` y `*_validacion_test.go` para todas las entidades.
+5. `generarCapas` escribe los `TestMain` de cada carpeta; las pruebas unitarias de controlador y de modelo para las entidades con campos opcionales; y las pruebas `*_orden_test.go`, `*_validacion_test.go` y `*_persistencia_test.go` para todas las entidades.
 
 Todos los archivos generados llevan la cabecera `NO EDITAR` y se regeneran con `go run ./scripts/generar_pruebas`.

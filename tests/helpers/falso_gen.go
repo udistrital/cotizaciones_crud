@@ -61,6 +61,35 @@ func LimpiarSentencia() {
 	ultima = Sentencia{}
 }
 
+// Error simulado: la siguiente sentencia que empiece por prefijoError devuelve errSimulado.
+var (
+	prefijoError string
+	errSimulado  error
+)
+
+// SimularError hace que la siguiente sentencia SQL que empiece por prefijo (INSERT, UPDATE
+// o SELECT) devuelva err, como si fallara la base de datos. Se aplica una sola vez;
+// SimularError("", nil) lo descarta.
+func SimularError(prefijo string, err error) {
+	prefijoError, errSimulado = prefijo, err
+}
+
+// ErrorSimuladoPendiente indica si el error simulado aún no se aplicó (ninguna sentencia
+// empezó por el prefijo indicado).
+func ErrorSimuladoPendiente() bool {
+	return errSimulado != nil
+}
+
+// errorPendiente retorna el error simulado si la sentencia q debe recibirlo, y lo consume.
+func errorPendiente(q string) error {
+	if errSimulado == nil || !strings.HasPrefix(q, prefijoError) {
+		return nil
+	}
+	err := errSimulado
+	prefijoError, errSimulado = "", nil
+	return err
+}
+
 // filasDefinidas retorna las filas que entrega la consulta. Sin definición, la
 // consulta devuelve una fila con los valores por omisión.
 func filasDefinidas() []map[string]interface{} {
@@ -264,11 +293,17 @@ func (falsoConexion) Begin() (driver.Tx, error) {
 
 func (falsoConexion) ExecContext(_ context.Context, q string, a []driver.NamedValue) (driver.Result, error) {
 	registrar(q, a)
+	if err := errorPendiente(q); err != nil {
+		return nil, err
+	}
 	return falsoResultado{}, nil
 }
 
 func (falsoConexion) QueryContext(_ context.Context, q string, a []driver.NamedValue) (driver.Rows, error) {
 	registrar(q, a)
+	if err := errorPendiente(q); err != nil {
+		return nil, err
+	}
 	if strings.HasPrefix(q, "SELECT COUNT(*)") {
 		return &falsoFilas{nombres: []string{"count"}, filas: []map[string]interface{}{{"count": int64(len(filasDefinidas()))}}}, nil
 	}

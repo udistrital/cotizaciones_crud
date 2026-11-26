@@ -58,6 +58,10 @@ func generarCapas(lista []*Entidad) error {
 				return err
 			}
 		}
+		// Errores de persistencia simulados: base no disponible (500) y restricciones (400)
+		if err := escribir(filepath.Join(dirUnitControladores, e.Archivo+"_persistencia_test.go"), plantillaPersistenciaControlador, e); err != nil {
+			return err
+		}
 		// Validación del Id de ruta: GetOne, PUT y DELETE rechazan un Id no numérico
 		if err := escribir(filepath.Join(dirUnitControladores, e.Archivo+"_validacion_test.go"), plantillaValidacionControlador, e); err != nil {
 			return err
@@ -573,4 +577,68 @@ func Test{{$.Nombre}}Post{{.Nombre}}SoloDia(t *testing.T) {
 	}
 }
 {{- end}}
+`))
+
+// plantillaPersistenciaControlador emite, para cada entidad, las pruebas de la capa de
+// controlador ante errores de persistencia simulados en la base falsa: si la base no está
+// disponible la respuesta es 500; si rechaza los datos (restricción), 400. En todos los
+// casos con la estructura institucional y sin exponer detalles internos.
+var plantillaPersistenciaControlador = template.Must(template.New("persistenciaControlador").Parse(`
+// Pruebas de la capa de controlador de {{.Nombre}}Controller ({{.Ruta}}) ante errores de
+// persistencia simulados, sin base de datos.
+
+// cuerpoPutPersistencia{{.Nombre}} retorna un cuerpo válido para PUT al registro 1.
+func cuerpoPutPersistencia{{.Nombre}}(t *testing.T) string {
+	t.Helper()
+	cuerpo := cuerpoValidacion{{.Nombre}}(t)
+	cuerpo["Id"] = 1
+	return helpers.JSON(t, cuerpo)
+}
+
+func Test{{.Nombre}}PostErrorPersistencia(t *testing.T) {
+	cuerpo := helpers.JSON(t, cuerpoValidacion{{.Nombre}}(t))
+	t.Run("INSERT base no disponible", func(t *testing.T) {
+		helpers.ProbarErrorPersistencia(t, http.MethodPost, rutaValidacion{{.Nombre}}+"/", cuerpo, "INSERT", helpers.ErrBaseNoDisponible, http.StatusInternalServerError, "POST")
+	})
+	t.Run("INSERT restriccion", func(t *testing.T) {
+		helpers.ProbarErrorPersistencia(t, http.MethodPost, rutaValidacion{{.Nombre}}+"/", cuerpo, "INSERT", helpers.ErrRestriccion, http.StatusBadRequest, "POST")
+	})
+}
+
+func Test{{.Nombre}}GetOneErrorPersistencia(t *testing.T) {
+	t.Run("SELECT base no disponible", func(t *testing.T) {
+		helpers.ProbarErrorPersistencia(t, http.MethodGet, rutaValidacion{{.Nombre}}+"/1", "", "SELECT", helpers.ErrBaseNoDisponible, http.StatusInternalServerError, "GetOne")
+	})
+}
+
+func Test{{.Nombre}}GetAllErrorPersistencia(t *testing.T) {
+	t.Run("SELECT base no disponible", func(t *testing.T) {
+		helpers.ProbarErrorPersistencia(t, http.MethodGet, rutaValidacion{{.Nombre}}+"/", "", "SELECT", helpers.ErrBaseNoDisponible, http.StatusInternalServerError, "GetAll")
+	})
+}
+
+func Test{{.Nombre}}PutErrorPersistencia(t *testing.T) {
+	cuerpo := cuerpoPutPersistencia{{.Nombre}}(t)
+	t.Run("lectura base no disponible", func(t *testing.T) {
+		helpers.ProbarErrorPersistencia(t, http.MethodPut, rutaValidacion{{.Nombre}}+"/1", cuerpo, "SELECT", helpers.ErrBaseNoDisponible, http.StatusInternalServerError, "Put")
+	})
+	t.Run("UPDATE base no disponible", func(t *testing.T) {
+		helpers.ProbarErrorPersistencia(t, http.MethodPut, rutaValidacion{{.Nombre}}+"/1", cuerpo, "UPDATE", helpers.ErrBaseNoDisponible, http.StatusInternalServerError, "Put")
+	})
+	t.Run("UPDATE restriccion", func(t *testing.T) {
+		helpers.ProbarErrorPersistencia(t, http.MethodPut, rutaValidacion{{.Nombre}}+"/1", cuerpo, "UPDATE", helpers.ErrRestriccion, http.StatusBadRequest, "Put")
+	})
+}
+
+func Test{{.Nombre}}DeleteErrorPersistencia(t *testing.T) {
+	t.Run("lectura base no disponible", func(t *testing.T) {
+		helpers.ProbarErrorPersistencia(t, http.MethodDelete, rutaValidacion{{.Nombre}}+"/1", "", "SELECT", helpers.ErrBaseNoDisponible, http.StatusInternalServerError, "Delete")
+	})
+	t.Run("UPDATE base no disponible", func(t *testing.T) {
+		helpers.ProbarErrorPersistencia(t, http.MethodDelete, rutaValidacion{{.Nombre}}+"/1", "", "UPDATE", helpers.ErrBaseNoDisponible, http.StatusInternalServerError, "Delete")
+	})
+	t.Run("UPDATE otro error", func(t *testing.T) {
+		helpers.ProbarErrorPersistencia(t, http.MethodDelete, rutaValidacion{{.Nombre}}+"/1", "", "UPDATE", helpers.ErrRestriccion, http.StatusBadRequest, "Delete")
+	})
+}
 `))
